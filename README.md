@@ -1,2 +1,2 @@
 # xxl-registry
-A highly available and distributed service discovery platform.
+A lightweight distributed service discovery platform.
