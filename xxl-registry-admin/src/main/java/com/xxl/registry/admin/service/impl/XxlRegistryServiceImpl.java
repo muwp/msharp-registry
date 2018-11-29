@@ -179,7 +179,7 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     // ------------------------ remote registry ------------------------
 
     @Override
-    public ReturnT<String> registry(String biz, String env, List<String> keys, String value) {
+    public ReturnT<String> registry(String biz, String env, List<XxlRegistryData> registryDataList) {
 
         // valid
         if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
@@ -188,33 +188,30 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         if (env==null || env.trim().length()==0 || env.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
         }
-        if (keys==null || keys.size()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "keys Invalid.");
+        if (registryDataList==null || registryDataList.size()==0) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Empty");
         }
-        for (String key: keys) {
-            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
+        for (XxlRegistryData registryData: registryDataList) {
+            if (registryData.getKey()==null || registryData.getKey().trim().length()==0 || registryData.getKey().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[0~255]");
+            }
+            if (registryData.getValue()==null || registryData.getValue().trim().length()==0 || registryData.getValue().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[0~255]");
             }
         }
-        if (value==null || value.trim().length()==0 || value.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Value Invalid[0~255]");
-        }
 
-        // add queue
-        for (String key: keys) {
-            XxlRegistryData xxlRegistryData = new XxlRegistryData();
-            xxlRegistryData.setBiz(biz);
-            xxlRegistryData.setEnv(env);
-            xxlRegistryData.setKey(key);
-            xxlRegistryData.setValue(value);
-            registryQueue.add(xxlRegistryData);
+        // fill + add queue
+        for (XxlRegistryData registryData: registryDataList) {
+            registryData.setBiz(biz);
+            registryData.setEnv(env);
         }
+        registryQueue.addAll(registryDataList);
 
         return ReturnT.SUCCESS;
     }
 
     @Override
-    public ReturnT<String> remove(String biz, String env, List<String> keys, String value) {
+    public ReturnT<String> remove(String biz, String env, List<XxlRegistryData> registryDataList) {
 
         // valid
         if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
@@ -223,27 +220,24 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         if (env==null || env.trim().length()==0 || env.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
         }
-        if (keys==null || keys.size()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "keys Invalid.");
+        if (registryDataList==null || registryDataList.size()==0) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Empty");
         }
-        for (String key: keys) {
-            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
+        for (XxlRegistryData registryData: registryDataList) {
+            if (registryData.getKey()==null || registryData.getKey().trim().length()==0 || registryData.getKey().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[0~255]");
+            }
+            if (registryData.getValue()==null || registryData.getValue().trim().length()==0 || registryData.getValue().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[0~255]");
             }
         }
-        if (value==null || value.trim().length()==0 || value.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Value Invalid[0~255]");
-        }
 
-        // add queue
-        for (String key: keys) {
-            XxlRegistryData xxlRegistryData = new XxlRegistryData();
-            xxlRegistryData.setBiz(biz);
-            xxlRegistryData.setEnv(env);
-            xxlRegistryData.setKey(key);
-            xxlRegistryData.setValue(value);
-            removeQueue.add(xxlRegistryData);
+        // fill + add queue
+        for (XxlRegistryData registryData: registryDataList) {
+            registryData.setBiz(biz);
+            registryData.setEnv(env);
         }
+        removeQueue.addAll(registryDataList);
 
         return ReturnT.SUCCESS;
     }

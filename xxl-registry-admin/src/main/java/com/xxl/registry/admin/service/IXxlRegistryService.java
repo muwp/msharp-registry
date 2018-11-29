@@ -2,6 +2,7 @@ package com.xxl.registry.admin.service;
 
 
 import com.xxl.registry.admin.core.model.XxlRegistry;
+import com.xxl.registry.admin.core.model.XxlRegistryData;
 import com.xxl.registry.admin.core.result.ReturnT;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -25,12 +26,12 @@ public interface IXxlRegistryService {
     /**
      * refresh registry-value, check update and broacase
      */
-    ReturnT<String> registry(String biz, String env, List<String> keys, String value);
+    ReturnT<String> registry(String biz, String env, List<XxlRegistryData> registryDataList);
 
     /**
      * remove registry-value, check update and broacase
      */
-    ReturnT<String> remove(String biz, String env, List<String> keys, String value);
+    ReturnT<String> remove(String biz, String env, List<XxlRegistryData> registryDataList);
 
     /**
      * discovery registry-data, read file

@@ -1,6 +1,5 @@
 package com.xxl.registry.admin.controller;
 
-import com.xxl.registry.admin.controller.annotation.PermessionLimit;
 import com.xxl.registry.admin.core.model.XxlRegistry;
 import com.xxl.registry.admin.core.result.ReturnT;
 import com.xxl.registry.admin.service.IXxlRegistryService;
@@ -9,10 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,34 +57,6 @@ public class RegistryController {
     }
 
 
-    // ---------------------- remote registry ----------------------
 
-    @RequestMapping("/registry")
-    @ResponseBody
-    @PermessionLimit(limit=false)
-    public ReturnT<String> registry(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys, String value){
-        return xxlRegistryService.registry(biz, env, keys, value);
-    }
-
-    @RequestMapping("/remove")
-    @ResponseBody
-    @PermessionLimit(limit=false)
-    public ReturnT<String> remove(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys, String value){
-        return xxlRegistryService.remove(biz, env, keys, value);
-    }
-
-    @RequestMapping("/discovery")
-    @ResponseBody
-    @PermessionLimit(limit=false)
-    public ReturnT<Map<String, List<String>>> discovery(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys) {
-        return xxlRegistryService.discovery(biz, env, keys);
-    }
-
-    @RequestMapping("/monitor")
-    @ResponseBody
-    @PermessionLimit(limit=false)
-    public DeferredResult monitor(String biz, String env, @RequestParam(name = "keys", required = false) List<String> keys) {
-        return xxlRegistryService.monitor(biz, env, keys);
-    }
 
 }
