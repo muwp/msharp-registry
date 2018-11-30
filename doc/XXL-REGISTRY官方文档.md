@@ -300,6 +300,7 @@ XXL-REGISTRY内部通过广播机制，集群节点实时同步服务注册信�
 
 
 ### TODO
+- accesstoken 鉴权；
 
 
 ## 六、其他

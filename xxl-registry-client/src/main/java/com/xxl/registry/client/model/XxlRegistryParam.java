@@ -1,5 +1,7 @@
 package com.xxl.registry.client.model;
 
+import java.util.Objects;
+
 /**
  * @author xuxueli 2018-11-30
  */
@@ -29,6 +31,20 @@ public class XxlRegistryParam {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        XxlRegistryParam that = (XxlRegistryParam) o;
+        return Objects.equals(key, that.key) &&
+                Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, value);
     }
 
 }
