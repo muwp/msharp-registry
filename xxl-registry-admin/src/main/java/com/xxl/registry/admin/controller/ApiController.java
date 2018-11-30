@@ -32,6 +32,11 @@ public class ApiController {
      *
      * 说明：新服务上线1s广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；
      *
+     *  [{
+     *      "key" : "xxx",
+     *      "value" : "xxx"
+     *  }]
+     *
      * @param biz
      * @param env
      * @param data
@@ -57,6 +62,11 @@ public class ApiController {
      * 服务摘除
      *
      * 说明：服务下线1s广播通知接入方；
+     *
+     *  [{
+     *      "key" : "xxx",
+     *      "value" : "xxx"
+     *  }]
      *
      * @param biz
      * @param env

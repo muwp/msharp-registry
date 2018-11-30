@@ -12,7 +12,8 @@
 
 	<modules>
 		<module>xxl-registry-admin</module>
-    </modules>
+		<module>xxl-registry-client</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
