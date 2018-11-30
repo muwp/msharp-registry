@@ -189,7 +189,7 @@ public class XxlRegistryClient {
         String paramsJson = BasicJson.toJson(keys);
 
         // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 30);
+        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 60);
         return respObj!=null?true:false;
     }
 

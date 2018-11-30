@@ -284,7 +284,7 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     public DeferredResult<ReturnT<String>> monitor(String biz, String env, List<String> keys) {
 
         // init
-        DeferredResult deferredResult = new DeferredResult(registryBeatTime * 3 * 1000L, new ReturnT<>(ReturnT.FAIL_CODE, "Monitor timeout."));
+        DeferredResult deferredResult = new DeferredResult(30 * 1000L, new ReturnT<>(ReturnT.FAIL_CODE, "Monitor timeout."));
 
         // valid
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
@@ -504,7 +504,7 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
 
                         // clean old message;
                         if (System.currentTimeMillis() % registryBeatTime ==0) {
-                            xxlRegistryMessageDao.cleanMessage(10);
+                            xxlRegistryMessageDao.cleanMessage(registryBeatTime);
                             readedMessageIds.clear();
                         }
                     } catch (Exception e) {
