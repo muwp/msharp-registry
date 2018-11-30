@@ -13,8 +13,6 @@ public class BasicJsonwriter {
     private static Logger logger = LoggerFactory.getLogger(BasicJsonwriter.class);
 
 
-    private static final String STR_VERSION_UID = "serialVersionUID";
-
     private static final String STR_SLASH = "\"";
     private static final String STR_SLASH_STR = "\":";
     private static final String STR_COMMA = ",";
@@ -61,8 +59,11 @@ public class BasicJsonwriter {
      * @param json  "key":value or value
      */
     private void writeObjItem(String key, Object value, StringBuilder json) {
-        if (value == null || STR_VERSION_UID.equals(key) || value instanceof Logger) {
+        if ("serialVersionUID".equals(key)
+                || value == null
+                || value instanceof Logger) {
             // pass
+
             return;
         }
 
