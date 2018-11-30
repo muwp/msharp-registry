@@ -189,7 +189,7 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
         }
         if (registryDataList==null || registryDataList.size()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Empty");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
         }
         for (XxlRegistryData registryData: registryDataList) {
             if (registryData.getKey()==null || registryData.getKey().trim().length()==0 || registryData.getKey().trim().length()>255) {
@@ -221,7 +221,7 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
         }
         if (registryDataList==null || registryDataList.size()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Empty");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
         }
         for (XxlRegistryData registryData: registryDataList) {
             if (registryData.getKey()==null || registryData.getKey().trim().length()==0 || registryData.getKey().trim().length()>255) {

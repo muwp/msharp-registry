@@ -52,7 +52,7 @@ public class ApiController {
         // parse
         List<XxlRegistryData> registryDataList = null;
         try {
-            registryDataList = (List<XxlRegistryData>) JacksonUtil.readValue(data, XxlRegistryData.class);
+            registryDataList = (List<XxlRegistryData>) JacksonUtil.readValue(data, List.class, XxlRegistryData.class);
         } catch (Exception e) { }
 
         return xxlRegistryService.registry(biz, env, registryDataList);
@@ -83,7 +83,7 @@ public class ApiController {
         // parse
         List<XxlRegistryData> registryDataList = null;
         try {
-            registryDataList = (List<XxlRegistryData>) JacksonUtil.readValue(data, XxlRegistryData.class);
+            registryDataList = (List<XxlRegistryData>) JacksonUtil.readValue(data, List.class, XxlRegistryData.class);
         } catch (Exception e) { }
 
         return xxlRegistryService.remove(biz, env, registryDataList);

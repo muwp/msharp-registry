@@ -8,6 +8,13 @@ public class XxlRegistryParam {
     private String key;
     private String value;
 
+    public XxlRegistryParam() {
+    }
+    public XxlRegistryParam(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     public String getKey() {
         return key;
     }

@@ -1,17 +1,24 @@
 package com.xxl.registry.client;
 
 import com.xxl.registry.client.model.XxlRegistryParam;
+import com.xxl.registry.client.util.BasicHttpUtil;
+import com.xxl.registry.client.util.json.BasicJson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class XxlRegistryClient {
+    private static Logger logger = LoggerFactory.getLogger(XxlRegistryClient.class);
+
 
     private String adminAddress;
     private List<String> adminAddressArr;
     private String biz;
     private String env;
 
-    public XxlRegistryClient(String biz, String env) {
+    public XxlRegistryClient(String adminAddress, String biz, String env) {
+        this.adminAddress = adminAddress;
         this.biz = biz;
         this.env = env;
 
@@ -64,30 +71,50 @@ public class XxlRegistryClient {
         String pathUrl = "/api/registry/"+ biz +"/" + env;
 
         // param
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("[");
+        String paramsJson = BasicJson.toJson(registryParamList);
 
-        for (int i = 0; i < registryParamList.size(); i++) {
-            stringBuffer.append("{");
-            stringBuffer.append("\"key\":").append("\""+ registryParamList.get(i).getKey() +"\",");
-            stringBuffer.append("\"value\":").append("\""+ registryParamList.get(i).getValue() +"\",");
-            stringBuffer.append("}");
-            if (i == registryParamList.size()-1) {
-                stringBuffer.append(",");
-            }
+
+        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson);
+        if (respObj == null) {
+            return false;
         }
+        if ("200".equals(String.valueOf(respObj.get("code")))) {
+            return true;
+        } else {
+            logger.warn("XxlRegistryClient registry fail, msg={}", respObj.get("msg"));
+            return false;
+        }
+    }
 
-
-        stringBuffer.append("]");
-        String paramsJson = stringBuffer.toString();
-
+    private Map<String, Object> requestAndValid(String pathUrl, String requestBody){
 
         for (String adminAddressUrl: adminAddressArr) {
             String finalUrl = adminAddressUrl + pathUrl;
-            Map<String, Object> respObj = null;//getAndValid(url, 10);
-            return respObj!=null?true:false;
+
+            // request
+            String responseData = BasicHttpUtil.postBody(finalUrl, requestBody, 10);
+            if (responseData == null) {
+                return null;
+            }
+
+            // parse resopnse
+            Map<String, Object> resopnseMap = null;
+            try {
+                resopnseMap = BasicJson.parseMap(responseData);
+            } catch (Exception e) { }
+
+
+            // valid resopnse
+            if (resopnseMap==null || !resopnseMap.containsKey("code")) {
+                logger.warn("XxlRegistryClient response parse fail, responseData={}", responseData);
+                return null;
+            }
+
+            return resopnseMap;
         }
-        return false;
+
+
+        return null;
     }
 
     public boolean remove(List<XxlRegistryParam> xxlRegistryParamList) {
