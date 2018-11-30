@@ -73,26 +73,18 @@ public class XxlRegistryClient {
         // param
         String paramsJson = BasicJson.toJson(registryParamList);
 
-
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson);
-        if (respObj == null) {
-            return false;
-        }
-        if ("200".equals(String.valueOf(respObj.get("code")))) {
-            return true;
-        } else {
-            logger.warn("XxlRegistryClient registry fail, msg={}", respObj.get("msg"));
-            return false;
-        }
+        // result
+        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
+        return respObj!=null?true:false;
     }
 
-    private Map<String, Object> requestAndValid(String pathUrl, String requestBody){
+    private Map<String, Object> requestAndValid(String pathUrl, String requestBody, int timeout){
 
         for (String adminAddressUrl: adminAddressArr) {
             String finalUrl = adminAddressUrl + pathUrl;
 
             // request
-            String responseData = BasicHttpUtil.postBody(finalUrl, requestBody, 10);
+            String responseData = BasicHttpUtil.postBody(finalUrl, requestBody, timeout);
             if (responseData == null) {
                 return null;
             }
@@ -105,8 +97,11 @@ public class XxlRegistryClient {
 
 
             // valid resopnse
-            if (resopnseMap==null || !resopnseMap.containsKey("code")) {
-                logger.warn("XxlRegistryClient response parse fail, responseData={}", responseData);
+            if (resopnseMap==null
+                    || !resopnseMap.containsKey("code")
+                    || !"200".equals(String.valueOf(resopnseMap.get("code")))
+                    ) {
+                logger.warn("XxlRegistryClient response fail, responseData={}", responseData);
                 return null;
             }
 
@@ -117,16 +112,88 @@ public class XxlRegistryClient {
         return null;
     }
 
-    public boolean remove(List<XxlRegistryParam> xxlRegistryParamList) {
-        return false;
+    /**
+     * remove
+     *
+     * @param registryParamList
+     * @return
+     */
+    public boolean remove(List<XxlRegistryParam> registryParamList) {
+        // valid
+        if (registryParamList==null || registryParamList.size()==0) {
+            throw new RuntimeException("xxl-registry registryParamList empty");
+        }
+        for (XxlRegistryParam registryParam: registryParamList) {
+            if (registryParam.getKey()==null || registryParam.getKey().trim().length()==0) {
+                throw new RuntimeException("xxl-registry registryParamList#key empty");
+            }
+            if (registryParam.getValue()==null || registryParam.getValue().trim().length()==0) {
+                throw new RuntimeException("xxl-registry registryParamList#value empty");
+            }
+        }
+
+        // pathUrl
+        String pathUrl = "/api/remove/"+ biz +"/" + env;
+
+        // param
+        String paramsJson = BasicJson.toJson(registryParamList);
+
+        // result
+        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
+        return respObj!=null?true:false;
     }
 
+    /**
+     * discovery
+     *
+     * @param keys
+     * @return
+     */
     public Map<String, TreeSet<String>> discovery(Set<String> keys) {
+        // valid
+        if (keys==null || keys.size()==0) {
+            throw new RuntimeException("xxl-registry keys empty");
+        }
+
+        // pathUrl
+        String pathUrl = "/api/discovery/"+ biz +"/" + env;
+
+        // param
+        String paramsJson = BasicJson.toJson(keys);
+
+        // result
+        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
+
+        // parse
+        if (respObj!=null && respObj.containsKey("data")) {
+            Map<String, TreeSet<String>> data = (Map<String, TreeSet<String>>) respObj.get("data");
+            return data;
+        }
+
         return null;
     }
 
+    /**
+     * discovery
+     *
+     * @param keys
+     * @return
+     */
     public boolean monitor(Set<String> keys) {
-        return false;
+        // valid
+        if (keys==null || keys.size()==0) {
+            throw new RuntimeException("xxl-registry keys empty");
+        }
+
+        // pathUrl
+        String pathUrl = "/api/monitor/"+ biz +"/" + env;
+
+        // param
+        String paramsJson = BasicJson.toJson(keys);
+
+        // result
+        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 30);
+        return respObj!=null?true:false;
     }
 
 }

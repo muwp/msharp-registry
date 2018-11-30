@@ -91,14 +91,14 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     public ReturnT<String> update(XxlRegistry xxlRegistry) {
 
         // valid
-        if (xxlRegistry.getBiz()==null || xxlRegistry.getBiz().trim().length()==0 || xxlRegistry.getBiz().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[0~255]");
+        if (xxlRegistry.getBiz()==null || xxlRegistry.getBiz().trim().length()<4 ||xxlRegistry.getBiz().trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[4~255]");
         }
-        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[0~255]");
+        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()<4 || xxlRegistry.getEnv().trim().length()>255 ) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[4~255]");
         }
-        if (xxlRegistry.getKey()==null || xxlRegistry.getKey().trim().length()==0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[0~255]");
+        if (xxlRegistry.getKey()==null || xxlRegistry.getKey().trim().length()<4 || xxlRegistry.getKey().trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[4~255]");
         }
         if (xxlRegistry.getData()==null || xxlRegistry.getData().trim().length()==0) {
             xxlRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
@@ -138,14 +138,14 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     public ReturnT<String> add(XxlRegistry xxlRegistry) {
 
         // valid
-        if (xxlRegistry.getBiz()==null || xxlRegistry.getBiz().trim().length()==0 || xxlRegistry.getBiz().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[0~255]");
+        if (xxlRegistry.getBiz()==null || xxlRegistry.getBiz().trim().length()<4 ||xxlRegistry.getBiz().trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[4~255]");
         }
-        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()==0 || xxlRegistry.getEnv().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[0~255]");
+        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()<4 || xxlRegistry.getEnv().trim().length()>255 ) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[4~255]");
         }
-        if (xxlRegistry.getKey()==null || xxlRegistry.getKey().trim().length()==0 || xxlRegistry.getKey().trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[0~255]");
+        if (xxlRegistry.getKey()==null || xxlRegistry.getKey().trim().length()<4 || xxlRegistry.getKey().trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[4~255]");
         }
         if (xxlRegistry.getData()==null || xxlRegistry.getData().trim().length()==0) {
             xxlRegistry.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
@@ -182,21 +182,21 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     public ReturnT<String> registry(String biz, String env, List<XxlRegistryData> registryDataList) {
 
         // valid
-        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]");
+        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
+        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[4~255]");
         }
         if (registryDataList==null || registryDataList.size()==0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
         }
         for (XxlRegistryData registryData: registryDataList) {
-            if (registryData.getKey()==null || registryData.getKey().trim().length()==0 || registryData.getKey().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[0~255]");
+            if (registryData.getKey()==null || registryData.getKey().trim().length()<4 || registryData.getKey().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[4~255]");
             }
-            if (registryData.getValue()==null || registryData.getValue().trim().length()==0 || registryData.getValue().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[0~255]");
+            if (registryData.getValue()==null || registryData.getValue().trim().length()<4 || registryData.getValue().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[4~255]");
             }
         }
 
@@ -214,21 +214,21 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     public ReturnT<String> remove(String biz, String env, List<XxlRegistryData> registryDataList) {
 
         // valid
-        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]");
+        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
+        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[4~255]");
         }
         if (registryDataList==null || registryDataList.size()==0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
         }
         for (XxlRegistryData registryData: registryDataList) {
-            if (registryData.getKey()==null || registryData.getKey().trim().length()==0 || registryData.getKey().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[0~255]");
+            if (registryData.getKey()==null || registryData.getKey().trim().length()<4 || registryData.getKey().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Key Invalid[4~255]");
             }
-            if (registryData.getValue()==null || registryData.getValue().trim().length()==0 || registryData.getValue().trim().length()>255) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[0~255]");
+            if (registryData.getValue()==null || registryData.getValue().trim().length()<4 || registryData.getValue().trim().length()>255) {
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry Value Invalid[4~255]");
             }
         }
 
@@ -246,18 +246,18 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     public ReturnT<Map<String, List<String>>> discovery(String biz, String env, List<String> keys) {
 
         // valid
-        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]");
+        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[0~255]");
+        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[4~255]");
         }
         if (keys==null || keys.size()==0) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid.");
         }
         for (String key: keys) {
-            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
-                return new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[0~255]");
+            if (key==null || key.trim().length()<4 || key.trim().length()>255) {
+                return new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[4~255]");
             }
         }
 
@@ -287,12 +287,12 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         DeferredResult deferredResult = new DeferredResult(registryBeatTime * 3 * 1000L, new ReturnT<>(ReturnT.FAIL_CODE, "Monitor timeout."));
 
         // valid
-        if (biz==null || biz.trim().length()==0 || biz.trim().length()>255) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[0~255]"));
+        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]"));
             return deferredResult;
         }
-        if (env==null || env.trim().length()==0 || env.trim().length()>255) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[0~255]"));
+        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[4~255]"));
             return deferredResult;
         }
         if (keys==null || keys.size()==0) {
@@ -300,8 +300,8 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
             return deferredResult;
         }
         for (String key: keys) {
-            if (key==null || key.trim().length()==0 || key.trim().length()>255) {
-                deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[0~255]"));
+            if (key==null || key.trim().length()<4 || key.trim().length()>255) {
+                deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Key Invalid[4~255]"));
                 return deferredResult;
             }
         }
