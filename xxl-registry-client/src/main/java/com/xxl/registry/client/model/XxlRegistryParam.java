@@ -33,6 +33,7 @@ public class XxlRegistryParam {
         this.value = value;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,6 +46,14 @@ public class XxlRegistryParam {
     @Override
     public int hashCode() {
         return Objects.hash(key, value);
+    }
+
+    @Override
+    public String toString() {
+        return "XxlRegistryParam{" +
+                "key='" + key + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 
 }

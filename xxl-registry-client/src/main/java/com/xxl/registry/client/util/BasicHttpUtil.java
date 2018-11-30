@@ -58,16 +58,20 @@ public class BasicHttpUtil {
             outwritestream.flush();
             outwritestream.close();*/
 
+            // valid StatusCode
             int statusCode = connection.getResponseCode();
-            if (statusCode == 200) {
-                bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder result = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    result.append(line);
-                }
-                return result.toString();
+            if (statusCode != 200) {
+                throw new RuntimeException("http request StatusCode("+ statusCode +") invalid. for url : " + url);
             }
+
+            // result
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result.append(line);
+            }
+            return result.toString();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -115,16 +119,21 @@ public class BasicHttpUtil {
             connection.connect();
 
             //Map<String, List<String>> map = connection.getHeaderFields();
+
+            // valid StatusCode
             int statusCode = connection.getResponseCode();
-            if (statusCode == 200) {
-                bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder result = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    result.append(line);
-                }
-                return result.toString();
+            if (statusCode != 200) {
+                throw new RuntimeException("Http Request StatusCode("+ statusCode +") Invalid.");
             }
+
+            // result
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result.append(line);
+            }
+            return result.toString();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
