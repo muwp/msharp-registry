@@ -15,6 +15,7 @@ public class Test {
         result.put("code", 200);
         result.put("msg", "success");
         result.put("arr", Arrays.asList("111","222"));
+        result.put("float", 1.11f);
 
         System.out.println(JacksonUtil.writeValueAsString(Integer.valueOf(111)));
         System.out.println(JacksonUtil.writeValueAsString(String.valueOf("111")));

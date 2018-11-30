@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.util.*;
 
+/**
+ * @author xuxueli 2018-11-30
+ */
 public class BasicJsonwriter {
     private static Logger logger = LoggerFactory.getLogger(BasicJsonwriter.class);
 
@@ -75,9 +78,12 @@ public class BasicJsonwriter {
 
             json.append(STR_SLASH).append(value.toString()).append(STR_SLASH);
         } else if (value instanceof Integer
+                || value instanceof Long
+                || value instanceof Short
                 || value instanceof Boolean
                 || value instanceof Double
-                || value instanceof Long) {
+                || value instanceof Float
+                ) {
             // number
 
             json.append(value);
@@ -164,6 +170,7 @@ public class BasicJsonwriter {
         result.put("code", 200);
         result.put("msg", "success");
         result.put("arr", Arrays.asList("111","222"));
+        result.put("float", 1.11f);
 
         System.out.println(BasicJsonwriter.write(Integer.valueOf(111)));
         System.out.println(BasicJsonwriter.write(String.valueOf("111")));
