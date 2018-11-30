@@ -137,17 +137,63 @@ docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-re
 
 ### 2.4 接入 "服务注册中心" 示例
 
+- Java语言项目接入：
+
+Java语言项目可以借助原生提供的客户端JAR包快速接入使用，建议参考 XXL-RPC 提供的实例项目；
+
 XXL-RPC默认将 "XXL-REGISTRY" 作为原生注册中心。可前往 XXL-RPC (https://github.com/xuxueli/xxl-rpc ) 示例项目参考如何接入 "XXL-REGISTRY" 。
 
-其他服务框架，如dubbo、springboot等，接入 "XXL-REGISTRY" 的示例项目，后续将会整理推出。
+客户端JAR包内提供了与注册中心交互的API服务，示例代码如下：
+
+```
+// 注册中心客户端
+XxlRegistryClient registryClient = new XxlRegistryClient("http://localhost:8080/xxl-registry-admin/", "xxl-rpc", "test");
+
+// 服务注册 & 续约：
+List<XxlRegistryParam> registryParamList = new ArrayList<>();
+registryParamList.add(new XxlRegistryParam("service01", "address01"));
+registryParamList.add(new XxlRegistryParam("service02", "address02"));
+
+registryClient.registry(registryParamList);
+
+
+// 服务摘除：
+Set<String> keys = new TreeSet<>();
+keys.add("service01");
+keys.add("service02");
+
+registryClient.remove(registryParamList)
+
+
+// 服务发现：
+Set<String> keys = new TreeSet<>();
+keys.add("service01");
+keys.add("service02");
+
+Map<String, TreeSet<String>> serviceData = registryClient.discovery(keys)
+
+
+// 服务监控：
+Set<String> keys = new TreeSet<>();
+keys.add("service01");
+keys.add("service02");
+
+registryClient.monitor(keys);
+
+```
+
+其他Java服务框架，如dubbo、springboot等，接入 "XXL-REGISTRY" 的示例项目，后续将会整理推出。
+
+- 非Java语言项目接入：
+
+非Java语言项目，可以借助提供的 RESTFUL 格式API接口实现服务注册与发现功能。
+
+参考章节 "三、注册中心API服务"
 
 
 ## 三、注册中心API服务（RESTFUL 格式）
-服务注册中心提供通过提供 RESTFUL 格式API接口，提供服务注册与发现功能。
+服务注册中心为支持服务注册与发现功能，提供的 RESTFUL 格式API接口如下：
 
-Java语言项目可以借助原生提供的JAR包快速接入使用，建议参考 XXL-RPC 提供的实例项目；
-
-非Java语言，可以通过如下 RESTFUL 格式API接口接入使用；
 
 #### 3.1、服务注册 & 续约 API
 说明：新服务注册上线1s内广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；

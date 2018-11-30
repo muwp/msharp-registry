@@ -38,6 +38,7 @@ public class XxlRegistryClientTest {
         // discovery test
         System.out.println("discovery:" + registryClient.discovery(keys));
 
+        // monitor test
         TimeUnit.SECONDS.sleep(10);
         System.out.println("monitor...");
         registryClient.monitor(keys);
