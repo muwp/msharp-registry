@@ -31,11 +31,12 @@
 
 ## Introduction
 
-XXL-REGISTRY is a lightweight distributed service registry and discovery platform.
-Provides service registration and discovery capabilities in distributed systems.
+XXL-REGISTRY is a lightweight distributed service registry and discovery platform.Provides service registration and discovery capabilities in distributed systems.
+Features such as "lightweight, second dynamic registration, multi-environment, cross-language, cross-room deployment".
 Now, it's already open source, real "out-of-the-box".
 
-XXL-REGISTRY 是一个轻量级分布式服务注册中心，在分布式系统中提供服务注册与发现功能。现已开放源代码，开箱即用。
+XXL-REGISTRY 是一个轻量级分布式服务注册中心，在分布式系统中提供服务注册与发现功能。
+拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
 
 
 ## Documentation
@@ -53,9 +54,10 @@ XXL-REGISTRY 是一个轻量级分布式服务注册中心，在分布式系统�
     - 正常状态=支持动态注册、发现，服务注册信息实时更新；
     - 锁定状态=人工维护注册信息，服务注册信息固定不变；
     - 禁用状态=禁止使用，服务注册信息固定为空；
-- 7、跨语言：注册中心提供HTTP接口供客户端实用，语言无关，通用性更强；
+- 7、跨语言：注册中心提供HTTP接口（RESTFUL 格式）供客户端实用，语言无关，通用性更强；
 - 8、兼容性：项目立项之初是为XXL-RPC量身设计，但是不限于XXL-RPC使用。兼容支持任何服务框架服务注册实用，如dubbo、springboot等；
-- 9、容器化：提供官方docker镜像，并实时更新推送dockerhub，进一步实现 "服务注册中心" 产品开箱即用；
+- 9、跨机房：得益于服务注册中心集群关系对等特性，集群各节点提供幂等的配置服务；因此，异地跨机房部署时，只需要请求本机房服务注册中心即可，实现异地多活；
+- 10、容器化：提供官方docker镜像，并实时更新推送dockerhub，进一步实现 "服务注册中心" 产品开箱即用；
 
 
 ## Communication

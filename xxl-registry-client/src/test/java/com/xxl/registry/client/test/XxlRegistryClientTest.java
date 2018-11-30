@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author xuxueli 2018-11-30
+ */
 public class XxlRegistryClientTest {
 
     public static void main(String[] args) throws InterruptedException {
