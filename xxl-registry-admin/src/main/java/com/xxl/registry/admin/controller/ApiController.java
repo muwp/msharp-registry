@@ -28,14 +28,20 @@ public class ApiController {
 
 
     /**
-     * 服务注册 & 续约
+     * 服务注册 & 续约 API
      *
-     * 说明：新服务上线1s广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；
+     * 说明：新服务注册上线1s内广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；
      *
-     *  [{
-     *      "key" : "xxx",
-     *      "value" : "xxx"
-     *  }]
+     * 请求参数：
+     *
+     *  1、业务标识：biz，RESTFUL路径参数
+     *  2、环境标识：env，RESTFUL路径参数
+     *  3、服务注册信息：通过post body传输，JSON格式数据，如下：
+     *
+     *      [{
+     *          "service01" : "address01",
+     *          "service02" : "address02"
+     *      }]
      *
      * @param biz
      * @param env
@@ -59,14 +65,20 @@ public class ApiController {
     }
 
     /**
-     * 服务摘除
+     * 服务摘除 API
      *
-     * 说明：服务下线1s广播通知接入方；
+     * 说明：新服务摘除下线1s内广播通知接入方；
      *
-     *  [{
-     *      "key" : "xxx",
-     *      "value" : "xxx"
-     *  }]
+     * 请求参数：
+     *
+     *  1、业务标识：biz，RESTFUL路径参数
+     *  2、环境标识：env，RESTFUL路径参数
+     *  3、服务注册信息：通过post body传输，JSON格式数据，如下：
+     *
+     *      [{
+     *          "service01" : "address01",
+     *          "service02" : "address02"
+     *      }]
      *
      * @param biz
      * @param env
@@ -91,9 +103,20 @@ public class ApiController {
 
 
     /**
-     * 服务发现
+     * 服务发现 API
      *
      * 说明：查询在线服务地址列表；
+     *
+     * 请求参数：
+     *
+     *  1、业务标识：biz，RESTFUL路径参数
+     *  2、环境标识：env，RESTFUL路径参数
+     *  3、服务注册Key列表：通过post body传输，JSON格式数据，如下：
+     *
+     *      [
+     *          "service01",
+     *          "service02"
+     *      ]
      *
      * @param biz
      * @param env
@@ -113,9 +136,20 @@ public class ApiController {
     }
 
     /**
-     * 服务监控
+     * 服务监控 API
      *
      * 说明：long-polling 接口，主动阻塞一段时间（三倍于注册中心心跳时间）；直至阻塞超时或服务注册信息变动时响应；
+     *
+     * 请求参数：
+     *
+     *  1、业务标识：biz，RESTFUL路径参数
+     *  2、环境标识：env，RESTFUL路径参数
+     *  3、服务注册Key列表：通过post body传输，JSON格式数据，如下：
+     *
+     *      [
+     *          "service01",
+     *          "service02"
+     *      ]
      *
      * @param biz
      * @param env

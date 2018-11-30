@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
-	<description>A high performance, distributed RPC framework.</description>
+	<description>XXL-REGISTRY, A lightweight distributed service registry and discovery platform.</description>
 	<url>http://www.xuxueli.com/</url>
 
 	<modules>

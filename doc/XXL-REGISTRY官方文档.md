@@ -133,62 +133,91 @@ docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-registry-admin  -d xuxu
 docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-registry?Unicode=true&characterEncoding=UTF-8" -p 8080:8080 -v /tmp:/data/applogs --name xxl-registry-admin  -d xuxueli/xxl-registry-admin
 ```
 
+### 2.4 接入 "服务注册中心" 示例
+
+XXL-RPC默认将 "XXL-REGISTRY" 作为原生注册中心。可前往 XXL-RPC (https://github.com/xuxueli/xxl-rpc ) 示例项目参考如何接入 "XXL-REGISTRY" 。
+
+其他服务框架，如dubbo、springboot等，接入 "XXL-REGISTRY" 的示例项目，后续将会整理推出。
 
 
-## 四、系统设计
+## 三、系统设计
 
-### 4.1 系统架构图
+### 3.1 系统架构图
 ![输入图片说明](https://raw.githubusercontent.com/xuxueli/xxl-registry/master/doc/images/img_02.png "在这里输入图片标题")
 
-### 4.2 核心思想
-提供稳定高性能的RPC远程服务调用功能，简化分布式服务通讯开发。
+### 3.2 原理解析
+XXL-REGISTRY内部通过广播机制，集群节点实时同步服务注册信息，确保一致。客户端借助 long pollong 实时感知服务注册信息，简洁、高效；
 
-### 4.3 角色构成
-- 1、provider：服务提供方；
-- 2、invoker：服务消费方；
-- 3、serializer: 序列化模块；
-- 4、remoting：服务通讯模块；
-- 5、registry：服务注册中心；
-- 6、admin：服务治理、监控中心：管理服务节点信息，统计服务调用次数、QPS和健康情况；（非必选，暂未整理发布...）
+### 3.3 注册中心API服务（RESTFUL 格式）
+
+#### a、服务注册 & 续约 API
+说明：新服务注册上线1s内广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；
+
+```
+地址格式：{服务注册中心跟地址}/registry/{biz}/{env}
+
+请求参数：
+ 1、业务标识：biz，RESTFUL路径参数
+ 2、环境标识：env，RESTFUL路径参数
+ 3、服务注册信息：通过post body传输，JSON格式数据，如下：
+     [{
+         "service01" : "address01",
+         "service02" : "address02"
+     }]
+```
+
+#### b、服务摘除 API
+说明：新服务摘除下线1s内广播通知接入方；
+
+```
+地址格式：{服务注册中心跟地址}/remove/{biz}/{env}
+
+请求参数：
+ 1、业务标识：biz，RESTFUL路径参数
+ 2、环境标识：env，RESTFUL路径参数
+ 3、服务注册信息：通过post body传输，JSON格式数据，如下：
+     [{
+         "service01" : "address01",
+         "service02" : "address02"
+     }]
+```
+
+#### c、服务发现 API
+说明：查询在线服务地址列表；
+
+```
+地址格式：{服务注册中心跟地址}/discovery/{biz}/{env}
+
+请求参数：
+ 1、业务标识：biz，RESTFUL路径参数
+ 2、环境标识：env，RESTFUL路径参数
+ 3、服务注册Key列表：通过post body传输，JSON格式数据，如下：
+     [
+         "service01",ice01" : "address01",
+         "service02"ice02" : "address02"
+     ]
+```
+
+#### d、服务监控 API
+说明：long-polling 接口，主动阻塞一段时间（三倍于注册中心心跳时间）；直至阻塞超时或服务注册信息变动时响应；
+
+```
+地址格式：{服务注册中心跟地址}/monitor/{biz}/{env}
+
+请求参数：
+ 1、业务标识：biz，RESTFUL路径参数
+ 2、环境标识：env，RESTFUL路径参数
+ 3、服务注册Key列表：通过post body传输，JSON格式数据，如下：
+     [
+         "service01",ice01" : "address01",
+         "service02"ice02" : "address02"
+     ]
+```
 
 
-##### 原理    
-“XXL-RPC原生轻量级注册中心”内部通过广播机制，集群节点实时同步服务注册信息，确保一致。客户端借助 long pollong 实时感知服务注册信息，简洁、高效；
 
-“XXL-RPC原生轻量级注册中心”对外提供的API服务：
-- /registry/registry：服务注册API
-    - 说明：接入方向注册中心注册服务使用，接入方需要循环心跳注册，间隔周期与注册中心一致；
-    - 参数：
-        - biz：业务线标识
-        - env：环境标识
-        - keys：批量服务注册key，推荐批量注册
-        - value：服务注册值，通常为服务IP端口地址
-- /registry/remove：服务摘除API
-    - 说明：接入方向注册中心注摘除服务使用，服务停止时触发一次即可，将会立即广播全部节点、并通知各接入方服务下线；
-    - 参数：
-        - biz：业务线标识
-        - env：环境标识
-        - keys：批量服务注册key，推荐批量注册
-        - value：服务注册值，通常为服务IP端口地址
-- /registry/discovery：服务发现API
-    - 说明：接入方发现注册中心服务使用，建议接入方循环请求该接口，用于全量同步服务信息，间隔周期与注册中心一致；该服务只会查询磁盘数据，性能非常高；
-    - 参数：
-        - biz：业务线标识
-        - env：环境标识
-        - keys：批量服务注册key，推荐批量注册
-- /registry/monitor ：服务实时监控API
-    - 说明：接入方监控注册中心服务变动使用，该接口为 long polling 接口，将会阻塞三倍注册中心心跳时间，期间如监控的服务由变动将会立即响应通知客户端；
-    接入方可以结合“服务实时监控API”与“服务发现API”一起实现服务的实时感知。循环请求前者阻塞监控服务变动信息，得到监控响应时主动全量同步一次即可。
-    - 参数：
-        - biz：业务线标识
-        - env：环境标识
-        - keys：批量服务注册key，推荐批量注册
-
-“XXL-RPC原生轻量级注册中心”更易于集群部署、横向扩展，搭建与学习成本更低，推荐采用该方式；
-
-
-## 五、版本更新日志
-### 5.1 版本 v1.1 新特性
+## 四、版本更新日志
+### 4.1 版本 v1.0.0 新特性
 - 1、轻量级：基于DB与磁盘文件，只需要提供一个DB实例即可，无第三方依赖；
 - 2、实时性：借助内部广播机制，新服务上线、下线，可以在1s内推送给客户端；
 - 3、数据同步：注册中心内部10s会全量同步一次磁盘数据，清理无效服务，确保服务数据实时可用；
@@ -203,15 +232,18 @@ docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-re
 - 9、容器化：提供官方docker镜像，并实时更新推送dockerhub，进一步实现 "服务注册中心" 产品开箱即用；
 
 
-## 六、其他
+### TODO
 
-### 6.1 项目贡献
+
+## 五、其他
+
+### 5.1 项目贡献
 欢迎参与项目贡献！比如提交PR修复一个bug，或者新建 [Issue](https://github.com/xuxueli/xxl-registry/issues/) 讨论新特性或者变更。
 
-### 6.2 用户接入登记
+### 5.2 用户接入登记
 更多接入的公司，欢迎在 [登记地址](https://github.com/xuxueli/xxl-registry/issues/1 ) 登记，登记仅仅为了产品推广。
 
-### 6.3 开源协议和版权
+### 5.3 开源协议和版权
 产品开源免费，并且将持续提供免费的社区技术支持。个人或企业内部可自由的接入和使用。
 
 - Licensed under the GNU General Public License (GPL) v3.
