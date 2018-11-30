@@ -14,8 +14,6 @@ public class BasicJsonwriter {
 
     private static final String STR_SLASH = "\"";
     private static final String STR_SLASH_STR = "\":";
-    private static final String STR_SLASH_OBJECT = "\":{";
-    private static final String STR_SLASH_ARRAY = "\":[";
     private static final String STR_COMMA = ",";
     private static final String STR_OBJECT_LEFT = "{";
     private static final String STR_OBJECT_RIGHT = "}";
@@ -30,10 +28,10 @@ public class BasicJsonwriter {
      * @param object
      * @return
      */
-    public String write(Object object) {
+    public static String write(Object object) {
         StringBuilder json = new StringBuilder();
         try {
-            appendObjItem(null, object, json);
+            writeObjItem(null, object, json);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -59,7 +57,7 @@ public class BasicJsonwriter {
      * @param value
      * @param json  "key":value or value
      */
-    private static void appendObjItem(String key, Object value, StringBuilder json) {
+    private static void writeObjItem(String key, Object value, StringBuilder json) {
         if (value == null || STR_VERSION_UID.equals(key) || value instanceof Logger) {
             // pass
             return;
@@ -97,9 +95,10 @@ public class BasicJsonwriter {
             json.append(STR_ARRAY_LEFT);
             if (valueColl.size() > 0) {
                 for (Object obj : valueColl) {
-                    appendObjItem(null, obj, json);
+                    writeObjItem(null, obj, json);
                     json.append(STR_COMMA);
                 }
+                json.delete(json.length() - 1, json.length());
             }
             json.append(STR_ARRAY_RIGHT);
 
@@ -112,7 +111,7 @@ public class BasicJsonwriter {
             if (!valueMap.isEmpty()) {
                 Set<?> keys = valueMap.keySet();
                 for (Object valueMapItemKey : keys) {
-                    appendObjItem(valueMapItemKey.toString(), valueMap.get(valueMapItemKey), json);
+                    writeObjItem(valueMapItemKey.toString(), valueMap.get(valueMapItemKey), json);
                     json.append(STR_COMMA);
                 }
                 json.delete(json.length() - 1, json.length());
@@ -127,28 +126,14 @@ public class BasicJsonwriter {
             Field[] fields = getDeclaredFields(value);
             if (fields.length > 0) {
                 for (Field field : fields) {
-                    Object fieldObj = getObject(field, value);
-
-                    appendObjItem(field.getName(), fieldObj, json);
+                    Object fieldObj = getFieldObject(field, value);
+                    writeObjItem(field.getName(), fieldObj, json);
                     json.append(STR_COMMA);
                 }
                 json.delete(json.length() - 1, json.length());
             }
 
             json.append(STR_OBJECT_RIGHT);
-        }
-    }
-
-
-    private static synchronized Object getObject(Field field, Object obj) {
-        try {
-            field.setAccessible(true);
-            return field.get(obj);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        } finally {
-            field.setAccessible(false);
         }
     }
 
@@ -162,14 +147,27 @@ public class BasicJsonwriter {
         return fields;
     }
 
+    private static synchronized Object getFieldObject(Field field, Object obj) {
+        try {
+            field.setAccessible(true);
+            return field.get(obj);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        } finally {
+            field.setAccessible(false);
+        }
+    }
 
     public static void main(String[] args) {
         Map<String, Object> result = new HashMap<>();
         result.put("code", 200);
         result.put("msg", "success");
+        result.put("arr", Arrays.asList("111","222"));
 
-        String json = new BasicJsonwriter().write(result);
-        System.out.println(json);
+        System.out.println(BasicJsonwriter.write(Integer.valueOf(111)));
+        System.out.println(BasicJsonwriter.write(String.valueOf("111")));
+        System.out.println(BasicJsonwriter.write(result));
     }
 
 }
