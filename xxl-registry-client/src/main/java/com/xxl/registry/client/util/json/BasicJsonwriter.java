@@ -1,4 +1,4 @@
-package com.xxl.registry.client.util;
+package com.xxl.registry.client.util.json;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class BasicJsonwriter {
      * @param object
      * @return
      */
-    public static String write(Object object) {
+    public String toJson(Object object) {
         StringBuilder json = new StringBuilder();
         try {
             writeObjItem(null, object, json);
@@ -60,7 +60,7 @@ public class BasicJsonwriter {
      * @param value
      * @param json  "key":value or value
      */
-    private static void writeObjItem(String key, Object value, StringBuilder json) {
+    private void writeObjItem(String key, Object value, StringBuilder json) {
         if (value == null || STR_VERSION_UID.equals(key) || value instanceof Logger) {
             // pass
             return;
@@ -143,7 +143,7 @@ public class BasicJsonwriter {
         }
     }
 
-    private static synchronized Field[] getDeclaredFields(Object obj) {
+    private synchronized Field[] getDeclaredFields(Object obj) {
         String cacheKey = obj.getClass().getName();
         if (cacheFields.containsKey(cacheKey)) {
             return cacheFields.get(cacheKey);
@@ -153,7 +153,7 @@ public class BasicJsonwriter {
         return fields;
     }
 
-    private static synchronized Object getFieldObject(Field field, Object obj) {
+    private synchronized Object getFieldObject(Field field, Object obj) {
         try {
             field.setAccessible(true);
             return field.get(obj);
@@ -165,16 +165,6 @@ public class BasicJsonwriter {
         }
     }
 
-    public static void main(String[] args) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("code", 200);
-        result.put("msg", "success");
-        result.put("arr", Arrays.asList("111","222"));
-        result.put("float", 1.11f);
 
-        System.out.println(BasicJsonwriter.write(Integer.valueOf(111)));
-        System.out.println(BasicJsonwriter.write(String.valueOf("111")));
-        System.out.println(BasicJsonwriter.write(result));
-    }
 
 }
