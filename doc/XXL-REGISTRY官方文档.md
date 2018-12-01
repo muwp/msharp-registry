@@ -129,7 +129,7 @@ docker pull xuxueli/xxl-registry-admin
 docker run -p 8080:8080 -v /tmp:/data/applogs --name xxl-registry-admin  -d xuxueli/xxl-registry-admin
 
 /**
-* 如需自定义 mysql 等配置，可通过 "PARAMS" 指定；
+* 如需自定义 mysql 等配置，可通过 "PARAMS" 指定，参数格式 RAMS="--key=value  --key2=value2" ；
 * 配置项参考文件：/xxl-registry/xxl-registry-admin/src/main/resources/application.properties
 */
 docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-registry?Unicode=true&characterEncoding=UTF-8" -p 8080:8080 -v /tmp:/data/applogs --name xxl-registry-admin  -d xuxueli/xxl-registry-admin
@@ -315,6 +315,7 @@ XXL-REGISTRY内部通过广播机制，集群节点实时同步服务注册信�
 - accesstoken 鉴权；
 - 注册方式附属信息；
 - IP黑名单、白名单；
+- springboot、dubbo 示例；
 
 
 ## 六、其他
