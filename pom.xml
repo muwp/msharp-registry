@@ -11,8 +11,8 @@
 	<url>http://www.xuxueli.com/</url>
 
 	<modules>
-		<module>xxl-registry-admin</module>
 		<module>xxl-registry-client</module>
+		<module>xxl-registry-admin</module>
 	</modules>
 
 	<properties>
