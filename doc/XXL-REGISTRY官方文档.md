@@ -142,7 +142,15 @@ XXL-RPC默认将 "XXL-REGISTRY" 作为原生注册中心。可前往 XXL-RPC (ht
 
 #### b、其他Java语言项目接入示例；
 
-其他Java服务框架，如dubbo、springboot等，接入 "XXL-REGISTRY" 的示例项目，后续将会整理推出。
+客户端maven依赖地址：
+
+```
+<dependency>
+    <groupId>com.xuxueli</groupId>
+    <artifactId>xxl-registry-client</artifactId>
+    <version>${最新稳定版}</version>
+</dependency>
+```
 
 其他Java服务框架，可以借助原生提供的客户端JAR包快速接入使用，建议参考 XXL-RPC 提供的实例项目；
 
@@ -195,6 +203,8 @@ keys.add("service02");
 registryClient.monitor(keys);
 
 ```
+
+其他Java服务框架，如dubbo、springboot等，接入 "XXL-REGISTRY" 的示例项目，后续将会整理推出。
 
 #### c、非Java语言项目接入； 
 非Java语言项目，可以借助提供的 RESTFUL 格式API接口实现服务注册与发现功能。
