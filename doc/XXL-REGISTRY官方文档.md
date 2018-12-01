@@ -137,17 +137,32 @@ docker run -e PARAMS="--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/xxl-re
 
 ### 2.4 接入 "服务注册中心" 示例
 
-- Java语言项目接入：
-
-Java语言项目可以借助原生提供的客户端JAR包快速接入使用，建议参考 XXL-RPC 提供的实例项目；
+#### a、XXL-RPC 接入示例；
 
 XXL-RPC默认将 "XXL-REGISTRY" 作为原生注册中心。可前往 XXL-RPC (https://github.com/xuxueli/xxl-rpc ) 示例项目参考如何接入 "XXL-REGISTRY" 。
 
-客户端JAR包内提供了与注册中心交互的API服务，示例代码如下：
+#### b、其他Java语言项目接入示例；
 
+其他Java服务框架，如dubbo、springboot等，接入 "XXL-REGISTRY" 的示例项目，后续将会整理推出。
+
+其他Java服务框架，可以借助原生提供的客户端JAR包快速接入使用，建议参考 XXL-RPC 提供的实例项目；
+
+客户端JAR包内封装了与注册中心API服务交互的客户端代码，原生提供两个客户端类供实用：
+
+- 基础客户端类（com.xxl.registry.client.XxlRegistryBaseClient）：借助该客户端类，可方便的与注册中心进行注册数据交互，如：服务注册、续约、摘除、发现服务、监控等等；
+- 增强客户端类（com.xxl.registry.client.XxlRegistryClient）：该类为增强版本客户端类，内置客户端服务续约线程和服务注册信息监控线程。
+通过该客户端类注册的服务，底层线程将会主动维护续约操作，通过该客户端类发现的服务信息，底层线程将会主动定期刷新并实时监控变更。
+同时对服务数据进行缓存处理，业务方可放心实用不用担心性能问题。
+
+
+客户端API实用示例代码如下：
 ```
-// 注册中心客户端
+// 注册中心客户端（基础类）
+XxlRegistryBaseClient registryClient = new XxlRegistryBaseClient("http://localhost:8080/xxl-registry-admin/", "xxl-rpc", "test");
+
+// 注册中心客户端（增强类）
 XxlRegistryClient registryClient = new XxlRegistryClient("http://localhost:8080/xxl-registry-admin/", "xxl-rpc", "test");
+ 
 
 // 服务注册 & 续约：
 List<XxlRegistryParam> registryParamList = new ArrayList<>();
@@ -182,10 +197,7 @@ registryClient.monitor(keys);
 
 ```
 
-其他Java服务框架，如dubbo、springboot等，接入 "XXL-REGISTRY" 的示例项目，后续将会整理推出。
-
-- 非Java语言项目接入：
-
+#### c、非Java语言项目接入； 
 非Java语言项目，可以借助提供的 RESTFUL 格式API接口实现服务注册与发现功能。
 
 参考章节 "三、注册中心API服务"

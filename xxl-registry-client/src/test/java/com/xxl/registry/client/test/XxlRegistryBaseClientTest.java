@@ -1,6 +1,6 @@
 package com.xxl.registry.client.test;
 
-import com.xxl.registry.client.XxlRegistryClient;
+import com.xxl.registry.client.XxlRegistryBaseClient;
 import com.xxl.registry.client.model.XxlRegistryParam;
 
 import java.util.ArrayList;
@@ -9,10 +9,13 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-public class XxlRegistryClientTest {
+/**
+ * @author xuxueli 2018-11-30
+ */
+public class XxlRegistryBaseClientTest {
 
     public static void main(String[] args) throws InterruptedException {
-        XxlRegistryClient registryClient = new XxlRegistryClient("http://localhost:8080/xxl-registry-admin/", "xxl-rpc", "test");
+        XxlRegistryBaseClient registryClient = new XxlRegistryBaseClient("http://localhost:8080/xxl-registry-admin/", "xxl-rpc", "test");
 
         // registry test
         List<XxlRegistryParam> registryParamList = new ArrayList<>();
@@ -27,10 +30,18 @@ public class XxlRegistryClientTest {
         keys.add("service02");
         System.out.println("discovery:" + registryClient.discovery(keys));
 
-        while (true) {
-            TimeUnit.SECONDS.sleep(1);
-        }
 
+        // remove test
+        System.out.println("remove:" + registryClient.remove(registryParamList));
+        TimeUnit.SECONDS.sleep(2);
+
+        // discovery test
+        System.out.println("discovery:" + registryClient.discovery(keys));
+
+        // monitor test
+        TimeUnit.SECONDS.sleep(10);
+        System.out.println("monitor...");
+        registryClient.monitor(keys);
     }
 
 }

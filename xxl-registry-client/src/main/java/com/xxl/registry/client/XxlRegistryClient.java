@@ -1,47 +1,116 @@
 package com.xxl.registry.client;
 
 import com.xxl.registry.client.model.XxlRegistryParam;
-import com.xxl.registry.client.util.BasicHttpUtil;
-import com.xxl.registry.client.util.json.BasicJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * registry client, auto heatbeat registry info, auto monitor discovery info
+ *
+ * @author xuxueli 2018-12-01 21:48:05
+ */
 public class XxlRegistryClient {
     private static Logger logger = LoggerFactory.getLogger(XxlRegistryClient.class);
 
 
-    private String adminAddress;
-    private List<String> adminAddressArr;
-    private String biz;
-    private String env;
+    private volatile Set<XxlRegistryParam> registryData = new HashSet<>();
+    private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<>();
+
+    private Thread registryThread;
+    private Thread discoveryThread;
+    private volatile boolean registryThreadStop = false;
+
+
+    private XxlRegistryBaseClient registryBaseClient;
 
     public XxlRegistryClient(String adminAddress, String biz, String env) {
-        this.adminAddress = adminAddress;
-        this.biz = biz;
-        this.env = env;
+        registryBaseClient = new XxlRegistryBaseClient(adminAddress, biz, env);
+        logger.info(">>>>>>>>>>> xxl-registry, XxlRegistryClient init .... [adminAddress={}, biz={}, env={}]", adminAddress, biz, env);
 
-        // valid
-        if (adminAddress==null || adminAddress.trim().length()==0) {
-            throw new RuntimeException("xxl-registry adminAddress empty");
-        }
-        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
-            throw new RuntimeException("xxl-registry biz empty Invalid[4~255]");
-        }
-        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
-            throw new RuntimeException("xxl-registry biz env Invalid[4~255]");
-        }
+        // registry thread
+        registryThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!registryThreadStop) {
+                    try {
+                        if (registryData.size() > 0) {
 
-        // parse
-        adminAddressArr = new ArrayList<>();
-        if (adminAddress.contains(",")) {
-            adminAddressArr.addAll(Arrays.asList(adminAddress.split(",")));
-        } else {
-            adminAddressArr.add(adminAddress);
-        }
+                            boolean ret = registryBaseClient.registry(new ArrayList<XxlRegistryParam>(registryData));
+                            logger.info(">>>>>>>>>>> xxl-registry, refresh registry data {}, registryData = {}", ret?"success":"fail",registryData);
+                        }
+                    } catch (Exception e) {
+                        if (!registryThreadStop) {
+                            logger.error(">>>>>>>>>>> xxl-registry, registryThread error.", e);
+                        }
+                    }
+                    try {
+                        TimeUnit.SECONDS.sleep(10);
+                    } catch (Exception e) {
+                        if (!registryThreadStop) {
+                            logger.error(">>>>>>>>>>> xxl-registry, registryThread error.", e);
+                        }
+                    }
+                }
+                logger.info(">>>>>>>>>>> xxl-registry, registryThread stoped.");
+            }
+        });
+        registryThread.setName("xxl-registry, XxlRegistryClient registryThread.");
+        registryThread.setDaemon(true);
+        registryThread.start();
 
+        // discovery thread
+        discoveryThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!registryThreadStop) {
+                    try {
+                        // long polling, monitor, timeout 30s
+                        if (discoveryData.size() > 0) {
+
+                            registryBaseClient.monitor(discoveryData.keySet());
+
+                            // refreshDiscoveryData, all
+                            refreshDiscoveryData(discoveryData.keySet());
+                        }
+                    } catch (Exception e) {
+                        if (!registryThreadStop) {
+                            logger.error(">>>>>>>>>>> xxl-registry, discoveryThread error.", e);
+                        }
+                    }
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (Exception e) {
+                        if (!registryThreadStop) {
+                            logger.error(">>>>>>>>>>> xxl-registry, discoveryThread error.", e);
+                        }
+                    }
+                }
+                logger.info(">>>>>>>>>>> xxl-registry, discoveryThread stoped.");
+            }
+        });
+        discoveryThread.setName("xxl-registry, XxlRegistryClient discoveryThread.");
+        discoveryThread.setDaemon(true);
+        discoveryThread.start();
+
+        logger.info(">>>>>>>>>>> xxl-registry, XxlRegistryClient init success.");
     }
+
+
+    public void stop() {
+        registryThreadStop = true;
+        if (registryThread != null) {
+            registryThread.interrupt();
+        }
+        if (discoveryThread != null) {
+            discoveryThread.interrupt();
+        }
+    }
+
 
     /**
      * registry
@@ -64,50 +133,16 @@ public class XxlRegistryClient {
             }
         }
 
-        // pathUrl
-        String pathUrl = "/api/registry/"+ biz +"/" + env;
+        // cache
+        registryData.addAll(registryParamList);
 
-        // param
-        String paramsJson = BasicJson.toJson(registryParamList);
+        // remote
+        registryBaseClient.registry(registryParamList);
 
-        // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
-        return respObj!=null?true:false;
+        return true;
     }
 
-    private Map<String, Object> requestAndValid(String pathUrl, String requestBody, int timeout){
 
-        for (String adminAddressUrl: adminAddressArr) {
-            String finalUrl = adminAddressUrl + pathUrl;
-
-            // request
-            String responseData = BasicHttpUtil.postBody(finalUrl, requestBody, timeout);
-            if (responseData == null) {
-                return null;
-            }
-
-            // parse resopnse
-            Map<String, Object> resopnseMap = null;
-            try {
-                resopnseMap = BasicJson.parseMap(responseData);
-            } catch (Exception e) { }
-
-
-            // valid resopnse
-            if (resopnseMap==null
-                    || !resopnseMap.containsKey("code")
-                    || !"200".equals(String.valueOf(resopnseMap.get("code")))
-                    ) {
-                logger.warn("XxlRegistryClient response fail, responseData={}", responseData);
-                return null;
-            }
-
-            return resopnseMap;
-        }
-
-
-        return null;
-    }
 
     /**
      * remove
@@ -129,16 +164,15 @@ public class XxlRegistryClient {
             }
         }
 
-        // pathUrl
-        String pathUrl = "/api/remove/"+ biz +"/" + env;
+        // cache
+        registryData.removeAll(registryParamList);
 
-        // param
-        String paramsJson = BasicJson.toJson(registryParamList);
+        // remote
+        registryBaseClient.remove(registryParamList);
 
-        // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
-        return respObj!=null?true:false;
+        return true;
     }
+
 
     /**
      * discovery
@@ -147,50 +181,73 @@ public class XxlRegistryClient {
      * @return
      */
     public Map<String, TreeSet<String>> discovery(Set<String> keys) {
-        // valid
-        if (keys==null || keys.size()==0) {
-            throw new RuntimeException("xxl-registry keys empty");
+        if (keys==null || keys.size() == 0) {
+            return null;
         }
 
-        // pathUrl
-        String pathUrl = "/api/discovery/"+ biz +"/" + env;
-
-        // param
-        String paramsJson = BasicJson.toJson(keys);
-
-        // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
-
-        // parse
-        if (respObj!=null && respObj.containsKey("data")) {
-            Map<String, TreeSet<String>> data = (Map<String, TreeSet<String>>) respObj.get("data");
-            return data;
+        // find from local
+        Map<String, TreeSet<String>> registryDataTmp = new HashMap<String, TreeSet<String>>();
+        for (String key : keys) {
+            TreeSet<String> valueSet = discoveryData.get(key);
+            if (valueSet != null) {
+                registryDataTmp.put(key, valueSet);
+            }
         }
 
-        return null;
+        // not find all, find from remote
+        if (keys.size() != registryDataTmp.size()) {
+
+            // refreshDiscoveryData, some, first use
+            refreshDiscoveryData(keys);
+
+            // find from local
+            for (String key : keys) {
+                TreeSet<String> valueSet = discoveryData.get(key);
+                if (valueSet != null) {
+                    registryDataTmp.put(key, valueSet);
+                }
+            }
+
+        }
+
+        return registryDataTmp;
     }
 
     /**
-     * discovery
-     *
-     * @param keys
-     * @return
+     * refreshDiscoveryData, some or all
      */
-    public boolean monitor(Set<String> keys) {
-        // valid
-        if (keys==null || keys.size()==0) {
-            throw new RuntimeException("xxl-registry keys empty");
+    private void refreshDiscoveryData(Set<String> keys){
+        if (keys==null || keys.size() == 0) {
+            return;
         }
 
-        // pathUrl
-        String pathUrl = "/api/monitor/"+ biz +"/" + env;
+        // discovery mult
+        Map<String, TreeSet<String>> keyValueListData = registryBaseClient.discovery(keys);
+        if (keyValueListData!=null) {
+            for (String keyItem: keyValueListData.keySet()) {
 
-        // param
-        String paramsJson = BasicJson.toJson(keys);
+                // list > set
+                TreeSet<String> valueSet = new TreeSet<>();
+                valueSet.addAll(keyValueListData.get(keyItem));
 
-        // result
-        Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 60);
-        return respObj!=null?true:false;
+                discoveryData.put(keyItem, valueSet);
+            }
+        }
+        logger.info(">>>>>>>>>>> xxl-registry, refresh discovery data finish, discoveryData = {}", discoveryData);
     }
+
+
+    public TreeSet<String> discovery(String key) {
+        if (key==null) {
+            return null;
+        }
+
+        Map<String, TreeSet<String>> keyValueSetTmp = discovery(new HashSet<String>(Arrays.asList(key)));
+        if (keyValueSetTmp != null) {
+            return keyValueSetTmp.get(key);
+        }
+        return null;
+    }
+
 
 }
