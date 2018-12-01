@@ -6,7 +6,7 @@
     <parent>
         <artifactId>xxl-registry</artifactId>
         <groupId>com.xuxueli</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>xxl-registry-client</artifactId>
     <packaging>jar</packaging>
