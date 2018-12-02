@@ -69,7 +69,7 @@
 	<header class="main-header">
         <a href="${request.contextPath}/" class="logo">
             <span class="logo-mini"><b>XXL</b></span>
-			<span class="logo-lg"><b>服务注册中心</b></span>
+			<span class="logo-lg"><b>锐竞服务注册中心</b></span>
 		</a>
         <nav class="navbar navbar-static-top" role="navigation">
 
@@ -112,12 +112,12 @@
 
 <#macro commonFooter >
 	<footer class="main-footer">
-		Powered by <b>XXL-REGISTRY</b> 1.0.1-SNAPSHOT
+		Powered by <b>MSharp-REGISTRY</b> 1.0.1-SNAPSHOT
 		<div class="pull-right hidden-xs">
-			<strong>Copyright &copy; 2015-${.now?string('yyyy')} &nbsp;
-				<a href="http://www.xuxueli.com/" target="_blank" >xuxueli</a>
+			<strong>Copyright &copy; 2018-${.now?string('yyyy')} &nbsp;
+				<a href="#" target="_blank" >muweiping</a>
 				&nbsp;
-				<a href="https://github.com/xuxueli/xxl-registry" target="_blank" >github</a>
+				<a href="#" target="_blank" >github</a>
 			</strong><!-- All rights reserved. -->
 		</div>
 	</footer>

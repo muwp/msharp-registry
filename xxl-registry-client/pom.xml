@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>xxl-registry</artifactId>
-        <groupId>com.xuxueli</groupId>
+        <groupId>com.ruijing.fundamental</groupId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>xxl-registry-client</artifactId>

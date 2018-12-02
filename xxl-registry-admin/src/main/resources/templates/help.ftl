@@ -11,7 +11,7 @@
 	<@netCommon.commonHeader />
 	<!-- left -->
 	<@netCommon.commonLeft "help" />
-	
+
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
 		<!-- Content Header (Page header) -->
@@ -22,14 +22,14 @@
 		<!-- Main content -->
 		<section class="content">
 			<div class="callout callout-info">
-				<h4>分布式服务注册中心XXL-REGISTRY</h4>
+				<h4>分布式服务注册中心Msharp-REGISTRY</h4>
 				<br>
 				<p>
-                    <a target="_blank" href="https://github.com/xuxueli/xxl-registry">Github</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <iframe src="https://ghbtns.com/github-btn.html?user=xuxueli&repo=xxl-registry&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px" style="margin-bottom:-5px;"></iframe>
-                    <br><br>
-                    <a target="_blank" href="http://www.xuxueli.com/xxl-registry/">官方文档</a>
-                    <br><br>
+                    <#--<a target="_blank" href="https://github.com/xuxueli/xxl-registry">Github</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+                    <#--<iframe src="https://ghbtns.com/github-btn.html?user=xuxueli&repo=xxl-registry&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px" style="margin-bottom:-5px;"></iframe>-->
+                    <#--<br><br>-->
+                    <#--<a target="_blank" href="http://www.xuxueli.com/xxl-registry/">官方文档</a>-->
+                    <#--<br><br>-->
 
 				</p>
 				<p></p>
@@ -38,7 +38,7 @@
 		<!-- /.content -->
 	</div>
 	<!-- /.content-wrapper -->
-	
+
 	<!-- footer -->
 	<@netCommon.commonFooter />
 </div>
