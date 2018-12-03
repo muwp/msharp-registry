@@ -165,26 +165,26 @@ XXL-RPC默认将 "XXL-REGISTRY" 作为原生注册中心。可前往 XXL-RPC (ht
 客户端API实用示例代码如下：
 ```
 // 注册中心客户端（基础类）
-XxlRegistryBaseClient registryClient = new XxlRegistryBaseClient("http://localhost:8080/xxl-registry-admin/", "xxl-rpc", "test");
+XxlRegistryBaseClient registryClient = new XxlRegistryBaseClient("http://localhost:8080/xxl-registry-admin/", null, "xxl-rpc", "test");
 
 // 注册中心客户端（增强类）
-XxlRegistryClient registryClient = new XxlRegistryClient("http://localhost:8080/xxl-registry-admin/", "xxl-rpc", "test");
+XxlRegistryClient registryClient = new XxlRegistryClient("http://localhost:8080/xxl-registry-admin/", null, "xxl-rpc", "test");
  
 
 // 服务注册 & 续约：
-List<XxlRegistryParam> registryParamList = new ArrayList<>();
-registryParamList.add(new XxlRegistryParam("service01", "address01"));
-registryParamList.add(new XxlRegistryParam("service02", "address02"));
+List<XxlRegistryDataParamVO> registryDataList = new ArrayList<>();
+registryDataList.add(new XxlRegistryDataParamVO("service01", "address01"));
+registryDataList.add(new XxlRegistryDataParamVO("service02", "address02"));
 
-registryClient.registry(registryParamList);
+registryClient.registry(registryDataList);
 
 
 // 服务摘除：
-Set<String> keys = new TreeSet<>();
-keys.add("service01");
-keys.add("service02");
+List<XxlRegistryDataParamVO> registryDataList = new ArrayList<>();
+registryDataList.add(new XxlRegistryDataParamVO("service01", "address01"));
+registryDataList.add(new XxlRegistryDataParamVO("service02", "address02"));
 
-registryClient.remove(registryParamList)
+registryClient.remove(registryDataList);
 
 
 // 服务发现：
@@ -192,7 +192,7 @@ Set<String> keys = new TreeSet<>();
 keys.add("service01");
 keys.add("service02");
 
-Map<String, TreeSet<String>> serviceData = registryClient.discovery(keys)
+Map<String, TreeSet<String>> serviceData = registryClient.discovery(keys);
 
 
 // 服务监控：
@@ -220,64 +220,104 @@ registryClient.monitor(keys);
 说明：新服务注册上线1s内广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；
 
 ```
-地址格式：{服务注册中心跟地址}/registry/{biz}/{env}
+地址格式：{服务注册中心跟地址}/registry
 
-请求参数：
- 1、业务标识：biz，RESTFUL路径参数
- 2、环境标识：env，RESTFUL路径参数
- 3、服务注册信息：通过post body传输，JSON格式数据，如下：
-     [{
-         "service01" : "address01",
-         "service02" : "address02"
-     }]
+请求参数说明：
+ 1、accessToken：请求令牌；
+ 2、biz：业务标识
+ 2、env：环境标识
+ 3、registryDataList：服务注册信息
+
+请求数据格式如下，放置在 RequestBody 中，JSON格式：
+ 
+    {
+        "accessToken" : "xx",
+        "biz" : "xx",
+        "env" : "xx",
+        "registryDataList" : [{
+            "service01" : "address01",
+            "service02" : "address02"
+        }]
+    }
+    
 ```
 
 #### 3.2、服务摘除 API
 说明：新服务摘除下线1s内广播通知接入方；
 
 ```
-地址格式：{服务注册中心跟地址}/remove/{biz}/{env}
+地址格式：{服务注册中心跟地址}/remove
 
-请求参数：
- 1、业务标识：biz，RESTFUL路径参数
- 2、环境标识：env，RESTFUL路径参数
- 3、服务注册信息：通过post body传输，JSON格式数据，如下：
-     [{
-         "service01" : "address01",
-         "service02" : "address02"
-     }]
+请求参数说明：
+ 1、accessToken：请求令牌；
+ 2、biz：业务标识
+ 2、env：环境标识
+ 3、registryDataList：服务注册信息
+
+请求数据格式如下，放置在 RequestBody 中，JSON格式：
+ 
+    {
+        "accessToken" : "xx",
+        "biz" : "xx",
+        "env" : "xx",
+        "registryDataList" : [{
+            "service01" : "address01",
+            "service02" : "address02"
+        }]
+    }
+
 ```
 
 #### 3.3、服务发现 API
 说明：查询在线服务地址列表；
 
 ```
-地址格式：{服务注册中心跟地址}/discovery/{biz}/{env}
+地址格式：{服务注册中心跟地址}/discovery
 
-请求参数：
- 1、业务标识：biz，RESTFUL路径参数
- 2、环境标识：env，RESTFUL路径参数
- 3、服务注册Key列表：通过post body传输，JSON格式数据，如下：
-     [
-         "service01",ice01" : "address01",
-         "service02"ice02" : "address02"
-     ]
+请求参数说明：
+ 1、accessToken：请求令牌；
+ 2、biz：业务标识
+ 2、env：环境标识
+ 3、keys：服务注册Key列表
+ 
+请求数据格式如下，放置在 RequestBody 中，JSON格式：
+ 
+    {
+        "accessToken" : "xx",
+        "biz" : "xx",
+        "env" : "xx",
+        "keys" : [
+            "service01",
+            "service02"
+        ]
+    }
+
 ```
 
 #### 3.4、服务监控 API
 说明：long-polling 接口，主动阻塞一段时间（三倍于注册中心心跳时间）；直至阻塞超时或服务注册信息变动时响应；
 
 ```
-地址格式：{服务注册中心跟地址}/monitor/{biz}/{env}
+地址格式：{服务注册中心跟地址}/monitor
 
-请求参数：
- 1、业务标识：biz，RESTFUL路径参数
- 2、环境标识：env，RESTFUL路径参数
- 3、服务注册Key列表：通过post body传输，JSON格式数据，如下：
-     [
-         "service01",ice01" : "address01",
-         "service02"ice02" : "address02"
-     ]
+请求参数说明：
+ 1、accessToken：请求令牌；
+ 2、biz：业务标识
+ 2、env：环境标识
+ 3、keys：服务注册Key列表
+ 
+请求数据格式如下，放置在 RequestBody 中，JSON格式：
+ 
+    {
+        "accessToken" : "xx",
+        "biz" : "xx",
+        "env" : "xx",
+        "keys" : [
+            "service01",
+            "service02"
+        ]
+    }
+    
 ```
 
 
@@ -321,15 +361,16 @@ XXL-REGISTRY内部通过广播机制，集群节点实时同步服务注册信�
 - 11、long polling 超时时间优化；服务端默认 30s 超时限制；客户端默认 60s 阻塞登台；二者以较小者为准，建议客户端大于服务端。
 
 ### 5.2 版本 v1.0.1 Release Notes[迭代中]
+- 1、访问令牌（accessToken）：为提升系统安全性，注册中心和客户端进行安全性校验，双方AccessToken匹配才允许通讯；
+- 2、底层通讯参数统一：请求参数统一由 postbody 发送接收，数据格式见公共消息体 "XxlRegistryParamVO"，内部包含 accessToken、biz、env 等属性；
 
 ### TODO
-- accesstoken 安全鉴权；
 - 注册方式附属信息；
 - IP黑名单、白名单；
 - springboot、dubbo 示例；
 - 服务注册，支持节点权重配置；
 - 注册中心，线程起始时间同步；
-- 请求参数由post body统一接收全部参数，新增 registryparam 属性作为公共消息体，包含accecctoken、biz、env、registrydata等等；
+
 
 
 ## 六、其他
