@@ -151,7 +151,7 @@ public class XxlRegistryBaseClient {
      * @param keys
      * @return
      */
-    public Map<String, TreeSet<String>> discovery(Set<String> keys) {
+    public Map<String, List<String>> discovery(Set<String> keys) {
         // valid
         if (keys==null || keys.size()==0) {
             throw new RuntimeException("xxl-registry keys empty");
@@ -168,7 +168,7 @@ public class XxlRegistryBaseClient {
 
         // parse
         if (respObj!=null && respObj.containsKey("data")) {
-            Map<String, TreeSet<String>> data = (Map<String, TreeSet<String>>) respObj.get("data");
+            Map<String, List<String>> data = (Map<String, List<String>>) respObj.get("data");
             return data;
         }
 
