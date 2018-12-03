@@ -329,6 +329,7 @@ XXL-REGISTRY内部通过广播机制，集群节点实时同步服务注册信�
 - springboot、dubbo 示例；
 - 服务注册，支持节点权重配置；
 - 注册中心，线程起始时间同步；
+- 请求参数由post body统一接收全部参数，新增 registryparam 属性作为公共消息体，包含accecctoken、biz、env、registrydata等等；
 
 
 ## 六、其他
