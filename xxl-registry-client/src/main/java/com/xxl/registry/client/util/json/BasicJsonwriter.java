@@ -59,12 +59,13 @@ public class BasicJsonwriter {
      * @param json  "key":value or value
      */
     private void writeObjItem(String key, Object value, StringBuilder json) {
-        if ("serialVersionUID".equals(key)
+
+        /*if ("serialVersionUID".equals(key)
                 || value instanceof Logger) {
             // pass
 
             return;
-        }
+        }*/
 
         // "key:"
         if (key != null) {
