@@ -19,7 +19,8 @@ public class XxlRegistryClient {
 
 
     private volatile Set<XxlRegistryDataParamVO> registryData = new HashSet<>();
-    private volatile ConcurrentMap<String, TreeSet<String>> discoveryData = new ConcurrentHashMap<>();
+    private volatile ConcurrentMap<String, List<String>> discoveryData = new ConcurrentHashMap<>();
+
 
     private Thread registryThread;
     private Thread discoveryThread;
@@ -180,15 +181,15 @@ public class XxlRegistryClient {
      * @param keys
      * @return
      */
-    public Map<String, TreeSet<String>> discovery(Set<String> keys) {
+    public Map<String, List<String>> discovery(final Set<String> keys) {
         if (keys==null || keys.size() == 0) {
             return null;
         }
 
         // find from local
-        Map<String, TreeSet<String>> registryDataTmp = new HashMap<String, TreeSet<String>>();
+        Map<String, List<String>> registryDataTmp = new HashMap<String, List<String>>();
         for (String key : keys) {
-            TreeSet<String> valueSet = discoveryData.get(key);
+            List<String> valueSet = discoveryData.get(key);
             if (valueSet != null) {
                 registryDataTmp.put(key, valueSet);
             }
@@ -202,7 +203,7 @@ public class XxlRegistryClient {
 
             // find from local
             for (String key : keys) {
-                TreeSet<String> valueSet = discoveryData.get(key);
+                List<String> valueSet = discoveryData.get(key);
                 if (valueSet != null) {
                     registryDataTmp.put(key, valueSet);
                 }
@@ -222,12 +223,12 @@ public class XxlRegistryClient {
         }
 
         // discovery mult
-        Map<String, TreeSet<String>> keyValueListData = registryBaseClient.discovery(keys);
+        Map<String, List<String>> keyValueListData = registryBaseClient.discovery(keys);
         if (keyValueListData!=null) {
             for (String keyItem: keyValueListData.keySet()) {
 
                 // list > set
-                TreeSet<String> valueSet = new TreeSet<>();
+                List<String> valueSet = new ArrayList<>();
                 valueSet.addAll(keyValueListData.get(keyItem));
 
                 discoveryData.put(keyItem, valueSet);
@@ -237,12 +238,12 @@ public class XxlRegistryClient {
     }
 
 
-    public TreeSet<String> discovery(String key) {
+    public List<String> discovery(String key) {
         if (key==null) {
             return null;
         }
 
-        Map<String, TreeSet<String>> keyValueSetTmp = discovery(new HashSet<String>(Arrays.asList(key)));
+        Map<String, List<String>> keyValueSetTmp = discovery(new HashSet<String>(Arrays.asList(key)));
         if (keyValueSetTmp != null) {
             return keyValueSetTmp.get(key);
         }
