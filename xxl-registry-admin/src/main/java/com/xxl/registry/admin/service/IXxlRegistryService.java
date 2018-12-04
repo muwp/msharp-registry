@@ -26,21 +26,21 @@ public interface IXxlRegistryService {
     /**
      * refresh registry-value, check update and broacase
      */
-    ReturnT<String> registry(String biz, String env, List<XxlRegistryData> registryDataList);
+    ReturnT<String> registry(String accessToken, String biz, String env, List<XxlRegistryData> registryDataList);
 
     /**
      * remove registry-value, check update and broacase
      */
-    ReturnT<String> remove(String biz, String env, List<XxlRegistryData> registryDataList);
+    ReturnT<String> remove(String accessToken, String biz, String env, List<XxlRegistryData> registryDataList);
 
     /**
      * discovery registry-data, read file
      */
-    ReturnT<Map<String, List<String>>> discovery(String biz, String env, List<String> keys);
+    ReturnT<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys);
 
     /**
      * monitor update
      */
-    DeferredResult<ReturnT<String>> monitor(String biz, String env, List<String> keys);
+    DeferredResult<ReturnT<String>> monitor(String accessToken, String biz, String env, List<String> keys);
 
 }

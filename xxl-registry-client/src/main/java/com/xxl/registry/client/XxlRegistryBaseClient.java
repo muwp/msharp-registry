@@ -1,6 +1,7 @@
 package com.xxl.registry.client;
 
-import com.xxl.registry.client.model.XxlRegistryParam;
+import com.xxl.registry.client.model.XxlRegistryDataParamVO;
+import com.xxl.registry.client.model.XxlRegistryParamVO;
 import com.xxl.registry.client.util.BasicHttpUtil;
 import com.xxl.registry.client.util.json.BasicJson;
 import org.slf4j.Logger;
@@ -18,12 +19,16 @@ public class XxlRegistryBaseClient {
 
 
     private String adminAddress;
-    private List<String> adminAddressArr;
+    private String accessToken;
     private String biz;
     private String env;
 
-    public XxlRegistryBaseClient(String adminAddress, String biz, String env) {
+    private List<String> adminAddressArr;
+
+
+    public XxlRegistryBaseClient(String adminAddress, String accessToken, String biz, String env) {
         this.adminAddress = adminAddress;
+        this.accessToken = accessToken;
         this.biz = biz;
         this.env = env;
 
@@ -51,29 +56,35 @@ public class XxlRegistryBaseClient {
     /**
      * registry
      *
-     * @param registryParamList
+     * @param registryDataList
      * @return
      */
-    public boolean registry(List<XxlRegistryParam> registryParamList){
+    public boolean registry(List<XxlRegistryDataParamVO> registryDataList){
 
         // valid
-        if (registryParamList==null || registryParamList.size()==0) {
-            throw new RuntimeException("xxl-registry registryParamList empty");
+        if (registryDataList==null || registryDataList.size()==0) {
+            throw new RuntimeException("xxl-registry registryDataList empty");
         }
-        for (XxlRegistryParam registryParam: registryParamList) {
+        for (XxlRegistryDataParamVO registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
-                throw new RuntimeException("xxl-registry registryParamList#key Invalid[4~255]");
+                throw new RuntimeException("xxl-registry registryDataList#key Invalid[4~255]");
             }
             if (registryParam.getValue()==null || registryParam.getValue().trim().length()<4 || registryParam.getValue().trim().length()>255) {
-                throw new RuntimeException("xxl-registry registryParamList#value Invalid[4~255]");
+                throw new RuntimeException("xxl-registry registryDataList#value Invalid[4~255]");
             }
         }
 
         // pathUrl
-        String pathUrl = "/api/registry/"+ biz +"/" + env;
+        String pathUrl = "/api/registry";
 
         // param
-        String paramsJson = BasicJson.toJson(registryParamList);
+        XxlRegistryParamVO registryParamVO = new XxlRegistryParamVO();
+        registryParamVO.setAccessToken(this.accessToken);
+        registryParamVO.setBiz(this.biz);
+        registryParamVO.setEnv(this.env);
+        registryParamVO.setRegistryDataList(registryDataList);
+
+        String paramsJson = BasicJson.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
@@ -117,28 +128,34 @@ public class XxlRegistryBaseClient {
     /**
      * remove
      *
-     * @param registryParamList
+     * @param registryDataList
      * @return
      */
-    public boolean remove(List<XxlRegistryParam> registryParamList) {
+    public boolean remove(List<XxlRegistryDataParamVO> registryDataList) {
         // valid
-        if (registryParamList==null || registryParamList.size()==0) {
-            throw new RuntimeException("xxl-registry registryParamList empty");
+        if (registryDataList==null || registryDataList.size()==0) {
+            throw new RuntimeException("xxl-registry registryDataList empty");
         }
-        for (XxlRegistryParam registryParam: registryParamList) {
+        for (XxlRegistryDataParamVO registryParam: registryDataList) {
             if (registryParam.getKey()==null || registryParam.getKey().trim().length()<4 || registryParam.getKey().trim().length()>255) {
-                throw new RuntimeException("xxl-registry registryParamList#key Invalid[4~255]");
+                throw new RuntimeException("xxl-registry registryDataList#key Invalid[4~255]");
             }
             if (registryParam.getValue()==null || registryParam.getValue().trim().length()<4 || registryParam.getValue().trim().length()>255) {
-                throw new RuntimeException("xxl-registry registryParamList#value Invalid[4~255]");
+                throw new RuntimeException("xxl-registry registryDataList#value Invalid[4~255]");
             }
         }
 
         // pathUrl
-        String pathUrl = "/api/remove/"+ biz +"/" + env;
+        String pathUrl = "/api/remove";
 
         // param
-        String paramsJson = BasicJson.toJson(registryParamList);
+        XxlRegistryParamVO registryParamVO = new XxlRegistryParamVO();
+        registryParamVO.setAccessToken(this.accessToken);
+        registryParamVO.setBiz(this.biz);
+        registryParamVO.setEnv(this.env);
+        registryParamVO.setRegistryDataList(registryDataList);
+
+        String paramsJson = BasicJson.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
@@ -158,10 +175,16 @@ public class XxlRegistryBaseClient {
         }
 
         // pathUrl
-        String pathUrl = "/api/discovery/"+ biz +"/" + env;
+        String pathUrl = "/api/discovery";
 
         // param
-        String paramsJson = BasicJson.toJson(keys);
+        XxlRegistryParamVO registryParamVO = new XxlRegistryParamVO();
+        registryParamVO.setAccessToken(this.accessToken);
+        registryParamVO.setBiz(this.biz);
+        registryParamVO.setEnv(this.env);
+        registryParamVO.setKeys(new ArrayList<String>(keys));
+
+        String paramsJson = BasicJson.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 5);
@@ -188,10 +211,16 @@ public class XxlRegistryBaseClient {
         }
 
         // pathUrl
-        String pathUrl = "/api/monitor/"+ biz +"/" + env;
+        String pathUrl = "/api/monitor";
 
         // param
-        String paramsJson = BasicJson.toJson(keys);
+        XxlRegistryParamVO registryParamVO = new XxlRegistryParamVO();
+        registryParamVO.setAccessToken(this.accessToken);
+        registryParamVO.setBiz(this.biz);
+        registryParamVO.setEnv(this.env);
+        registryParamVO.setKeys(new ArrayList<String>(keys));
+
+        String paramsJson = BasicJson.toJson(registryParamVO);
 
         // result
         Map<String, Object> respObj = requestAndValid(pathUrl, paramsJson, 60);

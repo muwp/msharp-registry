@@ -42,6 +42,8 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     private String registryDataFilePath;
     @Value("${xxl.registry.beattime}")
     private int registryBeatTime;
+    @Value("${xxl.registry.accessToken}")
+    private String accessToken;
 
 
     @Override
@@ -179,9 +181,12 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     // ------------------------ remote registry ------------------------
 
     @Override
-    public ReturnT<String> registry(String biz, String env, List<XxlRegistryData> registryDataList) {
+    public ReturnT<String> registry(String accessToken, String biz, String env, List<XxlRegistryData> registryDataList) {
 
         // valid
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+        }
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
@@ -211,9 +216,12 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     }
 
     @Override
-    public ReturnT<String> remove(String biz, String env, List<XxlRegistryData> registryDataList) {
+    public ReturnT<String> remove(String accessToken, String biz, String env, List<XxlRegistryData> registryDataList) {
 
         // valid
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+        }
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
@@ -243,9 +251,12 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     }
 
     @Override
-    public ReturnT<Map<String, List<String>>> discovery(String biz, String env, List<String> keys) {
+    public ReturnT<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys) {
 
         // valid
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+        }
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
@@ -281,12 +292,16 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
     }
 
     @Override
-    public DeferredResult<ReturnT<String>> monitor(String biz, String env, List<String> keys) {
+    public DeferredResult<ReturnT<String>> monitor(String accessToken, String biz, String env, List<String> keys) {
 
         // init
         DeferredResult deferredResult = new DeferredResult(30 * 1000L, new ReturnT<>(ReturnT.FAIL_CODE, "Monitor timeout."));
 
         // valid
+        if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid"));
+            return deferredResult;
+        }
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
             deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]"));
             return deferredResult;

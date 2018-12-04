@@ -57,6 +57,12 @@
             <version>${mysql-connector-java.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-registry-client</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
