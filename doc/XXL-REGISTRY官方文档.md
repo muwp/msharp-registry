@@ -235,8 +235,8 @@ registryClient.monitor(keys);
         "biz" : "xx",
         "env" : "xx",
         "registryDataList" : [{
-            "service01" : "address01",
-            "service02" : "address02"
+            "key" : "service01",
+            "value" : "address01"
         }]
     }
     
@@ -261,8 +261,8 @@ registryClient.monitor(keys);
         "biz" : "xx",
         "env" : "xx",
         "registryDataList" : [{
-            "service01" : "address01",
-            "service02" : "address02"
+            "key" : "service01",
+            "value" : "address01"
         }]
     }
 

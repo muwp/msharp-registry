@@ -50,8 +50,8 @@ public class ApiController {
      *         "biz" : "xx",
      *         "env" : "xx",
      *         "registryDataList" : [{
-     *             "service01" : "address01",
-     *             "service02" : "address02"
+     *             "key" : "service01",
+     *             "value" : "address01"
      *         }]
      *     }
      *
@@ -114,8 +114,8 @@ public class ApiController {
      *         "biz" : "xx",
      *         "env" : "xx",
      *         "registryDataList" : [{
-     *             "service01" : "address01",
-     *             "service02" : "address02"
+     *             "key" : "service01",
+     *             "value" : "address01"
      *         }]
      *     }
      *
