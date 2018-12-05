@@ -39,8 +39,8 @@ public class XxlRegistryBaseClient {
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
             throw new RuntimeException("xxl-registry biz empty Invalid[4~255]");
         }
-        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
-            throw new RuntimeException("xxl-registry biz env Invalid[4~255]");
+        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
+            throw new RuntimeException("xxl-registry biz env Invalid[2~255]");
         }
 
         // parse

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class XxlRegistryBaseClientTest {
 
     public static void main(String[] args) throws InterruptedException {
-        XxlRegistryBaseClient registryClient = new XxlRegistryBaseClient("http://localhost:8080/xxl-registry-admin/", null, "xxl-rpc", "test");
+        XxlRegistryBaseClient registryClient = new XxlRegistryBaseClient("http://localhost:8080/xxl-registry-admin/", null, "xxl-rpc", "dev");
 
         // registry test
         List<XxlRegistryDataParamVO> registryDataList = new ArrayList<>();

@@ -96,8 +96,8 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         if (xxlRegistry.getBiz()==null || xxlRegistry.getBiz().trim().length()<4 ||xxlRegistry.getBiz().trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[4~255]");
         }
-        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()<4 || xxlRegistry.getEnv().trim().length()>255 ) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[4~255]");
+        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()<2 || xxlRegistry.getEnv().trim().length()>255 ) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[2~255]");
         }
         if (xxlRegistry.getKey()==null || xxlRegistry.getKey().trim().length()<4 || xxlRegistry.getKey().trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[4~255]");
@@ -143,8 +143,8 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         if (xxlRegistry.getBiz()==null || xxlRegistry.getBiz().trim().length()<4 ||xxlRegistry.getBiz().trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "业务线格式非法[4~255]");
         }
-        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()<4 || xxlRegistry.getEnv().trim().length()>255 ) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[4~255]");
+        if (xxlRegistry.getEnv()==null || xxlRegistry.getEnv().trim().length()<2 || xxlRegistry.getEnv().trim().length()>255 ) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "环境格式非法[2~255]");
         }
         if (xxlRegistry.getKey()==null || xxlRegistry.getKey().trim().length()<4 || xxlRegistry.getKey().trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "注册Key格式非法[4~255]");
@@ -190,8 +190,8 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[4~255]");
+        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[2~255]");
         }
         if (registryDataList==null || registryDataList.size()==0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
@@ -225,8 +225,8 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
         }
-        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[4~255]");
+        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "Env Invalid[2~255]");
         }
         if (registryDataList==null || registryDataList.size()==0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
@@ -257,11 +257,11 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         if (this.accessToken!=null && this.accessToken.trim().length()>0 && !this.accessToken.equals(accessToken)) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
         }
-        if (biz==null || biz.trim().length()<4 || biz.trim().length()>255) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]");
+        if (biz==null || biz.trim().length()<2 || biz.trim().length()>255) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[2~255]");
         }
-        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[4~255]");
+        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[2~255]");
         }
         if (keys==null || keys.size()==0) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid.");
@@ -306,8 +306,8 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
             deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]"));
             return deferredResult;
         }
-        if (env==null || env.trim().length()<4 || env.trim().length()>255) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[4~255]"));
+        if (env==null || env.trim().length()<2 || env.trim().length()>255) {
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[2~255]"));
             return deferredResult;
         }
         if (keys==null || keys.size()==0) {
