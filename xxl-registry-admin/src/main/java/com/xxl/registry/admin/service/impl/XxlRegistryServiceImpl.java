@@ -16,6 +16,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
@@ -52,7 +53,13 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
         // page list
         List<XxlRegistry> list = xxlRegistryDao.pageList(start, length, biz, env, key);
         int list_count = xxlRegistryDao.pageListCount(start, length, biz, env, key);
-
+        if (!CollectionUtils.isEmpty(list)) {
+            for (XxlRegistry registry : list) {
+                if ("".equalsIgnoreCase(registry.getData()) || "[]".equalsIgnoreCase(registry.getData())) {
+                    registry.setStatus(3);
+                }
+            }
+        }
         // package result
         Map<String, Object> maps = new HashMap<String, Object>();
         maps.put("recordsTotal", list_count);		// 总记录数

@@ -108,6 +108,7 @@
                                     <option value="0">正常</option>
                                     <option value="1">锁定</option>
                                     <option value="2">禁用</option>
+                                    <option value="3">已下线</option>
                                 </select>
                             </div>
                         </div>
@@ -158,6 +159,7 @@
                                     <option value="0">正常</option>
                                     <option value="1">锁定</option>
                                     <option value="2">禁用</option>
+                                    <option value="3">已下线</option>
                                 </select>
                             </div>
                         </div>

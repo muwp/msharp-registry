@@ -47,6 +47,8 @@ $(function() {
                                 return '锁定';
                             } else if (data == 2) {
                                 return '禁用';
+                            } else if (data == 3) {
+                                return '已下线';
                             }
 							return data;
 						}
