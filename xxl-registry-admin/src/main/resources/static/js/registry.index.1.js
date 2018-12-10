@@ -1,99 +1,205 @@
 $(function() {
-
-	// init date tables
-	var dataTable = $("#data_list").dataTable({
-		"deferRender": true,
-		"processing" : true, 
-	    "serverSide": true,
-		"ajax": {
-			url: base_url + "/registry/pageList",
-	        data : function ( d ) {
-				var obj = {};
-				obj.start = d.start;
-				obj.length = d.length;
-				obj.biz = $('#biz').val();
-				obj.env = $('#env').val();
-                obj.key = $('#key').val();
-				return obj;
+    /* add in 2018-12-10 by zhengzhogyin start*/
+    var initApp = '';
+    var initEnv = '';
+    //获取cookie
+    var token = $.cookie("XXL_MQ_LOGIN_IDENTITY");
+    if (token){
+        var domain='http://pearl.rjmart.cn/pearl-server';
+        $.ajax({
+            type: "POST",
+            url: domain+"/pearl/app/name/list",
+            data: {token:token},
+            /*不能跨域提交cookie*/
+            xhrFields: {
+                withCredentials: false
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("token",token);
+            },
+            dataType: "json",
+            success: function(data){
+                if(data.code==200){
+                    initApp=data.data[0];
+                    var appList='';
+                    for(var i=0,l=data.data.length;i<l;i++){
+                        if (i == 0){
+                            appList+='<option selected = "selected">'+data.data[i]+'</option>';
+                        } else{
+                            appList+='<option>'+data.data[i]+'</option>';
+                        }
+                    }
+                    $('.appList').append(appList);
+                    $('#modalAppList').append(appList);
+                    getEnv(initApp);
+                }else if(data.code==401){
+                    window.location.href='/msharp-admin/';
+                }
             }
-	    },
-	    "searching": false,
-	    "ordering": false,
-	    //"scrollX": true,	// X轴滚动条，取消自适应
-	    "columns": [
-	                { data: 'id'},
-					{ data: 'biz'},
-            		{ data: 'env'},
-            		{ data: 'key'},
-                    {
-                        data: 'data',
-                        ordering: true,
-                        render : function ( data, type, row ) {
-                            if (data) {
-                                return '<a href="javascript:;" class="showData" _id="'+ row.id +'">查看</spam></a>';
-                            } else {
-                                return '空';
+        });
+
+        //获取环境信息
+        var getEnv=function(initApp){
+            $.ajax({
+                type: "POST",
+                url: domain+"/pearl/env/list",
+                xhrFields: {
+                    withCredentials: false
+                },
+                data: {appkey:initApp},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("token",token);
+                },
+                dataType: "json",
+                success: function(data){
+                    if(data.code==200){
+                        initEnv=data.data[0];
+                        var envList='';
+                        for(var i=0,l=data.data.length;i<l;i++){
+                            if (i == 0){
+                                envList+='<option selected = "selected">'+data.data[i]+'</option>';
+                            }else{
+                                envList+='<option>'+data.data[i]+'</option>';
                             }
                         }
-                    },
-					{ data: 'version'},
-					{
-						data: 'status',
-                        ordering: true,
-						render : function ( data, type, row ) {
-						    if (data == 0) {
-						        return '正常';
-                            } else if (data == 1) {
-                                return '锁定';
-                            } else if (data == 2) {
-                                return '禁用';
-                            }
-							return data;
-						}
-					},
+                        $('.envList').append(envList);
+                        //初始化表格
+                        init();
+                    }else if(data.code==401){
+                        window.location.href='/msharp-admin/';
+                    }
+                }
+            });
+        }
+        //更换appkey获取对应环境
+        $('.appList').change(function(){
+            var _that=$(this);
+            var selectedAppName=_that.find("option:selected").text();
+            $.ajax({
+                type: "POST",
+                url: domain+"/pearl/env/list",
+                data: {appkey:selectedAppName},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("token",token);
+                },
+                dataType: "json",
+                success: function(data){
+                    if(data.code==200){
+                        var envList='';
+                        for(var i=0,l=data.data.length;i<l;i++){
+                            envList+='<option>'+data.data[i]+'</option>';
+                        }
+                        $('.envList').empty().append(envList);
+                    }else if(data.code==401){
+                        window.location.href='/msharp-admin/';
+                    }
+                }
+            });
+        });
+    }
+    /* add in 2018-12-10 by zhengzhogyin end*/
 
-	                { data: 'opt' ,
-	                	"render": function ( data, type, row ) {
-	                		return function(){
 
-	                			// data
-                                tableData['key'+row.id] = row;
+	// init date tables
+    var dataTable = {};
+    function init() {
+       dataTable = $("#data_list").dataTable({
+            "deferRender": true,
+            "processing" : true,
+            "serverSide": true,
+            "ajax": {
+                url: base_url + "/registry/pageList",
+                data : function ( d ) {
+                    var obj = {};
+                    obj.start = d.start;
+                    obj.length = d.length;
+                    obj.biz =$(".appList option:selected").text();
+                    obj.env = $(".envList option:selected").text();
+                    obj.key = $('#key').val();
+                    return obj;
+                }
+            },
+            "searching": false,
+            "ordering": false,
+            //"scrollX": true,	// X轴滚动条，取消自适应
+            "columns": [
+                { data: 'id'},
+                { data: 'biz'},
+                { data: 'env'},
+                { data: 'key'},
+                {
+                    data: 'data',
+                    ordering: true,
+                    render : function ( data, type, row ) {
+                        if (data) {
+                            return '<a href="javascript:;" class="showData" _id="'+ row.id +'">查看</spam></a>';
+                        } else {
+                            return '空';
+                        }
+                    }
+                },
+                { data: 'version'},
+                {
+                    data: 'status',
+                    ordering: true,
+                    render : function ( data, type, row ) {
+                        if (data == 0) {
+                            return '正常';
+                        } else if (data == 1) {
+                            return '锁定';
+                        } else if (data == 2) {
+                            return '禁用';
+                        } else if (data == 3) {
+                            return "已下线";
+                        }
+                        return data;
+                    }
+                },
 
-                                // opt
-	                			var html = '<p id="'+ row.id +'" >'+
-										'<button class="btn btn-info btn-xs registry_update" type="button">编辑</button>  '+
-										'<button class="btn btn-danger btn-xs registry_remove" type="button">删除</button>  '+
-								  		'</p>';
-	                			return html;
-	                		};
-	                	}
-	                }
-	            ],
-		"language" : {
-			"sProcessing" : "处理中...",
-			"sLengthMenu" : "每页 _MENU_ 条记录",
-			"sZeroRecords" : "没有匹配结果",
-			"sInfo" : "第 _PAGE_ 页 ( 总共 _PAGES_ 页 ) 总记录数 _MAX_ ",
-			"sInfoEmpty" : "无记录",
-			"sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
-			"sInfoPostFix" : "",
-			"sSearch" : "搜索:",
-			"sUrl" : "",
-			"sEmptyTable" : "表中数据为空",
-			"sLoadingRecords" : "载入中...",
-			"sInfoThousands" : ",",
-			"oPaginate" : {
-				"sFirst" : "首页",
-				"sPrevious" : "上页",
-				"sNext" : "下页",
-				"sLast" : "末页"
-			},
-			"oAria" : {
-				"sSortAscending" : ": 以升序排列此列",
-				"sSortDescending" : ": 以降序排列此列"
-			}
-		}
-	});
+                { data: 'opt' ,
+                    "render": function ( data, type, row ) {
+                        return function(){
+
+                            // data
+                            tableData['key'+row.id] = row;
+
+                            // opt
+                            var html = '<p id="'+ row.id +'" >'+
+                                '<button class="btn btn-info btn-xs registry_update" type="button">编辑</button>  '+
+                                '<button class="btn btn-danger btn-xs registry_remove" type="button">删除</button>  '+
+                                '</p>';
+                            return html;
+                        };
+                    }
+                }
+            ],
+            "language" : {
+                "sProcessing" : "处理中...",
+                "sLengthMenu" : "每页 _MENU_ 条记录",
+                "sZeroRecords" : "没有匹配结果",
+                "sInfo" : "第 _PAGE_ 页 ( 总共 _PAGES_ 页 ) 总记录数 _MAX_ ",
+                "sInfoEmpty" : "无记录",
+                "sInfoFiltered" : "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix" : "",
+                "sSearch" : "搜索:",
+                "sUrl" : "",
+                "sEmptyTable" : "表中数据为空",
+                "sLoadingRecords" : "载入中...",
+                "sInfoThousands" : ",",
+                "oPaginate" : {
+                    "sFirst" : "首页",
+                    "sPrevious" : "上页",
+                    "sNext" : "下页",
+                    "sLast" : "末页"
+                },
+                "oAria" : {
+                    "sSortAscending" : ": 以升序排列此列",
+                    "sSortDescending" : ": 以降序排列此列"
+                }
+            }
+        });
+    }
+
 
     // table data
     var tableData = {};

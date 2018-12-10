@@ -28,11 +28,21 @@
 	    
 	    	<div class="row">
                 <div class="col-xs-3">
+                    <#-- appkey项目列表 -->
+                    <span>项目</span>
+                    <select class="appList"></select>
+                </div>
+                <#--<div class="col-xs-3">
                     <input type="text" class="form-control" id="biz" autocomplete="on" value="${topic!''}" placeholder="请输入应用(appkey)，精确匹配" >
-                </div>
+                </div>-->
                 <div class="col-xs-3">
-                    <input type="text" class="form-control" id="env" autocomplete="on" value="${topic!''}" placeholder="请输入环境(env)，精确匹配" >
+                    <#-- env环境列表 -->
+                    <span>环境</span>
+                    <select class="envList"></select>
                 </div>
+                <#--<div class="col-xs-3">
+                    <input type="text" class="form-control" id="env" autocomplete="on" value="${topic!''}" placeholder="请输入环境(env)，精确匹配" >
+                </div>-->
                 <div class="col-xs-3">
                     <input type="text" class="form-control" id="key" autocomplete="on" value="${topic!''}" placeholder="请输入服务(serviceName)，精确匹配" >
                 </div>

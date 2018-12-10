@@ -6,6 +6,7 @@ import com.xxl.registry.admin.core.util.CookieUtil;
 import com.xxl.registry.common.env.Environment;
 import com.xxl.registry.common.http.HttpClientHelper;
 import com.xxl.registry.common.util.MD5Utils;
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.net.URLEncoder;
 
 /**
  * 权限拦截
@@ -73,7 +75,8 @@ public class MPermissionInterceptor extends HandlerInterceptorAdapter {
             value = HttpClientHelper.INSTANCE.get(configCenter + "/pearl/user/login?userName=" + username + "&password=" + MD5Utils.md5(password), 10000);
             if (StringUtils.isNotBlank(value)) {
                 RemoteResponse<String> response = gson.fromJson(value, RemoteResponse.class);
-                LOGIN_IDENTITY_TOKEN = response.data;
+                //加上编码防止前端获取cookie中特殊符号为空格
+                LOGIN_IDENTITY_TOKEN = URLEncoder.encode(response.data,String.valueOf(Charsets.toCharset("UTF-8")));
                 if (null != response && response.code == RemoteResponse.SUCCESS_CODE) {
                     CookieUtil.set(httpServletResponse, LOGIN_IDENTITY_KEY, getLoginIdentityToken(), ifRemember);
                     result = true;

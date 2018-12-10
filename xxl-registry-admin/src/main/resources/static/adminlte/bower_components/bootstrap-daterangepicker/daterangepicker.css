@@ -267,3 +267,11 @@
     float: right; }
   .daterangepicker .calendar.left {
     clear: none !important; } }
+/*add by zhengzhongyin in 2018-12-10 start*/
+.appList{
+  height: 34px;
+}
+.envList{
+  height: 34px;
+}
+/*add by zhengzhongyin in 2018-12-10 end*/
