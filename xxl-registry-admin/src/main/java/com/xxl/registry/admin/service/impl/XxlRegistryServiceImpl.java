@@ -525,7 +525,7 @@ public class XxlRegistryServiceImpl implements IXxlRegistryService, Initializing
                         }
 
                         // clean old message;
-                        if (System.currentTimeMillis() % registryBeatTime ==0) {
+                        if ( (System.currentTimeMillis()/1000) % registryBeatTime ==0) {
                             xxlRegistryMessageDao.cleanMessage(registryBeatTime);
                             readedMessageIds.clear();
                         }
