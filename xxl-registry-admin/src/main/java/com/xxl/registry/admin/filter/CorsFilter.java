@@ -23,7 +23,7 @@ import java.io.IOException;
  **/
 @Order(1)
 //重点
-@WebFilter(filterName = "corsFilter", urlPatterns = "/*")
+@WebFilter(filterName = "corsFilter", urlPatterns = "/*",asyncSupported = true)
 public class CorsFilter implements Filter {
 
     @Override
