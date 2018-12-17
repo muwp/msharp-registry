@@ -30,7 +30,7 @@ public class MPermissionInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(MPermissionInterceptor.class);
 
-    public static final String LOGIN_IDENTITY_KEY = "XXL_MQ_LOGIN_IDENTITY";
+    public static final String LOGIN_IDENTITY_KEY = "MSHARP_REGISTRY_LOGIN_IDENTITY";
 
     private static String LOGIN_IDENTITY_TOKEN;
 

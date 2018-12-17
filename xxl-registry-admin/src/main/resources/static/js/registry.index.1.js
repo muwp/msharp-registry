@@ -3,8 +3,10 @@ $(function() {
     var initApp = '';
     var initEnv = '';
     //获取cookie
-    var token = $.cookie("XXL_MQ_LOGIN_IDENTITY");
+    var token = $.cookie("MSHARP_REGISTRY_LOGIN_IDENTITY");
     if (token){
+        /* 测试环境配置中心域名：var domain='http://192.168.2.200:8080/pearl-server'; */
+        /* 生产环境配置中心域名：var domain='http://pearl.rjmart.cn/pearl-server'; */
         var domain='http://pearl.rjmart.cn/pearl-server';
         $.ajax({
             type: "POST",
