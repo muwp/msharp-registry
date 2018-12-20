@@ -361,7 +361,7 @@ XXL-REGISTRY内部通过广播机制，集群节点实时同步服务注册信�
 - 10、容器化：提供官方docker镜像，并实时更新推送dockerhub，进一步实现 "服务注册中心" 产品开箱即用；
 - 11、long polling 超时时间优化；服务端默认 30s 超时限制；客户端默认 60s 阻塞登台；二者以较小者为准，建议客户端大于服务端。
 
-### 5.2 版本 v1.0.1 Release Notes[迭代中]
+### 5.2 版本 v1.0.1 Release Notes[2018-12-20]
 - 1、访问令牌（accessToken）：为提升系统安全性，注册中心和客户端进行安全性校验，双方AccessToken匹配才允许通讯；
 - 2、底层通讯参数统一：请求参数统一由 postbody 发送接收，数据格式见公共消息体 "XxlRegistryParamVO"，内部包含 accessToken、biz、env 等属性；
 - 3、环境属性 "env" 长度限制调整为 "2~255" ，兼容 "qa"、"dev" 等短环境标识；
