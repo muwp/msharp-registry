@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>XXL-REGISTRY, A lightweight distributed service registry and discovery platform.</description>
+    <description>MSHARP-REGISTRY, A lightweight distributed service registry and discovery platform.</description>
     <url>http://www.xuxueli.com/</url>
 
     <dependencies>
