@@ -62,9 +62,16 @@
             <artifactId>xxl-registry-client</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.ruijing.fundamental</groupId>
             <artifactId>xxl-registry-common</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ruijing.fundamental</groupId>
+            <artifactId>xxl-registry-store</artifactId>
             <version>${parent.version}</version>
         </dependency>
 
@@ -92,7 +99,8 @@
             <artifactId>cat-client</artifactId>
             <version>1.1.0-SNAPSHOT</version>
         </dependency>
-     </dependencies>
+
+    </dependencies>
 
     <build>
         <plugins>
