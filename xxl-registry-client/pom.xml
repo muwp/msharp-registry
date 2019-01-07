@@ -6,7 +6,7 @@
     <parent>
         <artifactId>xxl-registry</artifactId>
         <groupId>com.ruijing.fundamental</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>xxl-registry-client</artifactId>
