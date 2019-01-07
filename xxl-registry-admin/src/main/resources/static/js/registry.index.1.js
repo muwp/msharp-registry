@@ -7,7 +7,7 @@ $(function() {
     if (token){
         /* 测试环境配置中心域名：var domain='http://192.168.2.200:8080/pearl-server'; */
         /* 生产环境配置中心域名：var domain='http://pearl.rjmart.cn/pearl-server'; */
-        var domain='http://pearl.rjmart.cn/pearl-server';
+        var domain='http://192.168.2.200:8080/pearl-server';
         $.ajax({
             type: "POST",
             url: domain+"/pearl/app/name/list",
@@ -35,7 +35,9 @@ $(function() {
                     $('#modalAppList').append(appList);
                     getEnv(initApp);
                 }else if(data.code==401){
-                    window.location.href='/msharp-admin/';
+                    //token过期删除cookie
+                    $.cookie("MSHARP_REGISTRY_LOGIN_IDENTITY", "",{path:'/'});
+                    window.location.href='/msharp-admin/toLogin';
                 }
             }
         });
@@ -68,7 +70,9 @@ $(function() {
                         //初始化表格
                         init();
                     }else if(data.code==401){
-                        window.location.href='/msharp-admin/';
+                        //token过期删除cookie
+                        $.cookie("MSHARP_REGISTRY_LOGIN_IDENTITY", "",{path:'/'});
+                        window.location.href='/msharp-admin/toLogin';
                     }
                 }
             });
@@ -93,6 +97,8 @@ $(function() {
                         }
                         $('.envList').empty().append(envList);
                     }else if(data.code==401){
+                        //token过期删除cookie
+                        $.cookie("MSHARP_REGISTRY_LOGIN_IDENTITY", "",{path:'/'});
                         window.location.href='/msharp-admin/';
                     }
                 }
