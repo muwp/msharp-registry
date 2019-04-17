@@ -1,7 +1,6 @@
 package com.xxl.registry.store.constants;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.wltea.analyzer.lucene.IKAnalyzer;
 
 /**
  * @author mwup
@@ -14,5 +13,5 @@ public class IndexConstants {
 
     public static String INDEX_IDR = "/data/applogs/registry/data/";
 
-    public static Analyzer analyzer = new IKAnalyzer();
+    public static Analyzer analyzer =null;// new IKAnalyzer();
 }

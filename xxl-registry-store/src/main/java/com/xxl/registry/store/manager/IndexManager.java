@@ -10,7 +10,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
-import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -37,7 +36,7 @@ public final class IndexManager {
 
     private TrackingIndexWriter trackingIndexWriter;
 
-    private Analyzer analyzer = new IKAnalyzer();
+    private Analyzer analyzer =null;// new IKAnalyzer();
 
     private static IndexManager INSTANCE = new IndexManager("registry");
 
