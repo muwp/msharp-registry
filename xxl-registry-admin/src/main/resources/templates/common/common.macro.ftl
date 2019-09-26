@@ -112,11 +112,7 @@
 
 <#macro commonFooter >
 	<footer class="main-footer">
-<<<<<<< HEAD
-		Powered by <b>MSHARP-REGISTRY</b> 1.0.1-SNAPSHOT
-=======
-		Powered by <b>XXL-REGISTRY</b> 1.0.2-SNAPSHOT
->>>>>>> 升级开发分支：1.0.2-SNAPSHOT
+		Powered by <b>MSHARP-REGISTRY</b> 1.0.2-SNAPSHOT
 		<div class="pull-right hidden-xs">
 			<strong>Copyright &copy; 2018-${.now?string('yyyy')} &nbsp;
 				<a href="#" target="_blank" >muweiping</a>

@@ -14,7 +14,6 @@
 		<module>xxl-registry-client</module>
 		<module>xxl-registry-admin</module>
 		<module>xxl-registry-common</module>
-        <module>xxl-registry-store</module>
     </modules>
 
 	<properties>
