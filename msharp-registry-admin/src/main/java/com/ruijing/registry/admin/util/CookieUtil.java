@@ -5,10 +5,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Cookie.Util
+ * RegistryServiceImpl
  *
- * @author xuxueli 2015-12-12 18:01:06
- */
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 public class CookieUtil {
 
 	// 默认缓存时间,单位/秒, 2H

@@ -9,10 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import javax.annotation.Resource;
 
 /**
- * web mvc config
+ * WebMvcConfig
  *
- * @author xuxueli 2018-04-02 20:48:20
- */
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 

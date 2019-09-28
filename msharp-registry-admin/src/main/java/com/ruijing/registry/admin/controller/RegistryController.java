@@ -13,8 +13,12 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 /**
- * @author xuxueli 2018-11-21
- */
+ * RegistryController
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Controller
 @RequestMapping("/registry")
 public class RegistryController {

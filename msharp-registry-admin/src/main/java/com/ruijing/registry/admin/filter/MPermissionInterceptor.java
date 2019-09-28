@@ -20,11 +20,12 @@ import java.io.Serializable;
 import java.net.URLEncoder;
 
 /**
- * 权限拦截
+ * MPermissionInterceptor
  *
- * @author zhengzhongyin
- * @date 2018-12-06
- */
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Component
 public class MPermissionInterceptor extends HandlerInterceptorAdapter {
 
@@ -76,7 +77,7 @@ public class MPermissionInterceptor extends HandlerInterceptorAdapter {
             if (StringUtils.isNotBlank(value)) {
                 RemoteResponse<String> response = gson.fromJson(value, RemoteResponse.class);
                 //加上编码防止前端获取cookie中特殊符号为空格
-                LOGIN_IDENTITY_TOKEN = URLEncoder.encode(response.data,String.valueOf(Charsets.toCharset("UTF-8")));
+                LOGIN_IDENTITY_TOKEN = URLEncoder.encode(response.data, String.valueOf(Charsets.toCharset("UTF-8")));
                 if (null != response && response.code == RemoteResponse.SUCCESS_CODE) {
                     CookieUtil.set(httpServletResponse, LOGIN_IDENTITY_KEY, getLoginIdentityToken(), ifRemember);
                     result = true;

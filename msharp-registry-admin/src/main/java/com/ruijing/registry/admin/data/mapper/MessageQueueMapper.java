@@ -7,8 +7,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * @author xuxueli 2018-11-20
- */
+ * MessageQueueMapper
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Mapper
 public interface MessageQueueMapper {
 

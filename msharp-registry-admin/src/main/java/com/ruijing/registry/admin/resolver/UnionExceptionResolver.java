@@ -14,10 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * common exception resolver
+ * RegistryServiceImpl_
  *
- * @author xuxueli 2016-1-6 19:22:18
- */
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Component
 public class UnionExceptionResolver implements HandlerExceptionResolver {
 

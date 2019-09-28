@@ -25,8 +25,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author xuxueli 2016-5-28 15:30:33
- */
+ * RegistryServiceImpl
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Service
 public class RegistryServiceImpl implements RegistryService {
 

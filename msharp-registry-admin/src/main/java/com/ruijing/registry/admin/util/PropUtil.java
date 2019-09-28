@@ -8,10 +8,12 @@ import java.net.URL;
 import java.util.Properties;
 
 /**
- * prop util
+ * RegistryServiceImpl
  *
- * @author xuxueli 2018-02-23 21:57:05
- */
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 public class PropUtil {
 
     private static Logger logger = LoggerFactory.getLogger(PropUtil.class);

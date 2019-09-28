@@ -24,8 +24,13 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * @author xuxueli 2016-5-28 15:30:33
- */
+ * RegistryServiceImpl_
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
+@Deprecated
 public class RegistryServiceImpl_ implements InitializingBean, DisposableBean {
 
     private static Logger logger = LoggerFactory.getLogger(RegistryServiceImpl_.class);

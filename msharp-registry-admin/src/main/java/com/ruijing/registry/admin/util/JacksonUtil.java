@@ -13,13 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Jackson util
- * 
- * 1、obj need private and set/get；
- * 2、do not support inner class；
- * 
- * @author xuxueli 2015-9-25 18:02:56
- */
+ * RegistryServiceImpl
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 public class JacksonUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(JacksonUtil.class);

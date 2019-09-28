@@ -20,8 +20,12 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- * @author xuxueli 2018-11-29
- */
+ * SimpleApiController
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Controller
 @RequestMapping("/simple/api")
 public class SimpleApiController {

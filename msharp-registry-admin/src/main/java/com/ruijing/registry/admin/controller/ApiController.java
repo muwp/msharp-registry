@@ -19,8 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author xuxueli 2018-11-29
- */
+ * ApiController
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Controller
 @RequestMapping("/api")
 @Deprecated

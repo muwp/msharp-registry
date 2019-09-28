@@ -21,10 +21,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * index controller
+ * RegistryServiceImpl_
  *
- * @author xuxueli 2015-12-19 16:13:16
- */
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Controller
 public class IndexController {
 

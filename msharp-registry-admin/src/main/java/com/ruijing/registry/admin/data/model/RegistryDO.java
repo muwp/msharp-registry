@@ -3,8 +3,12 @@ package com.ruijing.registry.admin.data.model;
 import java.util.List;
 
 /**
- * @author xuxueli 2018-11-23
- */
+ * RegistryDO
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 public class RegistryDO {
 
     private int id;

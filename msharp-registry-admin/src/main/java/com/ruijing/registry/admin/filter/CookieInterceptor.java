@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 /**
- * push cookies to model as cookieMap
+ * CookieInterceptor
  *
- * @author xuxueli 2015-12-12 18:09:04
- */
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @Component
 public class CookieInterceptor extends HandlerInterceptorAdapter {
 

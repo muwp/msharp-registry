@@ -5,8 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
- * @author xuxueli 2018-11-17 17:21:44
- */
+ * RegistryServiceImpl
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @SpringBootApplication
 @ServletComponentScan
 public class XxlRegistryAdminApplication {

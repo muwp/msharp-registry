@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author xuxueli 2016-5-28 15:30:33
- */
+ * RegistryService
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 public interface RegistryService {
 
     Map<String, Object> pageList(int start, int length, String biz, String env, String key);

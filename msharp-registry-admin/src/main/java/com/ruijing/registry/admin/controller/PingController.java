@@ -6,8 +6,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * index controller
- */
+ * PingController
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 @RestController
 @RequestMapping(value = "/")
 public class PingController {

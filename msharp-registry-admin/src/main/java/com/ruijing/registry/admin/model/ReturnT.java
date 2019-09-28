@@ -3,11 +3,12 @@ package com.ruijing.registry.admin.model;
 import java.io.Serializable;
 
 /**
- * 封装返回
- * 
- * @author xuxueli 2015-3-29 18:27:32
- * @param <T>
- */
+ * ReturnT
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
 public class ReturnT<T> implements Serializable {
 	public static final long serialVersionUID = 42L;
 
