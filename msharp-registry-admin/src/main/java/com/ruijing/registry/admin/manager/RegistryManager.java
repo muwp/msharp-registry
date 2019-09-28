@@ -8,7 +8,6 @@ import com.ruijing.registry.admin.data.model.MessageQueueDO;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.service.impl.RegistryServiceImpl;
-import com.ruijing.registry.admin.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +48,7 @@ public class RegistryManager implements InitializingBean {
 
     private volatile boolean executorStop = false;
 
-    private ExecutorService executorService = new ThreadPoolExecutor(8, 8, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100));
+    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100));
 
     public void addRegistryNode(List<RegistryNodeDO> registryNodeList) {
         registryQueue.addAll(registryNodeList);
@@ -86,6 +84,7 @@ public class RegistryManager implements InitializingBean {
                     int ret = registryNodeMapper.refresh(registryNode);
                     if (ret == 0) {
                         registryNodeMapper.add(registryNode);
+                        sendRegistryDataUpdateMessage(registryNode);
                     }
                     syncUpdateRegistry(registryNode);
                 }
@@ -107,7 +106,7 @@ public class RegistryManager implements InitializingBean {
                     // delete
                     final int size = registryNodeMapper.deleteDataValue(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey(), registryNode.getValue());
                     if (size > 0) {
-                        syncUpdateRegistry(registryNode);
+                        sendRegistryDataUpdateMessage(registryNode);
                     }
                 }
             } catch (Exception e) {
@@ -121,7 +120,7 @@ public class RegistryManager implements InitializingBean {
      */
     private void syncUpdateRegistry(RegistryNodeDO registryNode) {
         // update registry and message
-         RegistryDO registryDO = registryMapper.load(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
+        RegistryDO registryDO = registryMapper.load(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
         if (registryDO == null) {
             registryDO = new RegistryDO();
             registryDO.setEnv(registryNode.getEnv());
@@ -131,19 +130,18 @@ public class RegistryManager implements InitializingBean {
             registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
             registryMapper.add(registryDO);
         }
-        sendRegistryDataUpdateMessage(registryDO);
     }
 
     /**
      * send RegistryData Update Message
      */
-    private void sendRegistryDataUpdateMessage(RegistryDO registryDO) {
+    private void sendRegistryDataUpdateMessage(RegistryNodeDO registryNodeDO) {
         final MessageQueueDO queueDO = new MessageQueueDO();
-        queueDO.setBiz(registryDO.getBiz());
-        queueDO.setEnv(registryDO.getEnv());
-        queueDO.setKey(registryDO.getKey());
+        queueDO.setBiz(registryNodeDO.getBiz());
+        queueDO.setEnv(registryNodeDO.getEnv());
+        queueDO.setKey(registryNodeDO.getKey());
         try {
-            final List<MessageQueueDO> list = this.messageQueueMapper.queryForList(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
+            final List<MessageQueueDO> list = this.messageQueueMapper.queryForList(registryNodeDO.getBiz(), registryNodeDO.getEnv(), registryNodeDO.getKey());
             if (CollectionUtils.isEmpty(list)) {
                 final Date date = new Date();
                 queueDO.setUpdateTime(date);
@@ -164,9 +162,5 @@ public class RegistryManager implements InitializingBean {
         } catch (Exception e) {
             Cat.logError("RegistryManager", "syncMessageQueue", null, e);
         }
-    }
-
-    private void cleanOverdueRegistryNode() {
-
     }
 }

@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
@@ -27,7 +26,6 @@ import java.util.concurrent.*;
 /**
  * @author xuxueli 2016-5-28 15:30:33
  */
-@Service
 public class RegistryServiceImpl_ implements InitializingBean, DisposableBean {
 
     private static Logger logger = LoggerFactory.getLogger(RegistryServiceImpl_.class);

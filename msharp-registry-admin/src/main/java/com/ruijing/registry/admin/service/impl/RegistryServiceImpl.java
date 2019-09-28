@@ -60,14 +60,18 @@ public class RegistryServiceImpl implements RegistryService {
             len = registryMapper.pageListCount(start, length, biz, env, key);
             for (int i = 0, size = list.size(); i < size; i++) {
                 final RegistryDO registryDO = list.get(i);
-                List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.findData(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
-                if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                    List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList());
-                    registryDO.setDataList(result);
-                    registryDO.setData(JsonUtils.toJson(result));
+                if (registryDO.getStatus() == 1 || registryDO.getStatus() == 2) {
+                    //
                 } else {
-                    registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
-                    registryDO.setStatus(3);
+                    List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.findData(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
+                    if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
+                        List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList());
+                        registryDO.setDataList(result);
+                        registryDO.setData(JsonUtils.toJson(result));
+                    } else {
+                        registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
+                        registryDO.setStatus(3);
+                    }
                 }
             }
         }
@@ -130,13 +134,29 @@ public class RegistryServiceImpl implements RegistryService {
             return new ReturnT<>(ReturnT.FAIL_CODE, "ID参数非法");
         }
 
+        registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
         registryMapper.update(registryDO);
+
+        final List<RegistryNodeDO> registryNodeList = New.listWithCapacity(valueList.size());
+        for (int i = 0, size = valueList.size(); i < size; i++) {
+            final RegistryNodeDO registryNode = new RegistryNodeDO();
+            registryNode.setValue(valueList.get(i));
+            registryNode.setEnv(registryDO.getEnv());
+            registryNode.setKey(registryDO.getKey());
+            registryNode.setBiz(registryDO.getBiz());
+            registryNodeList.add(registryNode);
+        }
+
+        if (CollectionUtils.isNotEmpty(registryNodeList)) {
+            registryManager.addRegistryNode(registryNodeList);
+        }
 
         return ReturnT.SUCCESS;
     }
 
     @Override
     public ReturnT<String> add(RegistryDO registryDO) {
+
         // valid
         if (StringUtils.isBlank(registryDO.getBiz())) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "业务线格式非空");
@@ -167,7 +187,7 @@ public class RegistryServiceImpl implements RegistryService {
 
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>();
         for (int i = 0, size = valueList.size(); i < size; i++) {
-            RegistryNodeDO registryNode = new RegistryNodeDO();
+            final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setBiz(registryDO.getBiz());
             registryNode.setEnv(registryDO.getEnv());
             registryNode.setKey(registryDO.getKey());
@@ -175,7 +195,10 @@ public class RegistryServiceImpl implements RegistryService {
             registryNode.setUpdateTime(new Date());
             registryNodeDOList.add(registryNode);
         }
-        registryManager.addRegistryNode(registryNodeDOList);
+
+        if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
+            this.registryManager.addRegistryNode(registryNodeDOList);
+        }
         return ReturnT.SUCCESS;
     }
 
@@ -190,7 +213,7 @@ public class RegistryServiceImpl implements RegistryService {
         if (CollectionUtils.isEmpty(registryNodeList)) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
         }
-        registryManager.addRegistryNode(registryNodeList);
+        this.registryManager.addRegistryNode(registryNodeList);
         return ReturnT.SUCCESS;
     }
 
@@ -302,16 +325,16 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (registryDO.getStatus() == 1 || registryDO.getStatus() == 2) {
-            return new ReturnT(registryDO.getData());
+            return new ReturnT(JsonUtils.parseList(registryDO.getData(), String.class));
         }
 
-        List<RegistryNodeDO> list = registryNodeMapper.findData(biz, env, key);
+        final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findData(biz, env, key);
 
-        if (CollectionUtils.isEmpty(list)) {
+        if (CollectionUtils.isEmpty(registryNodeList)) {
             return new ReturnT<>(Collections.emptyList());
         }
 
-        return new ReturnT<>(list.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList()));
+        return new ReturnT<>(registryNodeList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList()));
     }
 
     @Override
@@ -345,6 +368,23 @@ public class RegistryServiceImpl implements RegistryService {
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
             final String fileName = this.getMessageName(biz, env, key);
+            deferredResult.onCompletion(new Runnable() {
+
+                @Override
+                public void run() {
+                    final List<DeferredResult> deferredResults = deferredResultCache.get(fileName);
+                    if (CollectionUtils.isNotEmpty(deferredResults)) {
+                        Iterator<DeferredResult> iterator = deferredResults.iterator();
+                        while (iterator.hasNext()) {
+                            if (deferredResult == iterator.next()) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+
             deferredResultCache.add(fileName, deferredResult);
         }
 

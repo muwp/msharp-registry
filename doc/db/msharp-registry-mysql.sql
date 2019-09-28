@@ -52,6 +52,7 @@ CREATE TABLE `message_queue`
   `update_time` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
+  KEY `idx_sequence_9d` (`sequence_id`),
   UNIQUE KEY `I_b_e_k_v` (`biz`, `env`, `key`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

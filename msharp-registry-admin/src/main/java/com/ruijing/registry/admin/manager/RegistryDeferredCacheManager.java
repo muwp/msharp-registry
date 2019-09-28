@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * DeferredResultCache
+ * RegistryDeferredCacheManager
  *
  * @author mwup
  * @version 1.0
@@ -41,5 +41,9 @@ public class RegistryDeferredCacheManager {
         for (DeferredResult deferredResult : deferredResultList) {
             deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Monitor key update."));
         }
+    }
+
+    public List<DeferredResult> get(String key) {
+        return registryDeferredResultMap.get(key);
     }
 }

@@ -95,7 +95,7 @@
                 #{key,jdbcType=VARCHAR},
             </if>
             <if test="sequenceId != null">
-                #{sequence_id,jdbcType=BIGINT},
+                #{sequenceId,jdbcType=BIGINT},
             </if>
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP}
