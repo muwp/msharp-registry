@@ -62,7 +62,7 @@ XXL-REGISTRY 是一个轻量级分布式服务注册中心，拥有"轻量级、
 
 数据库初始化SQL脚本位置为:
 
-    /xxl-registry/doc/db/xxl-registry-mysql.sql
+    /xxl-registry/doc/db/msharp-registry-mysql.sql
     
 "服务注册中心" 支持集群部署，集群情况下各节点务必连接同一个mysql实例;
 

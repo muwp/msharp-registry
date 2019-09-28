@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxl.registry.admin.data.mapper.MessageQueueMapper">
+
+    <resultMap id="BaseMap" type="com.xxl.registry.admin.data.model.MessageQueueDO">
+        <result column="id" property="id"/>
+        <result column="biz" property="biz"/>
+        <result column="env" property="env"/>
+        <result column="key" property="key"/>
+        <result column="sequence_id" property="sequenceId"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        `id`,
+        `biz`,
+        `env`,
+        `key`,
+        `sequence_id`,
+        `update_time`
+    </sql>
+
+    <select id="queryForList" parameterType="java.util.HashMap" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM message_queue
+        <trim prefix="where" prefixOverrides="AND | OR">
+            <if test="biz != null and biz != ''">
+                AND biz = #{biz}
+            </if>
+            <if test="env != null and env != ''">
+                AND env = #{env}
+            </if>
+            <if test="key != null and key != ''">
+                AND `key` = #{key}
+            </if>
+        </trim>
+        LIMIT #{offset}, #{pagesize}
+    </select>
+
+    <select id="getLastNewList" parameterType="long" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM message_queue
+        WHERE sequence_id >= #{sequenceId,jdbcType=BIGINT}
+     </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.util.HashMap" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM message_queue
+        WHERE id = #{id}
+    </select>
+
+    <select id="listAll" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM message_queue
+    </select>
+
+    <insert id="insertSelective" parameterType="com.xxl.registry.admin.data.model.MessageQueueDO" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into message_queue
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="biz != null">
+                biz,
+            </if>
+            <if test="env != null">
+                env,
+            </if>
+            <if test="key != null">
+                key,
+            </if>
+            <if test="sequenceId != null">
+                sequence_id,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="biz != null">
+                #{biz,jdbcType=BIGINT},
+            </if>
+            <if test="env != null">
+                #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="key != null">
+                #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="sequenceId != null">
+                #{sequence_id,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xxl.registry.admin.data.model.MessageQueueDO">
+        update message_queue
+        <set>
+            <if test="biz != null">
+                biz = #{appkey,jdbcType=VARCHAR},
+            </if>
+            <if test="env != null">
+                env = #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="key != null">
+                `key` = #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="sequenceId != null">
+                `sequence_id` = #{sequenceId,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
