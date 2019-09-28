@@ -10,12 +10,14 @@ import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.service.impl.RegistryServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -49,6 +51,8 @@ public class RegistryManager implements InitializingBean {
     private volatile boolean executorStop = false;
 
     private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100));
+
+    private List<Triple<String, String, String>> existsRegistryCache = new ArrayList<>();
 
     public void addRegistryNode(List<RegistryNodeDO> registryNodeList) {
         registryQueue.addAll(registryNodeList);
@@ -89,6 +93,7 @@ public class RegistryManager implements InitializingBean {
                     syncUpdateRegistry(registryNode);
                 }
             } catch (Exception e) {
+                Cat.logError("RegistryManager", "scheduledSaveOrUpdateRegistryNode", StringUtils.EMPTY, e);
                 logger.error(e.getMessage(), e);
             }
         }
@@ -110,15 +115,21 @@ public class RegistryManager implements InitializingBean {
                     }
                 }
             } catch (Exception e) {
+                Cat.logError("RegistryManager", "scheduledClearRegistryNode", StringUtils.EMPTY, e);
                 logger.error(e.getMessage(), e);
             }
         }
     }
 
     /**
-     * update Registry And Message
+     * add Registry
      */
-    private void syncUpdateRegistry(RegistryNodeDO registryNode) {
+    private void syncUpdateRegistry(final RegistryNodeDO registryNode) {
+        final Triple<String, String, String> triple = Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
+        if (existsRegistryCache.contains(triple)) {
+            return;
+        }
+        this.existsRegistryCache.add(triple);
         // update registry and message
         RegistryDO registryDO = registryMapper.load(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
         if (registryDO == null) {
@@ -135,13 +146,13 @@ public class RegistryManager implements InitializingBean {
     /**
      * send RegistryData Update Message
      */
-    private void sendRegistryDataUpdateMessage(RegistryNodeDO registryNodeDO) {
+    private void sendRegistryDataUpdateMessage(RegistryNodeDO registryNode) {
         final MessageQueueDO queueDO = new MessageQueueDO();
-        queueDO.setBiz(registryNodeDO.getBiz());
-        queueDO.setEnv(registryNodeDO.getEnv());
-        queueDO.setKey(registryNodeDO.getKey());
+        queueDO.setBiz(registryNode.getBiz());
+        queueDO.setEnv(registryNode.getEnv());
+        queueDO.setKey(registryNode.getKey());
         try {
-            final List<MessageQueueDO> list = this.messageQueueMapper.queryForList(registryNodeDO.getBiz(), registryNodeDO.getEnv(), registryNodeDO.getKey());
+            final List<MessageQueueDO> list = this.messageQueueMapper.queryForList(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
             if (CollectionUtils.isEmpty(list)) {
                 final Date date = new Date();
                 queueDO.setUpdateTime(date);

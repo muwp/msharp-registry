@@ -31,7 +31,7 @@ public class CleanManager implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.cleanExecutor.scheduleWithFixedDelay(this::cleanOverdueNode, 30, 5, TimeUnit.SECONDS);
+        this.cleanExecutor.scheduleWithFixedDelay(this::cleanOverdueNode, 30, 8, TimeUnit.SECONDS);
     }
 
     private void cleanOverdueNode() {

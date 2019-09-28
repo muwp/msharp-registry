@@ -41,7 +41,7 @@ public class MessageQueueScanner implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.pullExecutor.scheduleWithFixedDelay(this::syncMessageQueue, 10, 2, TimeUnit.SECONDS);
+        this.pullExecutor.scheduleWithFixedDelay(this::syncMessageQueue, 10, 10, TimeUnit.SECONDS);
     }
 
     private void syncMessageQueue() {

@@ -28,5 +28,5 @@ public interface RegistryMapper {
 
     int update(@Param("xxlRegistry") RegistryDO xxlRegistry);
 
-    int delete(@Param("id") int id);
+    //int delete(@Param("id") int id);
 }

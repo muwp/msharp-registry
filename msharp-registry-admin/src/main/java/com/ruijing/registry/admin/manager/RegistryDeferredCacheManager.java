@@ -33,7 +33,7 @@ public class RegistryDeferredCacheManager {
 
     public void remove(String key) {
         // brocast monitor client
-        List<DeferredResult> deferredResultList = registryDeferredResultMap.get(key);
+        final List<DeferredResult> deferredResultList = registryDeferredResultMap.get(key);
         if (CollectionUtils.isEmpty(deferredResultList)) {
             return;
         }

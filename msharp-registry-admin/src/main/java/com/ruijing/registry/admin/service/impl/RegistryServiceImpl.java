@@ -1,6 +1,8 @@
 package com.ruijing.registry.admin.service.impl;
 
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
+import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.service.RegistryService;
@@ -335,6 +337,7 @@ public class RegistryServiceImpl implements RegistryService {
         final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findData(biz, env, key);
 
         if (CollectionUtils.isEmpty(registryNodeList)) {
+            Cat.logEvent("discovery", JsonObjectBuilder.custom().put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
             return new ReturnT<>(Collections.emptyList());
         }
 
@@ -349,22 +352,22 @@ public class RegistryServiceImpl implements RegistryService {
 
         // valid
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid"));
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken is empty"));
             return deferredResult;
         }
 
         if (StringUtils.isBlank(biz)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz Invalid[4~255]"));
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz is empty"));
             return deferredResult;
         }
 
         if (StringUtils.isBlank(env)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env Invalid[2~255]"));
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env is empty"));
             return deferredResult;
         }
 
         if (CollectionUtils.isEmpty(keys)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid."));
+            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "keys is empty"));
             return deferredResult;
         }
 
@@ -372,27 +375,24 @@ public class RegistryServiceImpl implements RegistryService {
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
             final String fileName = this.getMessageName(biz, env, key);
-            deferredResult.onCompletion(new Runnable() {
-
-                @Override
-                public void run() {
-                    final List<DeferredResult> deferredResults = deferredResultCache.get(fileName);
-                    if (CollectionUtils.isNotEmpty(deferredResults)) {
-                        Iterator<DeferredResult> iterator = deferredResults.iterator();
-                        while (iterator.hasNext()) {
-                            if (deferredResult == iterator.next()) {
-                                iterator.remove();
-                                break;
-                            }
-                        }
-                    }
-                }
-            });
-
+            deferredResult.onCompletion(() -> this.clearDeferredResult(key, deferredResult));
             deferredResultCache.add(fileName, deferredResult);
         }
-
         return deferredResult;
+    }
+
+    private void clearDeferredResult(String key, DeferredResult deferredResult) {
+        final List<DeferredResult> deferredResults = deferredResultCache.get(key);
+        if (CollectionUtils.isEmpty(deferredResults)) {
+            return;
+        }
+        Iterator<DeferredResult> iterator = deferredResults.iterator();
+        while (iterator.hasNext()) {
+            if (deferredResult == iterator.next()) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     private String getMessageName(String biz, String env, String key) {
