@@ -10,6 +10,7 @@ import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.service.impl.RegistryServiceImpl;
 import com.ruijing.registry.admin.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -59,27 +60,23 @@ public class RegistryManager implements InitializingBean {
         registryQueue.add(registryNodeDO);
     }
 
-    public void addRemoveNode(List<RegistryNodeDO> registryNodeList) {
+    public void removeRegistryNode(List<RegistryNodeDO> registryNodeList) {
         removeQueue.addAll(registryNodeList);
     }
 
-    public void addRemoveNode(RegistryNodeDO registryNodeDO) {
+    public void removeRegistryNode(RegistryNodeDO registryNodeDO) {
         removeQueue.add(registryNodeDO);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.saveOrUpdateRegistryNode();
-        this.clearRegistryNode();
+        this.executorService.execute(this::scheduledSaveOrUpdateRegistryNode);
+        this.executorService.execute(this::scheduledClearRegistryNode);
     }
 
     /**
-     * registry registry data         (client-num/10 s)
+     * registry registry data
      */
-    private void saveOrUpdateRegistryNode() {
-        this.executorService.execute(this::scheduledSaveOrUpdateRegistryNode);
-    }
-
     private void scheduledSaveOrUpdateRegistryNode() {
         while (!executorStop) {
             try {
@@ -90,8 +87,7 @@ public class RegistryManager implements InitializingBean {
                     if (ret == 0) {
                         registryNodeMapper.add(registryNode);
                     }
-                    // checkRegistryDataAndSendMessage
-                    checkRegistryDataAndSendMessage(registryNode);
+                    syncUpdateRegistry(registryNode);
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -102,9 +98,6 @@ public class RegistryManager implements InitializingBean {
     /**
      * remove registry data (client-num/start-interval s)
      */
-    private void clearRegistryNode() {
-        this.executorService.execute(this::scheduledClearRegistryNode);
-    }
 
     private void scheduledClearRegistryNode() {
         while (!executorStop) {
@@ -114,8 +107,7 @@ public class RegistryManager implements InitializingBean {
                     // delete
                     final int size = registryNodeMapper.deleteDataValue(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey(), registryNode.getValue());
                     if (size > 0) {
-                        // checkRegistryDataAndSendMessage
-                        checkRegistryDataAndSendMessage(registryNode);
+                        syncUpdateRegistry(registryNode);
                     }
                 }
             } catch (Exception e) {
@@ -127,42 +119,19 @@ public class RegistryManager implements InitializingBean {
     /**
      * update Registry And Message
      */
-    private void checkRegistryDataAndSendMessage(RegistryNodeDO registryNode) {
-        // data json
-        final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findData(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
-        final List<String> dataList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(registryNodeList)) {
-            for (int i = 0, size = registryNodeList.size(); i < size; i++) {
-                dataList.add(registryNodeList.get(i).getValue());
-            }
-        }
-
-        String dataJson = JsonUtils.toJson(dataList);
-
+    private void syncUpdateRegistry(RegistryNodeDO registryNode) {
         // update registry and message
-        RegistryDO registryDO = registryMapper.load(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
+         RegistryDO registryDO = registryMapper.load(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
         if (registryDO == null) {
             registryDO = new RegistryDO();
             registryDO.setEnv(registryNode.getEnv());
             registryDO.setBiz(registryNode.getBiz());
             registryDO.setKey(registryNode.getKey());
-            registryDO.setData(dataJson);
+            registryDO.setData(StringUtils.EMPTY);
             registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
             registryMapper.add(registryDO);
-            sendRegistryDataUpdateMessage(registryDO);
-        } else {
-            // check status, locked and disabled not use
-            if (registryDO.getStatus() != 0) {
-                return;
-            }
-
-            if (!registryDO.getData().equals(dataJson)) {
-                registryDO.setData(dataJson);
-                registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-                registryMapper.update(registryDO);
-                sendRegistryDataUpdateMessage(registryDO);
-            }
         }
+        sendRegistryDataUpdateMessage(registryDO);
     }
 
     /**
@@ -195,5 +164,9 @@ public class RegistryManager implements InitializingBean {
         } catch (Exception e) {
             Cat.logError("RegistryManager", "syncMessageQueue", null, e);
         }
+    }
+
+    private void cleanOverdueRegistryNode() {
+
     }
 }

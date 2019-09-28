@@ -26,7 +26,7 @@ import java.util.*;
 @RequestMapping("/simple/api")
 public class SimpleApiController {
 
-    @Value("${xxl.registry.accessToken}")
+    @Value("${msharp.registry.accessToken}")
     private String accessToken;
 
     @Resource
@@ -153,12 +153,12 @@ public class SimpleApiController {
         if (null == registryData) {
             return ReturnT.FAIL;
         }
-        RegistryNodeDO xxlRegistryData = new RegistryNodeDO();
-        xxlRegistryData.setBiz(registryData.getBiz());
-        xxlRegistryData.setEnv(registryData.getEnv());
-        xxlRegistryData.setKey(registryData.getKey());
-        xxlRegistryData.setValue(registryData.getValue());
-        return registryService.remove(registryData.getAccessToken(), xxlRegistryData);
+        RegistryNodeDO registryNodeDO = new RegistryNodeDO();
+        registryNodeDO.setBiz(registryData.getBiz());
+        registryNodeDO.setEnv(registryData.getEnv());
+        registryNodeDO.setKey(registryData.getKey());
+        registryNodeDO.setValue(registryData.getValue());
+        return registryService.remove(registryData.getAccessToken(), registryNodeDO);
     }
 
     /**

@@ -24,9 +24,9 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter implements 
 
     // ---------------------- init ----------------------
 
-    @Value("${xxl.registry.login.username}")
+    @Value("${msharp.registry.login.username}")
     private String username;
-    @Value("${xxl.registry.login.password}")
+    @Value("${msharp.registry.login.password}")
     private String password;
     @Override
     public void afterPropertiesSet() throws Exception {

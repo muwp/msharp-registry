@@ -156,7 +156,7 @@ public class ApiController {
             }
         }
 
-        return xxlRegistryService.remove(accessToken, biz, env, registryDataList);
+        return xxlRegistryService.remove(accessToken, registryDataList);
     }
 
 

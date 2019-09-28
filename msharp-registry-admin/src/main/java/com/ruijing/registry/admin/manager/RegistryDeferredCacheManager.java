@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @created 2019/07/23 17:03
  **/
 @Service
-public class RegistryResultCache {
+public class RegistryDeferredCacheManager {
 
     private Map<String, List<DeferredResult>> registryDeferredResultMap = new ConcurrentHashMap<>();
 

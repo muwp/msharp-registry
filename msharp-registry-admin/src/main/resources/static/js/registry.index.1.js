@@ -8,7 +8,6 @@ $(function () {
         /* 测试环境配置中心域名：var domain='http://192.168.2.200:8080/pearl-server'; */
         /* 生产环境配置中心域名：var domain='http://pearl.rjmart.cn/pearl-server'; */
         var domain = 'http://192.168.2.200:8080/pearl-server';
-        domain = 'http://pearl.rjmart.cn/pearl-server';
         $.ajax({
             type: "POST",
             url: domain + "/pearl/app/name/list",

@@ -41,13 +41,13 @@ public class RegistryServiceImpl_ implements InitializingBean, DisposableBean {
     @Resource
     private RegistryMessageMapper registryMessageMapper;
 
-    @Value("${xxl.registry.data.filepath}")
+    @Value("${msharp.registry.data.filepath}")
     private String registryDataFilePath;
 
-    @Value("${xxl.registry.beattime}")
+    @Value("${msharp.registry.beattime}")
     private int registryBeatTime;
 
-    @Value("${xxl.registry.accessToken}")
+    @Value("${msharp.registry.accessToken}")
     private String accessToken;
 
     /**

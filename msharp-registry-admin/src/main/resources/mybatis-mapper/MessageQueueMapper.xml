@@ -36,7 +36,6 @@
                 AND `key` = #{key}
             </if>
         </trim>
-        LIMIT #{offset}, #{pagesize}
     </select>
 
     <select id="getLastNewList" parameterType="long" resultMap="BaseMap">
@@ -73,7 +72,7 @@
                 env,
             </if>
             <if test="key != null">
-                key,
+                `key`,
             </if>
             <if test="sequenceId != null">
                 sequence_id,
@@ -99,7 +98,7 @@
                 #{sequence_id,jdbcType=BIGINT},
             </if>
             <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP}
             </if>
         </trim>
     </insert>

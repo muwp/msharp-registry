@@ -5,7 +5,6 @@ import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.common.http.Separator;
 import com.ruijing.registry.admin.data.mapper.MessageQueueMapper;
 import com.ruijing.registry.admin.data.model.MessageQueueDO;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ public class MessageQueueScanner implements InitializingBean {
     private MessageQueueMapper messageManager;
 
     @Resource
-    private RegistryCacheManager registryCacheManager;
+    private RegistryDeferredCacheManager deferredCacheManager;
 
     private volatile long maxSequenceId = 0;
 
@@ -50,11 +49,12 @@ public class MessageQueueScanner implements InitializingBean {
             final Long sequenceId = this.maxSequenceId;
             this.maxSequenceId = System.currentTimeMillis();
             final List<MessageQueueDO> messageQueueDOList = this.messageManager.getLastNewList(sequenceId);
-            if (CollectionUtils.isNotEmpty(messageQueueDOList)) {
-                for (int i = 0, size = messageQueueDOList.size(); i < size; i++) {
-                    final MessageQueueDO queueDO = messageQueueDOList.get(i);
-                    registryCacheManager.add(queueDO.getBiz() + Separator.DOT + queueDO.getEnv() + Separator.DOT + queueDO.getKey(), queueDO.getSequenceId());
-                }
+            if (null == messageQueueDOList || messageQueueDOList.size() <= 0) {
+                return;
+            }
+            for (int i = 0, size = messageQueueDOList.size(); i < size; i++) {
+                final MessageQueueDO queueDO = messageQueueDOList.get(i);
+                deferredCacheManager.remove(queueDO.getBiz() + Separator.DOT + queueDO.getEnv() + Separator.DOT + queueDO.getKey());
             }
         } catch (Exception ex) {
             Cat.logError(CAT_TYPE, "syncMessageQueue", null, ex);

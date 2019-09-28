@@ -36,17 +36,15 @@ public interface RegistryService {
      * remove registry-value, check update and broacase
      *
      * @param accessToken      a
-     * @param biz              b
-     * @param env              e
      * @param registryDataList r
      * @return x
      */
-    ReturnT<String> remove(String accessToken, String biz, String env, List<RegistryNodeDO> registryDataList);
+    ReturnT<String> remove(String accessToken, List<RegistryNodeDO> registryDataList);
 
     /**
      * remove registry-value, check update and broacase
      *
-     * @param accessToken      a
+     * @param accessToken  a
      * @param registryData r
      * @return x
      */
