@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxl.registry.admin.data.mapper.MessageQueueMapper">
+<mapper namespace="com.ruijing.registry.admin.data.mapper.MessageQueueMapper">
 
-    <resultMap id="BaseMap" type="com.xxl.registry.admin.data.model.MessageQueueDO">
+    <resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.MessageQueueDO">
         <result column="id" property="id"/>
         <result column="biz" property="biz"/>
         <result column="env" property="env"/>
@@ -59,7 +59,7 @@
         FROM message_queue
     </select>
 
-    <insert id="insertSelective" parameterType="com.xxl.registry.admin.data.model.MessageQueueDO" keyProperty="id"
+    <insert id="insertSelective" parameterType="com.ruijing.registry.admin.data.model.MessageQueueDO" keyProperty="id"
             useGeneratedKeys="true">
         insert into message_queue
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -104,7 +104,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.xxl.registry.admin.data.model.MessageQueueDO">
+    <update id="updateByPrimaryKeySelective" parameterType="com.ruijing.registry.admin.data.model.MessageQueueDO">
         update message_queue
         <set>
             <if test="biz != null">

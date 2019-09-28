@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxl.registry.admin.data.mapper.RegistryNodeMapper" >
+<mapper namespace="com.ruijing.registry.admin.data.mapper.RegistryNodeMapper" >
 
-	<resultMap id="BaseMap" type="com.xxl.registry.admin.data.model.RegistryNodeDO" >
+	<resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.RegistryNodeDO" >
 		<result column="id" property="id" />
 		<result column="biz" property="biz" />
 		<result column="env" property="env" />
@@ -21,7 +21,7 @@
 		t.`updateTime`
 	</sql>
 
-	<update id="refresh" parameterType="com.xxl.registry.admin.data.model.RegistryNodeDO"  >
+	<update id="refresh" parameterType="com.ruijing.registry.admin.data.model.RegistryNodeDO"  >
 		UPDATE xxl_registry_data AS t
 		SET
 			t.`updateTime` = now()
@@ -31,7 +31,7 @@
 			and t.`value` = #{xxlRegistryData.value}
 	</update>
 
-	<insert id="add" parameterType="com.xxl.registry.admin.data.model.RegistryNodeDO" >
+	<insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryNodeDO" >
 		INSERT INTO xxl_registry_data (
 			`biz`,
 			`env`,

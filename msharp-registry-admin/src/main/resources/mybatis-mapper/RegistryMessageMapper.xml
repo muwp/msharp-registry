@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxl.registry.admin.data.mapper.RegistryMessageMapper" >
+<mapper namespace="com.ruijing.registry.admin.data.mapper.RegistryMessageMapper" >
 	
-	<resultMap id="xxlRegistryMessage" type="com.xxl.registry.admin.data.model.RegistryMessageDO" >
+	<resultMap id="xxlRegistryMessage" type="com.ruijing.registry.admin.data.model.RegistryMessageDO" >
 		<result column="id" property="id" />
 		<result column="type" property="type" />
 		<result column="data" property="data" />
@@ -17,7 +17,7 @@
 		t.`addTime`
 	</sql>
 
-	<insert id="add" parameterType="com.xxl.registry.admin.data.model.RegistryMessageDO" >
+	<insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryMessageDO" >
 		INSERT INTO xxl_registry_message (
 			`type`,
 			`data`,
