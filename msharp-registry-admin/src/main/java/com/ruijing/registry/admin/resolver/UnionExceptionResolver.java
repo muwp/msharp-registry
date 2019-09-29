@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * RegistryServiceImpl_
+ * UnionExceptionResolver
  *
  * @author mwup
  * @version 1.0

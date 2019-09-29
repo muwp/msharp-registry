@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruijing.registry.admin.data.mapper.RegistryMapper" >
 	
-	<resultMap id="xxlRegistry" type="com.ruijing.registry.admin.data.model.RegistryDO" >
+	<resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.RegistryDO" >
 		<result column="id" property="id" />
 		<result column="biz" property="biz" />
 		<result column="env" property="env" />
@@ -23,7 +23,7 @@
 		t.`status`
 	</sql>
 
-	<select id="pageList" parameterType="java.util.HashMap" resultMap="xxlRegistry">
+	<select id="pageList" parameterType="java.util.HashMap" resultMap="BaseMap">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_registry AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
@@ -57,7 +57,7 @@
 		</trim>
 	</select>
 
-	<select id="load" parameterType="java.util.HashMap" resultMap="xxlRegistry">
+	<select id="load" parameterType="java.util.HashMap" resultMap="BaseMap">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_registry AS t
 		WHERE t.`biz` = #{biz}
@@ -65,7 +65,7 @@
 			and t.`key` = #{key}
 	</select>
 
-	<select id="loadById" parameterType="java.util.HashMap" resultMap="xxlRegistry">
+	<select id="loadById" parameterType="java.util.HashMap" resultMap="BaseMap">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_registry AS t
 		WHERE id = #{id}

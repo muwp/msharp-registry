@@ -103,7 +103,7 @@ public class RegistryServiceImpl implements RegistryService {
 
         final List<RegistryNodeDO> list = registryNodeMapper.findData(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
         if (CollectionUtils.isNotEmpty(list)) {
-            registryManager.removeRegistryNode(list);
+            registryManager.removeRegistryNodeList(list);
         }
         return ReturnT.SUCCESS;
     }
@@ -154,7 +154,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (CollectionUtils.isNotEmpty(registryNodeList)) {
-            registryManager.addRegistryNode(registryNodeList);
+            registryManager.addRegistryNodeList(registryNodeList);
         }
 
         return ReturnT.SUCCESS;
@@ -203,7 +203,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-            this.registryManager.addRegistryNode(registryNodeDOList);
+            this.registryManager.addRegistryNodeList(registryNodeDOList);
         }
         return ReturnT.SUCCESS;
     }
@@ -219,7 +219,7 @@ public class RegistryServiceImpl implements RegistryService {
         if (CollectionUtils.isEmpty(registryNodeList)) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
         }
-        this.registryManager.addRegistryNode(registryNodeList);
+        this.registryManager.addRegistryNodeList(registryNodeList);
         return ReturnT.SUCCESS;
     }
 
@@ -236,7 +236,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         // fill + add queue
-        registryManager.removeRegistryNode(registryNodeList);
+        registryManager.removeRegistryNodeList(registryNodeList);
 
         return ReturnT.SUCCESS;
     }

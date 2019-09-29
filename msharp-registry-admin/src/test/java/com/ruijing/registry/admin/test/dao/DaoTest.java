@@ -15,15 +15,15 @@ import javax.annotation.Resource;
 public class DaoTest {
 
     @Resource
-    private RegistryMapper xxlRegistryDao;
+    private RegistryMapper registryDao;
     @Resource
-    private RegistryNodeMapper xxlRegistryDataDao;
+    private RegistryNodeMapper registryDataDao;
     @Resource
-    private RegistryMessageMapper xxlRegistryMessageDao;
+    private RegistryMessageMapper registryMessageDao;
 
     @Test
     public void test(){
-        xxlRegistryDao.pageList(0, 100, null, null, null);
+        registryDao.pageList(0, 100, null, null, null);
     }
 
 

@@ -37,7 +37,7 @@ public class CleanManager implements InitializingBean {
     private void cleanOverdueNode() {
         try {
             // clean old registry-data in db
-            registryNodeMapper.cleanData(30);
+            registryNodeMapper.cleanData(60);
         } catch (Exception ex) {
             Cat.logError("RegistryManager", "cleanOverdueRegistryNode", null, ex);
         }

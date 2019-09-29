@@ -54,20 +54,20 @@ public class RegistryManager implements InitializingBean {
 
     private List<Triple<String, String, String>> existsRegistryCache = new ArrayList<>();
 
-    public void addRegistryNode(List<RegistryNodeDO> registryNodeList) {
+    public void addRegistryNodeList(List<RegistryNodeDO> registryNodeList) {
         registryQueue.addAll(registryNodeList);
     }
 
-    public void addRegistryNode(RegistryNodeDO registryNodeDO) {
-        registryQueue.add(registryNodeDO);
+    public void addRegistryNode(RegistryNodeDO registryNode) {
+        registryQueue.add(registryNode);
     }
 
-    public void removeRegistryNode(List<RegistryNodeDO> registryNodeList) {
+    public void removeRegistryNodeList(List<RegistryNodeDO> registryNodeList) {
         removeQueue.addAll(registryNodeList);
     }
 
-    public void removeRegistryNode(RegistryNodeDO registryNodeDO) {
-        removeQueue.add(registryNodeDO);
+    public void removeRegistryNode(RegistryNodeDO registryNode) {
+        removeQueue.add(registryNode);
     }
 
     @Override
