@@ -27,5 +27,4 @@ public interface MessageQueueMapper {
     int updateByPrimaryKeySelective(MessageQueueDO queueDO);
 
     List<MessageQueueDO> getLastNewList(Long sequenceId);
-
 }

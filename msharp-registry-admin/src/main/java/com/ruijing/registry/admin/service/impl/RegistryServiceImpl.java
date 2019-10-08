@@ -4,9 +4,11 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.fundamental.common.collections.New;
+import com.ruijing.registry.admin.cache.RegistryCache;
+import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.service.RegistryService;
-import com.ruijing.registry.common.http.Separator;
+import com.ruijing.registry.admin.util.KeyUtil;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
@@ -14,9 +16,9 @@ import com.ruijing.registry.admin.model.ReturnT;
 import com.ruijing.registry.admin.util.JacksonUtil;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
-import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,11 +38,16 @@ import java.util.stream.Collectors;
 @Service
 public class RegistryServiceImpl implements RegistryService {
 
+    private static final ReturnT<List<String>> EMPTY_RETURN_LIST = new ReturnT<>(Collections.emptyList());
+
     @Resource
     private RegistryMapper registryMapper;
 
     @Resource
-    private RegistryNodeMapper registryNodeMapper;
+    private RegistryCache registryCache;
+
+    @Resource
+    private RegistryNodeCache registryNodeCache;
 
     @Autowired
     private RegistryManager registryManager;
@@ -69,7 +76,7 @@ public class RegistryServiceImpl implements RegistryService {
                 if (registryDO.getStatus() == 1 || registryDO.getStatus() == 2) {
                     //
                 } else {
-                    List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.findData(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
+                    final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
                     if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
                         List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList());
                         registryDO.setDataList(result);
@@ -95,16 +102,14 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public ReturnT<String> delete(int id) {
-        RegistryDO registryDO = registryMapper.loadById(id);
+    public ReturnT<String> delete(long id) {
+        RegistryDO registryDO = registryCache.get(id);
         if (null == registryDO) {
             return ReturnT.SUCCESS;
         }
 
-        final List<RegistryNodeDO> list = registryNodeMapper.findData(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
-        if (CollectionUtils.isNotEmpty(list)) {
-            registryManager.removeRegistryNodeList(list);
-        }
+        final List<RegistryNodeDO> list = registryNodeCache.get(registryDO.getId());
+        registryManager.removeRegistryNodeList(list);
         return ReturnT.SUCCESS;
     }
 
@@ -125,7 +130,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (StringUtils.isBlank(registryDO.getData())) {
-            registryDO.setData(JacksonUtil.writeValueAsString(new ArrayList<String>()));
+            registryDO.setData(JacksonUtil.writeValueAsString(Collections.emptyList()));
         }
 
         final List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
@@ -135,13 +140,13 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         // valid exist
-        final RegistryDO exist = registryMapper.loadById(registryDO.getId());
+        final RegistryDO exist = this.registryCache.get(registryDO.getId());
         if (exist == null) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "ID参数非法");
         }
 
         registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-        registryMapper.update(registryDO);
+        this.registryMapper.update(registryDO);
 
         final List<RegistryNodeDO> registryNodeList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
@@ -153,9 +158,7 @@ public class RegistryServiceImpl implements RegistryService {
             registryNodeList.add(registryNode);
         }
 
-        if (CollectionUtils.isNotEmpty(registryNodeList)) {
-            registryManager.addRegistryNodeList(registryNodeList);
-        }
+        registryManager.addRegistryNodeList(registryNodeList);
 
         return ReturnT.SUCCESS;
     }
@@ -186,7 +189,8 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         // valid exist
-        final RegistryDO exist = registryMapper.load(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
+        final RegistryDO exist = registryCache.get(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()));
+
         if (exist != null) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "注册Key请勿重复");
         }
@@ -202,9 +206,7 @@ public class RegistryServiceImpl implements RegistryService {
             registryNodeDOList.add(registryNode);
         }
 
-        if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-            this.registryManager.addRegistryNodeList(registryNodeDOList);
-        }
+        this.registryManager.addRegistryNodeList(registryNodeDOList);
         return ReturnT.SUCCESS;
     }
 
@@ -217,7 +219,7 @@ public class RegistryServiceImpl implements RegistryService {
             return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
         }
         if (CollectionUtils.isEmpty(registryNodeList)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Registry Node List Invalid");
         }
         this.registryManager.addRegistryNodeList(registryNodeList);
         return ReturnT.SUCCESS;
@@ -256,6 +258,9 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Override
     public ReturnT<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys) {
+        if (CollectionUtils.isEmpty(keys)) {
+            return new ReturnT<>(Collections.emptyMap());
+        }
 
         // valid
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
@@ -277,18 +282,10 @@ public class RegistryServiceImpl implements RegistryService {
         final Map<String, List<String>> result = New.mapWithCapacity(keys.size());
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
-            RegistryNodeDO xxlRegistryData = new RegistryNodeDO();
-            xxlRegistryData.setBiz(biz);
-            xxlRegistryData.setEnv(env);
-            xxlRegistryData.setKey(key);
-
-            List<String> dataList = new ArrayList<>();
-            RegistryDO fileXxlRegistry = null;//getFileRegistryData(xxlRegistryData);
-            if (fileXxlRegistry != null) {
-                dataList = fileXxlRegistry.getDataList();
+            ReturnT<List<String>> returnT = this.discovery(accessToken, biz, env, key);
+            if (returnT.getCode() == ReturnT.SUCCESS_CODE) {
+                result.put(key, returnT.getData());
             }
-
-            result.put(key, dataList);
         }
 
         return new ReturnT<>(result);
@@ -313,32 +310,21 @@ public class RegistryServiceImpl implements RegistryService {
             return new ReturnT<>(ReturnT.FAIL_CODE, "biz empty");
         }
 
-        RegistryDO registryDO = null;
-        boolean hasException = false;
-        try {
-            registryDO = registryMapper.load(biz, env, key);
-        } catch (Exception ex) {
-            Cat.logError("Registry", "discovery", "biz:" + biz + ", env:" + env + ", key:" + key, ex);
-            hasException = true;
-        }
-
-        if (hasException) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "");
-        }
+        final RegistryDO registryDO = registryCache.get(Triple.of(biz, env, key));
 
         if (null == registryDO) {
-            return new ReturnT<>(Collections.emptyList());
+            return EMPTY_RETURN_LIST;
         }
 
         if (registryDO.getStatus() == 1 || registryDO.getStatus() == 2) {
             return new ReturnT(JsonUtils.parseList(registryDO.getData(), String.class));
         }
 
-        final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findData(biz, env, key);
+        final List<RegistryNodeDO> registryNodeList = this.registryNodeCache.get(registryDO.getId());
 
         if (CollectionUtils.isEmpty(registryNodeList)) {
             Cat.logEvent("discovery", JsonObjectBuilder.custom().put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
-            return new ReturnT<>(Collections.emptyList());
+            return EMPTY_RETURN_LIST;
         }
 
         return new ReturnT<>(registryNodeList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList()));
@@ -374,7 +360,7 @@ public class RegistryServiceImpl implements RegistryService {
         // monitor by client
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
-            final String fileName = this.getMessageName(biz, env, key);
+            final String fileName = KeyUtil.getKey(biz, env, key);
             deferredResult.onCompletion(() -> this.clearDeferredResult(key, deferredResult));
             deferredResultCache.add(fileName, deferredResult);
         }
@@ -393,9 +379,5 @@ public class RegistryServiceImpl implements RegistryService {
                 break;
             }
         }
-    }
-
-    private String getMessageName(String biz, String env, String key) {
-        return biz + Separator.DOT + env + Separator.DOT + key;
     }
 }

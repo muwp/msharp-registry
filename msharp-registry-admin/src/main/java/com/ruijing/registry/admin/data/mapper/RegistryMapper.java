@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.data.mapper;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
+import com.ruijing.registry.admin.data.query.RegistryQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,17 +17,17 @@ import java.util.List;
 @Mapper
 public interface RegistryMapper {
 
+    List<RegistryDO> queryForList(RegistryQuery query);
+
     List<RegistryDO> pageList(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("biz") String biz, @Param("env") String env, @Param("key") String key);
 
     int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("biz") String biz, @Param("env") String env, @Param("key") String key);
 
     RegistryDO load(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
 
-    RegistryDO loadById(@Param("id") int id);
+    RegistryDO loadById(@Param("id") Long id);
 
-    int add(@Param("xxlRegistry") RegistryDO xxlRegistry);
+    int add(@Param("xxlRegistry") RegistryDO registryDO);
 
-    int update(@Param("xxlRegistry") RegistryDO xxlRegistry);
-
-    //int delete(@Param("id") int id);
+    int update(@Param("xxlRegistry") RegistryDO registryDO);
 }

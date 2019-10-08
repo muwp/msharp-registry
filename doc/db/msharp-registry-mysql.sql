@@ -19,14 +19,16 @@ CREATE TABLE `xxl_registry`
 ## 注册表详细信息
 CREATE TABLE `xxl_registry_data`
 (
-  `id`         int(11)      NOT NULL AUTO_INCREMENT,
-  `biz`        varchar(255) NOT NULL COMMENT '业务标识',
-  `env`        varchar(255) NOT NULL COMMENT '环境标识',
-  `key`        varchar(255) NOT NULL COMMENT '注册Key',
-  `value`      varchar(255) NOT NULL COMMENT '注册Value',
-  `updateTime` datetime     NOT NULL COMMENT '更新时间',
+  `id`          int(11)      NOT NULL AUTO_INCREMENT,
+  `registry_id` BIGINT(20)   NOT NULL COMMENT 'registry id',
+  `biz`         varchar(255) NOT NULL COMMENT '业务标识',
+  `env`         varchar(255) NOT NULL COMMENT '环境标识',
+  `key`         varchar(255) NOT NULL COMMENT '注册Key',
+  `value`       varchar(255) NOT NULL COMMENT '注册Value',
+  `updateTime`  datetime     NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `I_b_e_k_v` (`biz`, `env`, `key`, `value`)
+  UNIQUE KEY `I_b_e_k_v` (`biz`, `env`, `key`, `value`),
+  key `idx_registry_id` (`registry_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -39,7 +41,6 @@ CREATE TABLE `xxl_registry_message`
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
-
 
 # 消息队列
 CREATE TABLE `message_queue`

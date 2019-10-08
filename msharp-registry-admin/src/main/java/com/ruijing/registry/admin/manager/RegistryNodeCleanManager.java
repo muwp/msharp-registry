@@ -12,14 +12,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * CleanManager
+ * RegistryNodeCleanManager
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
 @Service
-public class CleanManager implements InitializingBean {
+public class RegistryNodeCleanManager implements InitializingBean {
 
     @Resource
     private RegistryNodeMapper registryNodeMapper;

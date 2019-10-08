@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.data.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * RegistryNodeDO
@@ -11,7 +12,15 @@ import java.util.Date;
  **/
 public class RegistryNodeDO {
 
-    private int id;
+    /**
+     * id
+     */
+    private Long id;
+
+    /**
+     * 注册id
+     */
+    private Long registryId;
 
     /**
      * 业务标识
@@ -38,12 +47,20 @@ public class RegistryNodeDO {
      */
     private Date updateTime;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getRegistryId() {
+        return registryId;
+    }
+
+    public void setRegistryId(Long registryId) {
+        this.registryId = registryId;
     }
 
     public String getBiz() {
@@ -87,9 +104,31 @@ public class RegistryNodeDO {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final RegistryNodeDO that = (RegistryNodeDO) o;
+        return Objects.equals(registryId, that.registryId) &&
+                Objects.equals(biz, that.biz) &&
+                Objects.equals(env, that.env) &&
+                Objects.equals(key, that.key) &&
+                Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(registryId, biz, env, key, value);
+    }
+
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNodeDO{");
         sb.append("id=").append(id);
+        sb.append(", registryId=").append(registryId);
         sb.append(", biz='").append(biz).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", key='").append(key).append('\'');

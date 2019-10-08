@@ -11,7 +11,7 @@ import java.util.List;
  **/
 public class RegistryDO {
 
-    private int id;
+    private Long id;
 
     /**
      * 业务标识
@@ -48,11 +48,11 @@ public class RegistryDO {
      */
     private List<String> dataList;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

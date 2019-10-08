@@ -1,4 +1,4 @@
-## 《分布式服务注册中心XXL-REGISTRY》
+## 《分布式服务注册中心MSHARP-REGISTRY》
 
 [![Build Status](https://travis-ci.org/xuxueli/xxl-registry.svg?branch=master)](https://travis-ci.org/xuxueli/xxl-registry)
 [![Docker Status](https://img.shields.io/badge/docker-passing-brightgreen.svg)](https://hub.docker.com/r/xuxueli/xxl-registry-admin/)
@@ -11,7 +11,7 @@
 ## 一、简介
 
 ### 1.1 概述
-XXL-REGISTRY 是一个轻量级分布式服务注册中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
+MSHARP-REGISTRY 是一个轻量级分布式服务注册中心，拥有"轻量级、秒级注册上线、多环境、跨语言、跨机房"等特性。现已开放源代码，开箱即用。
 
 ### 1.2 特性
 

@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * RegistryServiceImpl
+ * CookieUtil
  *
  * @author mwup
  * @version 1.0

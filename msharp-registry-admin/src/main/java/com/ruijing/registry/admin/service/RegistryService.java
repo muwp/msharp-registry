@@ -19,11 +19,11 @@ public interface RegistryService {
 
     Map<String, Object> pageList(int start, int length, String biz, String env, String key);
 
-    ReturnT<String> delete(int id);
+    ReturnT<String> delete(long id);
 
-    ReturnT<String> update(RegistryDO xxlRegistry);
+    ReturnT<String> update(RegistryDO registryDO);
 
-    ReturnT<String> add(RegistryDO xxlRegistry);
+    ReturnT<String> add(RegistryDO registryDO);
 
     // ------------------------ remote registry ------------------------
 
@@ -31,10 +31,10 @@ public interface RegistryService {
      * refresh registry-value, check update and broadcase
      *
      * @param accessToken      acc
-     * @param registryDataList re
+     * @param registryNodeList re
      * @return
      */
-    ReturnT<String> registry(String accessToken, List<RegistryNodeDO> registryDataList);
+    ReturnT<String> registry(String accessToken, List<RegistryNodeDO> registryNodeList);
 
     /**
      * remove registry-value, check update and broacase
@@ -49,10 +49,10 @@ public interface RegistryService {
      * remove registry-value, check update and broacase
      *
      * @param accessToken  a
-     * @param registryData r
+     * @param registryNode r
      * @return x
      */
-    ReturnT<String> remove(String accessToken, RegistryNodeDO registryData);
+    ReturnT<String> remove(String accessToken, RegistryNodeDO registryNode);
 
     /**
      * discovery registry-data, read file

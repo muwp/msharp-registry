@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.data.mapper;
 
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
+import com.ruijing.registry.admin.data.query.RegistryNodeQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,11 +17,15 @@ import java.util.List;
 @Mapper
 public interface RegistryNodeMapper {
 
-    int refresh(@Param("xxlRegistryData") RegistryNodeDO xxlRegistryData);
+    int refresh(RegistryNodeDO registryNode);
 
-    int add(@Param("xxlRegistryData") RegistryNodeDO xxlRegistryData);
+    List<RegistryNodeDO> queryForList(RegistryNodeQuery query);
+
+    int add(RegistryNodeDO registryNode);
 
     List<RegistryNodeDO> findData(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
+
+    List<RegistryNodeDO> findByRegistryId(Long registryId);
 
     int cleanData(@Param("timeout") int timeout);
 

@@ -1,107 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruijing.registry.admin.data.mapper.RegistryMapper" >
-	
-	<resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.RegistryDO" >
-		<result column="id" property="id" />
-		<result column="biz" property="biz" />
-		<result column="env" property="env" />
-		<result column="key" property="key" />
-		<result column="data" property="data" />
-		<result column="version" property="version" />
-		<result column="status" property="status" />
-	</resultMap>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruijing.registry.admin.data.mapper.RegistryMapper">
 
-	<sql id="Base_Column_List">
-		t.`id`,
-		t.`biz`,
-		t.`env`,
-		t.`key`,
-		t.`data`,
-		t.`version`,
-		t.`status`
-	</sql>
+    <resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.RegistryDO">
+        <result column="id" property="id"/>
+        <result column="biz" property="biz"/>
+        <result column="env" property="env"/>
+        <result column="key" property="key"/>
+        <result column="data" property="data"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+    </resultMap>
 
-	<select id="pageList" parameterType="java.util.HashMap" resultMap="BaseMap">
-		SELECT <include refid="Base_Column_List" />
-		FROM xxl_registry AS t
-		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="biz != null and biz != ''">
-				AND t.biz = #{biz}
-			</if>
-			<if test="env != null and env != ''">
-				AND t.env = #{env}
-			</if>
-			<if test="key != null and key != ''">
-				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
-			</if>
-		</trim>
-		ORDER BY t.biz ASC, t.env ASC, t.key ASC
-		LIMIT #{offset}, #{pagesize}
-	</select>
+    <sql id="Base_Column_List">
+        `id`,
+        `biz`,
+        `env`,
+        `key`,
+        `data`,
+        `version`,
+        `status`
+    </sql>
 
-	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
-		SELECT count(1)
-		FROM xxl_registry AS t
-		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="biz != null and biz != ''">
-				AND t.biz = #{biz}
-			</if>
-			<if test="env != null and env != ''">
-				AND t.env = #{env}
-			</if>
-			<if test="key != null and key != ''">
-				AND t.key like CONCAT(CONCAT('%', #{key}), '%')
-			</if>
-		</trim>
-	</select>
+    <select id="queryForList" parameterType="com.ruijing.registry.admin.data.query.RegistryNodeQuery"
+            resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM xxl_registry
+        <where>
+            <if test="biz!=null">
+                biz=#{biz}
+            </if>
+            <if test="env!=null">
+                AND `env` = #{env}
+            </if>
+            <if test="id!=null">
+                AND id=#{id}
+            </if>
+            <if test="key!=null">
+                AND `key` = #{key}
+            </if>
+        </where>
+        <if test="offset!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
 
-	<select id="load" parameterType="java.util.HashMap" resultMap="BaseMap">
-		SELECT <include refid="Base_Column_List" />
-		FROM xxl_registry AS t
-		WHERE t.`biz` = #{biz}
-			and t.`env` = #{env}
-			and t.`key` = #{key}
-	</select>
+    <select id="pageList" parameterType="java.util.HashMap" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM xxl_registry
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="biz != null and biz != ''">
+                AND biz = #{biz}
+            </if>
+            <if test="env != null and env != ''">
+                AND env = #{env}
+            </if>
+            <if test="key != null and key != ''">
+                AND key like CONCAT(CONCAT('%', #{key}), '%')
+            </if>
+        </trim>
+        ORDER BY biz ASC, env ASC, key ASC
+        LIMIT #{offset}, #{pagesize}
+    </select>
 
-	<select id="loadById" parameterType="java.util.HashMap" resultMap="BaseMap">
-		SELECT <include refid="Base_Column_List" />
-		FROM xxl_registry AS t
-		WHERE id = #{id}
-	</select>
+    <select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1)
+        FROM xxl_registry
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="biz != null and biz != ''">
+                AND biz = #{biz}
+            </if>
+            <if test="env != null and env != ''">
+                AND env = #{env}
+            </if>
+            <if test="key != null and key != ''">
+                AND key like CONCAT(CONCAT('%', #{key}), '%')
+            </if>
+        </trim>
+    </select>
 
-	<insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryDO" >
-		INSERT INTO xxl_registry (
-			`biz`,
-			`env`,
-			`key`,
-			`data`,
-			`version`,
-			`status`
-		) VALUES
-		(
-			#{xxlRegistry.biz},
-			#{xxlRegistry.env},
-			#{xxlRegistry.key},
-			#{xxlRegistry.data},
-			#{xxlRegistry.version},
-			#{xxlRegistry.status}
-		)
-	</insert>
+    <select id="load" parameterType="java.util.HashMap" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM xxl_registry
+        WHERE `biz` = #{biz}
+        and `env` = #{env}
+        and `key` = #{key}
+    </select>
 
-	<update id="update" parameterType="com.ruijing.registry.admin.data.model.RegistryDO"  >
-		UPDATE xxl_registry AS t
-		SET
-			t.`data` = #{xxlRegistry.data},
-			t.`version` = #{xxlRegistry.version},
-			t.`status` = #{xxlRegistry.status}
-		WHERE t.`id` = #{xxlRegistry.id}
-	</update>
+    <select id="loadById" parameterType="java.util.HashMap" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM xxl_registry
+        WHERE id = #{id}
+    </select>
 
-	<delete id="delete" parameterType="java.util.HashMap" >
-		DELETE FROM xxl_registry
-		WHERE id = #{id}
-	</delete>
+    <insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryDO" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO xxl_registry (`biz`,
+                                  `env`,
+                                  `key`,
+                                  `data`,
+                                  `version`,
+                                  `status`)
+        VALUES
+        (#{xxlRegistry.biz},
+         #{xxlRegistry.env},
+         #{xxlRegistry.key},
+         #{xxlRegistry.data},
+         #{xxlRegistry.version},
+         #{xxlRegistry.status})
+    </insert>
 
+    <update id="update" parameterType="com.ruijing.registry.admin.data.model.RegistryDO">
+        UPDATE xxl_registry AS t
+        SET
+            `data`    = #{xxlRegistry.data},
+            `version` = #{xxlRegistry.version},
+            `status`  = #{xxlRegistry.status}
+        WHERE `id` = #{xxlRegistry.id}
+    </update>
 </mapper>

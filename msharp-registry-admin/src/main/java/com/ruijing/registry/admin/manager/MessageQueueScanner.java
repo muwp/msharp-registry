@@ -5,6 +5,7 @@ import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.common.http.Separator;
 import com.ruijing.registry.admin.data.mapper.MessageQueueMapper;
 import com.ruijing.registry.admin.data.model.MessageQueueDO;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,7 @@ public class MessageQueueScanner implements InitializingBean {
             final Long sequenceId = this.maxSequenceId;
             this.maxSequenceId = System.currentTimeMillis();
             final List<MessageQueueDO> messageQueueDOList = this.messageManager.getLastNewList(sequenceId);
-            if (null == messageQueueDOList || messageQueueDOList.size() <= 0) {
+            if (CollectionUtils.isEmpty(messageQueueDOList)) {
                 return;
             }
             for (int i = 0, size = messageQueueDOList.size(); i < size; i++) {
