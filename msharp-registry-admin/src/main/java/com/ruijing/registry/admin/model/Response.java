@@ -3,13 +3,13 @@ package com.ruijing.registry.admin.model;
 import java.io.Serializable;
 
 /**
- * ReturnT
+ * Response
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-public class ReturnT<T> implements Serializable {
+public class Response<T> implements Serializable {
 
     public static final long serialVersionUID = 42L;
 
@@ -17,9 +17,9 @@ public class ReturnT<T> implements Serializable {
 
     public static final int FAIL_CODE = 500;
 
-    public static final ReturnT<String> SUCCESS = new ReturnT<String>(null);
+    public static final Response<String> SUCCESS = new Response<String>(null);
 
-    public static final ReturnT<String> FAIL = new ReturnT<String>(FAIL_CODE, null);
+    public static final Response<String> FAIL = new Response<String>(FAIL_CODE, null);
 
     private int code;
 
@@ -27,16 +27,16 @@ public class ReturnT<T> implements Serializable {
 
     private T data;
 
-    public ReturnT() {
+    public Response() {
 
     }
 
-    public ReturnT(int code, String msg) {
+    public Response(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
-    public ReturnT(T data) {
+    public Response(T data) {
         this.code = SUCCESS_CODE;
         this.data = data;
     }
@@ -67,7 +67,6 @@ public class ReturnT<T> implements Serializable {
 
     @Override
     public String toString() {
-        return "ReturnT [code=" + code + ", msg=" + msg + ", data=" + data + "]";
+        return "Response [code=" + code + ", msg=" + msg + ", data=" + data + "]";
     }
-
 }

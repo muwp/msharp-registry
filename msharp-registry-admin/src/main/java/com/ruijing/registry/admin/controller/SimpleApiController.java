@@ -3,7 +3,7 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.client.model.MSharpRegistryData;
@@ -66,7 +66,7 @@ public class SimpleApiController {
     @RequestMapping("/registry")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<String> registry(@RequestBody(required = false) String data) {
+    public Response<String> registry(@RequestBody(required = false) String data) {
         // parse data
         MSharpRegistryData registryData = null;
         try {
@@ -75,7 +75,7 @@ public class SimpleApiController {
             Cat.logError("method:registry,data:" + data, e);
         }
         if (null == registryData) {
-            return ReturnT.FAIL;
+            return Response.FAIL;
         }
         final RegistryNodeDO xxlRegistryData = new RegistryNodeDO();
         xxlRegistryData.setBiz(registryData.getBiz());
@@ -88,7 +88,7 @@ public class SimpleApiController {
     @RequestMapping("/batch/registry")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<String> batchRegistry(@RequestBody(required = false) String data) {
+    public Response<String> batchRegistry(@RequestBody(required = false) String data) {
         // parse data
         List<MSharpRegistryData> registryDataList = null;
         try {
@@ -98,7 +98,7 @@ public class SimpleApiController {
         }
 
         if (CollectionUtils.isEmpty(registryDataList)) {
-            return ReturnT.FAIL;
+            return Response.FAIL;
         }
         String accessToken = null;
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryDataList.size());
@@ -146,7 +146,7 @@ public class SimpleApiController {
     @RequestMapping("/remove")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<String> remove(@RequestBody(required = false) String data) {
+    public Response<String> remove(@RequestBody(required = false) String data) {
         // parse data
         MSharpRegistryData registryData = null;
         try {
@@ -155,7 +155,7 @@ public class SimpleApiController {
             Cat.logError("method:remove,data:" + data, e);
         }
         if (null == registryData) {
-            return ReturnT.FAIL;
+            return Response.FAIL;
         }
         RegistryNodeDO registryNodeDO = new RegistryNodeDO();
         registryNodeDO.setBiz(registryData.getBiz());
@@ -194,7 +194,7 @@ public class SimpleApiController {
     @RequestMapping("/discovery")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<List<String>> discovery(@RequestBody(required = false) String data) {
+    public Response<List<String>> discovery(@RequestBody(required = false) String data) {
         // parse data
         MSharpRegistryData registryData = null;
         try {
@@ -205,7 +205,7 @@ public class SimpleApiController {
         if (null == registryData) {
             return null;
         }
-        final ReturnT<List<String>> returnT = registryService.discovery(registryData.getAccessToken(), registryData.getBiz(), registryData.getEnv(), registryData.getKey());
+        final Response<List<String>> returnT = registryService.discovery(registryData.getAccessToken(), registryData.getBiz(), registryData.getEnv(), registryData.getKey());
         return returnT;
     }
 

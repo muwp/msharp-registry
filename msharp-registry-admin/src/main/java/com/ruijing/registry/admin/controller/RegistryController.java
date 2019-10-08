@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,19 +39,19 @@ public class RegistryController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public ReturnT<String> delete(int id) {
+    public Response<String> delete(int id) {
         return registryService.delete(id);
     }
 
     @RequestMapping("/update")
     @ResponseBody
-    public ReturnT<String> update(RegistryDO registryDO) {
+    public Response<String> update(RegistryDO registryDO) {
         return registryService.update(registryDO);
     }
 
     @RequestMapping("/add")
     @ResponseBody
-    public ReturnT<String> add(RegistryDO registryDO) {
+    public Response<String> add(RegistryDO registryDO) {
         return registryService.add(registryDO);
     }
 }

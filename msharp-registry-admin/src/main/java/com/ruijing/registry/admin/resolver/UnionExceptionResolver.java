@@ -1,6 +1,6 @@
 package com.ruijing.registry.admin.resolver;
 
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -38,7 +38,7 @@ public class UnionExceptionResolver implements HandlerExceptionResolver {
 		}
 
 		// error result
-		ReturnT<String> errorResult = new ReturnT<String>(ReturnT.FAIL_CODE, ex.toString().replaceAll("\n", "<br/>"));
+		Response<String> errorResult = new Response<String>(Response.FAIL_CODE, ex.toString().replaceAll("\n", "<br/>"));
 
 		// response
 		ModelAndView mv = new ModelAndView();

@@ -2,7 +2,7 @@ package com.ruijing.registry.admin.service;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
@@ -19,11 +19,11 @@ public interface RegistryService {
 
     Map<String, Object> pageList(int start, int length, String biz, String env, String key);
 
-    ReturnT<String> delete(long id);
+    Response<String> delete(long id);
 
-    ReturnT<String> update(RegistryDO registryDO);
+    Response<String> update(RegistryDO registryDO);
 
-    ReturnT<String> add(RegistryDO registryDO);
+    Response<String> add(RegistryDO registryDO);
 
     // ------------------------ remote registry ------------------------
 
@@ -34,7 +34,7 @@ public interface RegistryService {
      * @param registryNodeList re
      * @return
      */
-    ReturnT<String> registry(String accessToken, List<RegistryNodeDO> registryNodeList);
+    Response<String> registry(String accessToken, List<RegistryNodeDO> registryNodeList);
 
     /**
      * remove registry-value, check update and broacase
@@ -43,7 +43,7 @@ public interface RegistryService {
      * @param registryDataList r
      * @return x
      */
-    ReturnT<String> remove(String accessToken, List<RegistryNodeDO> registryDataList);
+    Response<String> remove(String accessToken, List<RegistryNodeDO> registryDataList);
 
     /**
      * remove registry-value, check update and broacase
@@ -52,7 +52,7 @@ public interface RegistryService {
      * @param registryNode r
      * @return x
      */
-    ReturnT<String> remove(String accessToken, RegistryNodeDO registryNode);
+    Response<String> remove(String accessToken, RegistryNodeDO registryNode);
 
     /**
      * discovery registry-data, read file
@@ -63,7 +63,7 @@ public interface RegistryService {
      * @param key         k
      * @return
      */
-    ReturnT<List<String>> discovery(String accessToken, String biz, String env, String key);
+    Response<List<String>> discovery(String accessToken, String biz, String env, String key);
 
     /**
      * discovery registry-data, read file
@@ -74,7 +74,7 @@ public interface RegistryService {
      * @param keys        k
      * @return
      */
-    ReturnT<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys);
+    Response<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys);
 
     /**
      * monitor update
@@ -85,5 +85,5 @@ public interface RegistryService {
      * @param keys        k
      * @return
      */
-    DeferredResult<ReturnT<String>> monitor(String accessToken, String biz, String env, List<String> keys);
+    DeferredResult<Response<String>> monitor(String accessToken, String biz, String env, List<String> keys);
 }

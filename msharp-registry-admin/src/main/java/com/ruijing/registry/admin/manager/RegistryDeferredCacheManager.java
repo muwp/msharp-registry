@@ -1,6 +1,6 @@
 package com.ruijing.registry.admin.manager;
 
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -39,7 +39,7 @@ public class RegistryDeferredCacheManager {
         }
         registryDeferredResultMap.remove(key);
         for (DeferredResult deferredResult : deferredResultList) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Monitor key update."));
+            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
         }
     }
 

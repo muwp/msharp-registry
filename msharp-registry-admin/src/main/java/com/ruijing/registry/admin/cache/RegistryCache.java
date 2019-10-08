@@ -6,6 +6,7 @@ import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.InitializingBean;
@@ -67,11 +68,11 @@ public class RegistryCache implements InitializingBean {
     /**
      * 轮询服务
      */
-    private final ScheduledExecutorService registryUpdateExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("registry-node-sync-update-thread", true));
+    private final ScheduledExecutorService registryUpdateExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("registry-sync-update-thread", true));
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 3, TimeUnit.SECONDS);
+        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 4, TimeUnit.SECONDS);
     }
 
     private void updateRegistry() {
@@ -83,17 +84,18 @@ public class RegistryCache implements InitializingBean {
                 final RegistryQuery query = new RegistryQuery();
                 query.setOffset((index++ - 1L) * DEFAULT_BATCH_UPDATE_SIZE);
                 query.setPageSize(DEFAULT_BATCH_UPDATE_SIZE);
-                List<RegistryDO> registryList = registryMapper.queryForList(query);
-                final int size = registryList.size();
-                if (size > 0) {
-                    for (int i = 0; i < size; i++) {
-                        final RegistryDO registryDO = registryList.get(i);
-                        this.registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
-                        this.registryIdCache.put(registryDO.getId(), registryDO);
-                        registryIdSet.add(Pair.of(registryDO.getId(), Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey())));
-                    }
+                final List<RegistryDO> registryList = registryMapper.queryForList(query);
+                if (CollectionUtils.isEmpty(registryList)) {
+                    break;
                 }
-                if (size < DEFAULT_BATCH_UPDATE_SIZE) {
+
+                for (int i = 0, size = registryList.size(); i < size; i++) {
+                    final RegistryDO registryDO = registryList.get(i);
+                    this.registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
+                    this.registryIdCache.put(registryDO.getId(), registryDO);
+                    registryIdSet.add(Pair.of(registryDO.getId(), Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey())));
+                }
+                if (registryList.size() < DEFAULT_BATCH_UPDATE_SIZE) {
                     stop = true;
                 }
             }

@@ -5,7 +5,7 @@ import com.ruijing.registry.admin.data.mapper.RegistryMessageMapper;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryMessageDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.util.JacksonUtil;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.util.PropUtil;
@@ -420,7 +420,7 @@ public class RegistryServiceImpl_ implements InitializingBean, DisposableBean {
         if (deferredResultList != null) {
             registryDeferredResultMap.remove(fileName);
             for (DeferredResult deferredResult : deferredResultList) {
-                deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Monitor key update."));
+                deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
             }
         }
 

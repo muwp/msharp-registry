@@ -2,7 +2,7 @@ package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JacksonUtil;
 import com.ruijing.registry.client.model.XxlRegistryDataParamVO;
@@ -65,7 +65,7 @@ public class ApiController {
     @RequestMapping("/registry")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<String> registry(@RequestBody(required = false) String data) {
+    public Response<String> registry(@RequestBody(required = false) String data) {
 
         // parse data
         XxlRegistryParamVO registryParamVO = null;
@@ -130,7 +130,7 @@ public class ApiController {
     @RequestMapping("/remove")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<String> remove(@RequestBody(required = false) String data) {
+    public Response<String> remove(@RequestBody(required = false) String data) {
 
         // parse data
         XxlRegistryParamVO registryParamVO = null;
@@ -196,7 +196,7 @@ public class ApiController {
     @RequestMapping("/discovery")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<Map<String, List<String>>> discovery(@RequestBody(required = false) String data) {
+    public Response<Map<String, List<String>>> discovery(@RequestBody(required = false) String data) {
 
         // parse data
         XxlRegistryParamVO registryParamVO = null;

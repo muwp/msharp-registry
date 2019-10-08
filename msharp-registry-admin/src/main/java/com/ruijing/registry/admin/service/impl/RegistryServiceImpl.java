@@ -7,12 +7,12 @@ import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.manager.RegistryManager;
+import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.KeyUtil;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
-import com.ruijing.registry.admin.model.ReturnT;
 import com.ruijing.registry.admin.util.JacksonUtil;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @Service
 public class RegistryServiceImpl implements RegistryService {
 
-    private static final ReturnT<List<String>> EMPTY_RETURN_LIST = new ReturnT<>(Collections.emptyList());
+    private static final Response<List<String>> EMPTY_RETURN_LIST = new Response<>(Collections.emptyList());
 
     @Resource
     private RegistryMapper registryMapper;
@@ -54,12 +54,6 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Autowired
     private RegistryDeferredCacheManager deferredResultCache;
-
-    @Value("${msharp.registry.data.filepath}")
-    private String registryDataFilePath;
-
-    @Value("${msharp.registry.beattime}")
-    private int registryBeatTime;
 
     @Value("${msharp.registry.accessToken}")
     private String accessToken;
@@ -102,31 +96,31 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public ReturnT<String> delete(long id) {
+    public Response<String> delete(long id) {
         RegistryDO registryDO = registryCache.get(id);
         if (null == registryDO) {
-            return ReturnT.SUCCESS;
+            return Response.SUCCESS;
         }
 
         final List<RegistryNodeDO> list = registryNodeCache.get(registryDO.getId());
         registryManager.removeRegistryNodeList(list);
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     @Override
-    public ReturnT<String> update(RegistryDO registryDO) {
+    public Response<String> update(RegistryDO registryDO) {
 
         // valid
         if (StringUtils.isBlank(registryDO.getBiz())) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "业务线格式非空");
+            return new Response<>(Response.FAIL_CODE, "业务线格式非空");
         }
 
         if (StringUtils.isBlank(registryDO.getEnv())) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "环境格式非空");
+            return new Response<>(Response.FAIL_CODE, "环境格式非空");
         }
 
         if (StringUtils.isBlank(registryDO.getKey())) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "注册Key非空");
+            return new Response<>(Response.FAIL_CODE, "注册Key非空");
         }
 
         if (StringUtils.isBlank(registryDO.getData())) {
@@ -136,13 +130,13 @@ public class RegistryServiceImpl implements RegistryService {
         final List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
 
         if (CollectionUtils.isEmpty(valueList)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
+            return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
         }
 
         // valid exist
         final RegistryDO exist = this.registryCache.get(registryDO.getId());
         if (exist == null) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "ID参数非法");
+            return new Response<>(Response.FAIL_CODE, "ID参数非法");
         }
 
         registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -160,23 +154,23 @@ public class RegistryServiceImpl implements RegistryService {
 
         registryManager.addRegistryNodeList(registryNodeList);
 
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     @Override
-    public ReturnT<String> add(RegistryDO registryDO) {
+    public Response<String> add(RegistryDO registryDO) {
 
         // valid
         if (StringUtils.isBlank(registryDO.getBiz())) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "业务线格式非空");
+            return new Response<>(Response.FAIL_CODE, "业务线格式非空");
         }
 
         if (StringUtils.isBlank(registryDO.getKey())) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "注册Key非空");
+            return new Response<>(Response.FAIL_CODE, "注册Key非空");
         }
 
         if (StringUtils.isBlank(registryDO.getEnv())) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "环境格式非空");
+            return new Response<>(Response.FAIL_CODE, "环境格式非空");
         }
 
         if (StringUtils.isBlank(registryDO.getData())) {
@@ -185,14 +179,14 @@ public class RegistryServiceImpl implements RegistryService {
 
         List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
         if (valueList == null) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
+            return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
         }
 
         // valid exist
         final RegistryDO exist = registryCache.get(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()));
 
         if (exist != null) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "注册Key请勿重复");
+            return new Response<>(Response.FAIL_CODE, "注册Key请勿重复");
         }
 
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>();
@@ -207,107 +201,107 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         this.registryManager.addRegistryNodeList(registryNodeDOList);
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     // ------------------------ remote registry ------------------------
 
     @Override
-    public ReturnT<String> registry(String accessToken, List<RegistryNodeDO> registryNodeList) {
+    public Response<String> registry(String accessToken, List<RegistryNodeDO> registryNodeList) {
         // valid
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
         }
         if (CollectionUtils.isEmpty(registryNodeList)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Registry Node List Invalid");
+            return new Response<>(Response.FAIL_CODE, "Registry Node List Invalid");
         }
         this.registryManager.addRegistryNodeList(registryNodeList);
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     @Override
-    public ReturnT<String> remove(String accessToken, List<RegistryNodeDO> registryNodeList) {
+    public Response<String> remove(String accessToken, List<RegistryNodeDO> registryNodeList) {
 
         // valid
         if (this.accessToken != null && this.accessToken.trim().length() > 0 && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
         }
 
         if (CollectionUtils.isEmpty(registryNodeList)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "Registry DataList Invalid");
+            return new Response<>(Response.FAIL_CODE, "Registry DataList Invalid");
         }
 
         // fill + add queue
         registryManager.removeRegistryNodeList(registryNodeList);
 
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     @Override
-    public ReturnT<String> remove(String accessToken, RegistryNodeDO registryNode) {
+    public Response<String> remove(String accessToken, RegistryNodeDO registryNode) {
         // valid
         if (this.accessToken != null && this.accessToken.trim().length() > 0 && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
         }
 
         // fill + add queue
         registryManager.removeRegistryNode(registryNode);
 
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     @Override
-    public ReturnT<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys) {
+    public Response<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys) {
         if (CollectionUtils.isEmpty(keys)) {
-            return new ReturnT<>(Collections.emptyMap());
+            return new Response<>(Collections.emptyMap());
         }
 
         // valid
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
         }
 
         if (StringUtils.isBlank(biz)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "biz empty");
+            return new Response<>(Response.FAIL_CODE, "biz empty");
         }
 
         if (StringUtils.isBlank(env)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "env empty");
+            return new Response<>(Response.FAIL_CODE, "env empty");
         }
 
         if (CollectionUtils.isEmpty(keys)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "keys Invalid.");
+            return new Response<>(Response.FAIL_CODE, "keys Invalid.");
         }
 
         final Map<String, List<String>> result = New.mapWithCapacity(keys.size());
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
-            ReturnT<List<String>> returnT = this.discovery(accessToken, biz, env, key);
-            if (returnT.getCode() == ReturnT.SUCCESS_CODE) {
+            Response<List<String>> returnT = this.discovery(accessToken, biz, env, key);
+            if (returnT.getCode() == Response.SUCCESS_CODE) {
                 result.put(key, returnT.getData());
             }
         }
 
-        return new ReturnT<>(result);
+        return new Response<>(result);
     }
 
     @Override
-    public ReturnT<List<String>> discovery(String accessToken, String biz, String env, String key) {
+    public Response<List<String>> discovery(String accessToken, String biz, String env, String key) {
         // valid
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken Invalid");
+            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
         }
 
         if (StringUtils.isBlank(key)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "env empty");
+            return new Response<>(Response.FAIL_CODE, "env empty");
         }
 
         if (StringUtils.isBlank(env)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "env empty");
+            return new Response<>(Response.FAIL_CODE, "env empty");
         }
 
         if (StringUtils.isBlank(biz)) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, "biz empty");
+            return new Response<>(Response.FAIL_CODE, "biz empty");
         }
 
         final RegistryDO registryDO = registryCache.get(Triple.of(biz, env, key));
@@ -317,7 +311,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (registryDO.getStatus() == 1 || registryDO.getStatus() == 2) {
-            return new ReturnT(JsonUtils.parseList(registryDO.getData(), String.class));
+            return new Response(JsonUtils.parseList(registryDO.getData(), String.class));
         }
 
         final List<RegistryNodeDO> registryNodeList = this.registryNodeCache.get(registryDO.getId());
@@ -327,33 +321,33 @@ public class RegistryServiceImpl implements RegistryService {
             return EMPTY_RETURN_LIST;
         }
 
-        return new ReturnT<>(registryNodeList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList()));
+        return new Response<>(registryNodeList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList()));
     }
 
     @Override
-    public DeferredResult<ReturnT<String>> monitor(String accessToken, String biz, String env, List<String> keys) {
+    public DeferredResult<Response<String>> monitor(String accessToken, String biz, String env, List<String> keys) {
 
         // init
-        final DeferredResult deferredResult = new DeferredResult(30 * 1000L, new ReturnT<>(ReturnT.FAIL_CODE, "Monitor timeout."));
+        final DeferredResult deferredResult = new DeferredResult(30 * 1000L, new Response<>(Response.FAIL_CODE, "Monitor timeout."));
 
         // valid
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "AccessToken is empty"));
+            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "AccessToken is empty"));
             return deferredResult;
         }
 
         if (StringUtils.isBlank(biz)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Biz is empty"));
+            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Biz is empty"));
             return deferredResult;
         }
 
         if (StringUtils.isBlank(env)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "Env is empty"));
+            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Env is empty"));
             return deferredResult;
         }
 
         if (CollectionUtils.isEmpty(keys)) {
-            deferredResult.setResult(new ReturnT<>(ReturnT.FAIL_CODE, "keys is empty"));
+            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "keys is empty"));
             return deferredResult;
         }
 

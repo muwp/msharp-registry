@@ -3,7 +3,7 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.filter.MPermissionInterceptor;
-import com.ruijing.registry.admin.model.ReturnT;
+import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -57,15 +57,15 @@ public class IndexController {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<String> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) {
+    public Response<String> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) {
         // valid
         if (MPermissionInterceptor.ifLogin(request)) {
-            return ReturnT.SUCCESS;
+            return Response.SUCCESS;
         }
 
         // param
         if (userName == null || userName.trim().length() == 0 || password == null || password.trim().length() == 0) {
-            return new ReturnT<>(500, "请输入账号密码");
+            return new Response<>(500, "请输入账号密码");
         }
         boolean ifRem = (ifRemember != null && "on".equals(ifRemember)) ? true : false;
 
@@ -73,19 +73,19 @@ public class IndexController {
         boolean loginRet = MPermissionInterceptor.login(response, userName, password, ifRem);
 
         if (!loginRet) {
-            return new ReturnT<>(500, "账号密码错误");
+            return new Response<>(500, "账号密码错误");
         }
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     @RequestMapping(value = "logout", method = RequestMethod.POST)
     @ResponseBody
     @PermissionLimit(limit = false)
-    public ReturnT<String> logout(HttpServletRequest request, HttpServletResponse response) {
+    public Response<String> logout(HttpServletRequest request, HttpServletResponse response) {
         if (MPermissionInterceptor.ifLogin(request)) {
             MPermissionInterceptor.logout(request, response);
         }
-        return ReturnT.SUCCESS;
+        return Response.SUCCESS;
     }
 
     @RequestMapping("/help")
