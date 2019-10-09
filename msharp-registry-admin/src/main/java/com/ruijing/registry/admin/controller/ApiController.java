@@ -4,7 +4,7 @@ import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
-import com.ruijing.registry.admin.util.JacksonUtil;
+import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.client.model.XxlRegistryDataParamVO;
 import com.ruijing.registry.client.model.XxlRegistryParamVO;
 import org.springframework.stereotype.Controller;
@@ -70,7 +70,7 @@ public class ApiController {
         // parse data
         XxlRegistryParamVO registryParamVO = null;
         try {
-            registryParamVO = (XxlRegistryParamVO) JacksonUtil.readValue(data, XxlRegistryParamVO.class);
+            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
         } catch (Exception e) {
         }
 
@@ -135,7 +135,7 @@ public class ApiController {
         // parse data
         XxlRegistryParamVO registryParamVO = null;
         try {
-            registryParamVO = (XxlRegistryParamVO) JacksonUtil.readValue(data, XxlRegistryParamVO.class);
+            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
         } catch (Exception e) {
         }
 
@@ -201,7 +201,7 @@ public class ApiController {
         // parse data
         XxlRegistryParamVO registryParamVO = null;
         try {
-            registryParamVO = JacksonUtil.readValue(data, XxlRegistryParamVO.class);
+            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
         } catch (Exception e) {
         }
 
@@ -258,7 +258,7 @@ public class ApiController {
         // parse data
         XxlRegistryParamVO registryParamVO = null;
         try {
-            registryParamVO = JacksonUtil.readValue(data, XxlRegistryParamVO.class);
+            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
         } catch (Exception e) {
 
         }

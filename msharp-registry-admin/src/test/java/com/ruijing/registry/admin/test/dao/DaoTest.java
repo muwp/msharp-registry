@@ -2,7 +2,6 @@ package com.ruijing.registry.admin.test.dao;
 
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
-import com.ruijing.registry.admin.data.mapper.RegistryMessageMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +17,6 @@ public class DaoTest {
     private RegistryMapper registryDao;
     @Resource
     private RegistryNodeMapper registryDataDao;
-    @Resource
-    private RegistryMessageMapper registryMessageDao;
 
     @Test
     public void test(){

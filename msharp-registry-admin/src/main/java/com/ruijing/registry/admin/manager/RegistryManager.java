@@ -115,7 +115,7 @@ public class RegistryManager implements InitializingBean {
                 }
                 final int updateSize = registryNodeMapper.refresh(node);
                 if (updateSize == 0) {
-                    final RegistryDO registryDO = registryCache.get(Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey()));
+                    final RegistryDO registryDO = registryCache.get(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
                     registryNode.setRegistryId(registryDO.getId());
                     registryNodeMapper.add(registryNode);
                     this.sendMessageQueue(registryNode);

@@ -13,6 +13,8 @@ public interface Cache<R> {
 
     R get(final Long id);
 
+    R get(String biz, String env, String key);
+
     R get(final Triple<String, String, String> key);
 
     void put(final Triple<String, String, String> key, R R);

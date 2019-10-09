@@ -61,6 +61,11 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     }
 
     @Override
+    public List<RegistryNodeDO> get(String biz, String env, String key) {
+        return get(Triple.of(biz, env, key));
+    }
+
+    @Override
     public List<RegistryNodeDO> get(final Triple<String, String, String> key) {
         List<RegistryNodeDO> registryCache = registryNodeCache.get(key);
         if (CollectionUtils.isEmpty(registryCache)) {

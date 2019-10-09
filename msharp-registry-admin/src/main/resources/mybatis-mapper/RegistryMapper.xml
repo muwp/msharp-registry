@@ -76,7 +76,7 @@
                 AND env = #{env}
             </if>
             <if test="key != null and key != ''">
-                AND key like CONCAT(CONCAT('%', #{key}), '%')
+                AND `key` like CONCAT(CONCAT('%', #{key}), '%')
             </if>
         </trim>
     </select>
@@ -106,20 +106,20 @@
                                   `version`,
                                   `status`)
         VALUES
-        (#{xxlRegistry.biz},
-         #{xxlRegistry.env},
-         #{xxlRegistry.key},
-         #{xxlRegistry.data},
-         #{xxlRegistry.version},
-         #{xxlRegistry.status})
+        (#{biz},
+         #{env},
+         #{key},
+         #{data},
+         #{version},
+         #{status})
     </insert>
 
     <update id="update" parameterType="com.ruijing.registry.admin.data.model.RegistryDO">
-        UPDATE xxl_registry AS t
+        UPDATE xxl_registry
         SET
-            `data`    = #{xxlRegistry.data},
-            `version` = #{xxlRegistry.version},
-            `status`  = #{xxlRegistry.status}
-        WHERE `id` = #{xxlRegistry.id}
+            `data`    = #{data},
+            `version` = #{version},
+            `status`  = #{status}
+        WHERE `id` = #{id}
     </update>
 </mapper>

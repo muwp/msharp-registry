@@ -13,7 +13,6 @@ import com.ruijing.registry.admin.util.KeyUtil;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
-import com.ruijing.registry.admin.util.JacksonUtil;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import org.apache.commons.collections.CollectionUtils;
@@ -124,7 +123,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (StringUtils.isBlank(registryDO.getData())) {
-            registryDO.setData(JacksonUtil.writeValueAsString(Collections.emptyList()));
+            registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
         }
 
         final List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
@@ -174,7 +173,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (StringUtils.isBlank(registryDO.getData())) {
-            registryDO.setData(JacksonUtil.writeValueAsString(Collections.emptyList()));
+            registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
         }
 
         List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
@@ -189,7 +188,7 @@ public class RegistryServiceImpl implements RegistryService {
             return new Response<>(Response.FAIL_CODE, "注册Key请勿重复");
         }
 
-        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>();
+        final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
             final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setBiz(registryDO.getBiz());
@@ -211,9 +210,6 @@ public class RegistryServiceImpl implements RegistryService {
         // valid
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
             return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
-        }
-        if (CollectionUtils.isEmpty(registryNodeList)) {
-            return new Response<>(Response.FAIL_CODE, "Registry Node List Invalid");
         }
         this.registryManager.addRegistryNodeList(registryNodeList);
         return Response.SUCCESS;
@@ -304,7 +300,7 @@ public class RegistryServiceImpl implements RegistryService {
             return new Response<>(Response.FAIL_CODE, "biz empty");
         }
 
-        final RegistryDO registryDO = registryCache.get(Triple.of(biz, env, key));
+        final RegistryDO registryDO = registryCache.get(biz, env, key);
 
         if (null == registryDO) {
             return EMPTY_RETURN_LIST;

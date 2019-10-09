@@ -51,6 +51,11 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
     }
 
     @Override
+    public RegistryDO get(String biz, String env, String key) {
+        return get(Triple.of(biz, env, key));
+    }
+
+    @Override
     public RegistryDO get(final Long id) {
         RegistryDO registryDO = registryIdCache.get(id);
         if (null == registryDO) {

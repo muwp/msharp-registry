@@ -27,7 +27,7 @@ public interface RegistryMapper {
 
     RegistryDO loadById(@Param("id") Long id);
 
-    int add(@Param("xxlRegistry") RegistryDO registryDO);
+    int add(RegistryDO registryDO);
 
-    int update(@Param("xxlRegistry") RegistryDO registryDO);
+    int update(RegistryDO registryDO);
 }

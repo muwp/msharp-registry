@@ -9,6 +9,9 @@ package com.ruijing.registry.admin.data.query;
  **/
 public class RegistryNodeQuery {
 
+    /**
+     * id
+     */
     private Long id;
 
     /**
