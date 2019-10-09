@@ -13,10 +13,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -72,7 +69,7 @@ public class RegistryCache implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 4, TimeUnit.SECONDS);
+        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 5, TimeUnit.SECONDS);
     }
 
     private void updateRegistry() {
@@ -95,6 +92,7 @@ public class RegistryCache implements InitializingBean {
                     this.registryIdCache.put(registryDO.getId(), registryDO);
                     registryIdSet.add(Pair.of(registryDO.getId(), Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey())));
                 }
+
                 if (registryList.size() < DEFAULT_BATCH_UPDATE_SIZE) {
                     stop = true;
                 }
@@ -113,8 +111,8 @@ public class RegistryCache implements InitializingBean {
         return registryMapper.loadById(id);
     }
 
-    public synchronized Set<Pair<Long, Triple<String, String, String>>> getRegistrySet() {
-        return new HashSet<>(this.registryIdSet);
+    public synchronized List<Pair<Long, Triple<String, String, String>>> getRegistryList() {
+        return new ArrayList<>(this.registryIdSet);
     }
 
     private synchronized void setRegistrySet(Set<Pair<Long, Triple<String, String, String>>> registryIdSet) {

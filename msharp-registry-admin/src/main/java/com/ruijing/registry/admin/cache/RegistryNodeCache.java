@@ -2,6 +2,7 @@ package com.ruijing.registry.admin.cache;
 
 import cn.hutool.core.thread.NamedThreadFactory;
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import org.apache.commons.collections.CollectionUtils;
@@ -11,9 +12,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -28,6 +27,8 @@ import java.util.concurrent.TimeUnit;
  **/
 @Service
 public class RegistryNodeCache implements InitializingBean {
+
+    private static final int DEFAULT_BATCH_UPDATE_SIZE = 50;
 
     @Resource
     private RegistryNodeMapper registryNodeMapper;
@@ -69,18 +70,58 @@ public class RegistryNodeCache implements InitializingBean {
 
     private void updateRegistryNode() {
         try {
-            final Set<Pair<Long, Triple<String, String, String>>> registryIdSet = registryCache.getRegistrySet();
-            if (CollectionUtils.isEmpty(registryIdSet)) {
+            final List<Pair<Long, Triple<String, String, String>>> registryCacheList = registryCache.getRegistryList();
+            if (CollectionUtils.isEmpty(registryCacheList)) {
                 return;
             }
-            for (final Pair<Long, Triple<String, String, String>> pair : registryIdSet) {
-                final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findByRegistryId(pair.getKey());
-                registryIdNodeCache.put(pair.getKey(), registryNodeList);
-                registryNodeCache.put(pair.getRight(), registryNodeList);
+
+            int index = 1;
+            int size = registryCacheList.size();
+            while (true) {
+                final List<Long> registryIdList = new ArrayList<>();
+                int fromIndex = (index - 1) * DEFAULT_BATCH_UPDATE_SIZE;
+                if (fromIndex >= size) {
+                    break;
+                }
+                int toIndex = index * DEFAULT_BATCH_UPDATE_SIZE;
+                toIndex = toIndex > size ? size : toIndex;
+                final List<Pair<Long, Triple<String, String, String>>> subList = registryCacheList.subList(fromIndex, toIndex);
+                index++;
+                subList.stream().forEach(t -> registryIdList.add(t.getKey()));
+
+                final List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.findByRegistryIdList(registryIdList);
+
+                if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
+                    final Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> map = toMap(registryNodeDOList);
+                    for (final Map.Entry<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> entry : map.entrySet()) {
+                        final Pair<Long, Triple<String, String, String>> pair = entry.getKey();
+                        this.registryIdNodeCache.put(pair.getKey(), entry.getValue());
+                        this.registryNodeCache.put(pair.getRight(), entry.getValue());
+                    }
+                }
+
+                if (subList.size() < DEFAULT_BATCH_UPDATE_SIZE) {
+                    break;
+                }
             }
         } catch (Exception ex) {
             Cat.logError("RegistryNodeCache", "updateRegistryNode", null, ex);
         }
+    }
+
+    private Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> toMap(final List<RegistryNodeDO> registryNodeList) {
+        final Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> registryNodeCache = New.mapWithCapacity(registryNodeList.size());
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+            final RegistryNodeDO registryNode = registryNodeList.get(i);
+            final Pair<Long, Triple<String, String, String>> pair = Pair.of(registryNode.getRegistryId(), Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey()));
+            List<RegistryNodeDO> registryList = registryNodeCache.get(pair);
+            if (null == registryList) {
+                registryList = New.list();
+                registryNodeCache.put(pair, registryList);
+            }
+            registryList.add(registryNode);
+        }
+        return registryNodeCache;
     }
 
     private List<RegistryNodeDO> syncGet(final Triple<String, String, String> key) {

@@ -20,16 +20,16 @@ import java.io.Serializable;
 import java.net.URLEncoder;
 
 /**
- * MPermissionInterceptor
+ * PermissionInterceptorAdapter
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
 @Component
-public class MPermissionInterceptor extends HandlerInterceptorAdapter {
+public class PermissionInterceptorAdapter extends HandlerInterceptorAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(MPermissionInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(PermissionInterceptorAdapter.class);
 
     public static final String LOGIN_IDENTITY_KEY = "MSHARP_REGISTRY_LOGIN_IDENTITY";
 
@@ -68,7 +68,6 @@ public class MPermissionInterceptor extends HandlerInterceptorAdapter {
     }
 
     public static boolean login(HttpServletResponse httpServletResponse, String username, String password, boolean ifRemember) {
-
         boolean result = false;
         //登录
         final String value;
@@ -97,7 +96,7 @@ public class MPermissionInterceptor extends HandlerInterceptorAdapter {
 
         if (!ifLogin(request)) {
             HandlerMethod method = (HandlerMethod) handler;
-            PermissionLimit permission = method.getMethodAnnotation(PermissionLimit.class);
+            final PermissionLimit permission = method.getMethodAnnotation(PermissionLimit.class);
             if (permission == null || permission.limit()) {
                 response.sendRedirect(request.getContextPath() + "/toLogin");
                 //request.getRequestDispatcher("/toLogin").forward(request, response);

@@ -59,10 +59,9 @@
                 AND env = #{env}
             </if>
             <if test="key != null and key != ''">
-                AND key like CONCAT(CONCAT('%', #{key}), '%')
+                AND `key` like CONCAT(CONCAT('%', #{key}), '%')
             </if>
         </trim>
-        ORDER BY biz ASC, env ASC, key ASC
         LIMIT #{offset}, #{pagesize}
     </select>
 

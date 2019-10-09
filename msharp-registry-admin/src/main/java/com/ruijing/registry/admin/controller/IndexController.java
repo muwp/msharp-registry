@@ -2,7 +2,7 @@ package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
-import com.ruijing.registry.admin.filter.MPermissionInterceptor;
+import com.ruijing.registry.admin.filter.PermissionInterceptorAdapter;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -48,7 +48,7 @@ public class IndexController {
     @RequestMapping("/toLogin")
     @PermissionLimit(limit = false)
     public String toLogin(Model model, HttpServletRequest request) {
-        if (MPermissionInterceptor.ifLogin(request)) {
+        if (PermissionInterceptorAdapter.ifLogin(request)) {
             return "redirect:/";
         }
         return "login";
@@ -59,7 +59,7 @@ public class IndexController {
     @PermissionLimit(limit = false)
     public Response<String> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) {
         // valid
-        if (MPermissionInterceptor.ifLogin(request)) {
+        if (PermissionInterceptorAdapter.ifLogin(request)) {
             return Response.SUCCESS;
         }
 
@@ -70,7 +70,7 @@ public class IndexController {
         boolean ifRem = (ifRemember != null && "on".equals(ifRemember)) ? true : false;
 
         // do login
-        boolean loginRet = MPermissionInterceptor.login(response, userName, password, ifRem);
+        boolean loginRet = PermissionInterceptorAdapter.login(response, userName, password, ifRem);
 
         if (!loginRet) {
             return new Response<>(500, "账号密码错误");
@@ -82,8 +82,8 @@ public class IndexController {
     @ResponseBody
     @PermissionLimit(limit = false)
     public Response<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        if (MPermissionInterceptor.ifLogin(request)) {
-            MPermissionInterceptor.logout(request, response);
+        if (PermissionInterceptorAdapter.ifLogin(request)) {
+            PermissionInterceptorAdapter.logout(request, response);
         }
         return Response.SUCCESS;
     }

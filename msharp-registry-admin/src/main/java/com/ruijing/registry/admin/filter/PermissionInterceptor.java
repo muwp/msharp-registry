@@ -4,7 +4,6 @@ import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.util.CookieUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -20,7 +19,7 @@ import java.math.BigInteger;
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-@Component
+@Deprecated
 public class PermissionInterceptor extends HandlerInterceptorAdapter implements InitializingBean {
 
 

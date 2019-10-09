@@ -29,7 +29,7 @@
         `updateTime` = now()
         <where>
             <if test="registryId!=null">
-                 `registry_id` = #{registryId}
+                `registry_id` = #{registryId}
             </if>
         </where>
     </update>
@@ -83,6 +83,16 @@
         <include refid="Base_Column_List"/>
         FROM xxl_registry_data
         where registry_id = #{registryId}
+    </select>
+
+    <select id="findByRegistryIdList" parameterType="list" resultMap="BaseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM xxl_registry_data
+        where registry_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
     <select id="findData" parameterType="java.util.HashMap" resultMap="BaseMap">

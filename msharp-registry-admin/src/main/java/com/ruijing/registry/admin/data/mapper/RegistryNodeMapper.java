@@ -27,6 +27,8 @@ public interface RegistryNodeMapper {
 
     List<RegistryNodeDO> findByRegistryId(Long registryId);
 
+    List<RegistryNodeDO> findByRegistryIdList(List<Long> registryIdList);
+
     int cleanData(@Param("timeout") int timeout);
 
     int deleteData(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
