@@ -238,7 +238,7 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<String> remove(String accessToken, RegistryNodeDO registryNode) {
+    public Response<String> remove(final String accessToken, final RegistryNodeDO registryNode) {
         // valid
         if (this.accessToken != null && this.accessToken.trim().length() > 0 && !this.accessToken.equals(accessToken)) {
             return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");

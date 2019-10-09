@@ -2,6 +2,7 @@ package com.ruijing.registry.admin.manager;
 
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.cache.RegistryCache;
+import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.mapper.MessageQueueMapper;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
@@ -45,6 +46,9 @@ public class RegistryManager implements InitializingBean {
 
     @Autowired
     private RegistryCache registryCache;
+
+    @Autowired
+    private RegistryNodeCache registryNodeCache;
 
     private volatile LinkedBlockingQueue<RegistryNodeDO> registryQueue = new LinkedBlockingQueue<RegistryNodeDO>();
 
@@ -99,10 +103,20 @@ public class RegistryManager implements InitializingBean {
                     continue;
                 }
                 // refresh or add
-                final Long registryId = this.syncUpdateRegistry(registryNode);
-                registryNode.setRegistryId(registryId);
-                final int updateSize = registryNodeMapper.refresh(registryNode);
+                final Long nodeId = this.syncUpdateRegistry(registryNode);
+                final RegistryNodeDO node = new RegistryNodeDO();
+                if (null != nodeId) {
+                    node.setId(nodeId);
+                } else {
+                    node.setBiz(registryNode.getBiz());
+                    node.setEnv(registryNode.getEnv());
+                    node.setKey(registryNode.getKey());
+                    node.setValue(registryNode.getValue());
+                }
+                final int updateSize = registryNodeMapper.refresh(node);
                 if (updateSize == 0) {
+                    final RegistryDO registryDO = registryCache.get(Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey()));
+                    registryNode.setRegistryId(registryDO.getId());
                     registryNodeMapper.add(registryNode);
                     this.sendMessageQueue(registryNode);
                 }
@@ -141,19 +155,32 @@ public class RegistryManager implements InitializingBean {
     private Long syncUpdateRegistry(final RegistryNodeDO registryNode) {
         final Triple<String, String, String> triple = Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
         RegistryDO registryDO = this.registryCache.get(triple);
-        if (null != registryDO) {
-            return registryDO.getId();
+        if (null == registryDO) {
+            // update registry and message
+            registryDO = new RegistryDO();
+            registryDO.setEnv(registryNode.getEnv());
+            registryDO.setBiz(registryNode.getBiz());
+            registryDO.setKey(registryNode.getKey());
+            registryDO.setData(StringUtils.EMPTY);
+            registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
+            try {
+                this.registryMapper.add(registryDO);
+            } catch (Exception ex) {
+                //volatile
+            }
         }
-        // update registry and message
-        registryDO = new RegistryDO();
-        registryDO.setEnv(registryNode.getEnv());
-        registryDO.setBiz(registryNode.getBiz());
-        registryDO.setKey(registryNode.getKey());
-        registryDO.setData(StringUtils.EMPTY);
-        registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-        this.registryMapper.add(registryDO);
-        this.registryCache.put(triple, registryDO);
-        return registryDO.getId();
+
+        final List<RegistryNodeDO> registryNodeDOList = this.registryNodeCache.get(triple);
+        if (CollectionUtils.isEmpty(registryNodeDOList)) {
+            return null;
+        }
+        for (int i = 0, size = registryNodeDOList.size(); i < size; i++) {
+            final RegistryNodeDO tmp = registryNodeDOList.get(i);
+            if (registryNode.getValue().trim().equals(tmp.getValue())) {
+                return tmp.getId();
+            }
+        }
+        return null;
     }
 
     /**

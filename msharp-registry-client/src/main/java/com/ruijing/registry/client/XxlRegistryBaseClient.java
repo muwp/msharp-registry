@@ -17,7 +17,6 @@ import java.util.*;
 public class XxlRegistryBaseClient {
     private static Logger logger = LoggerFactory.getLogger(XxlRegistryBaseClient.class);
 
-
     private String adminAddress;
     private String accessToken;
     private String biz;

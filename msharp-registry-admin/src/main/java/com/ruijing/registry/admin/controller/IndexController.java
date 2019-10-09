@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * RegistryServiceImpl_
+ * IndexController
  *
  * @author mwup
  * @version 1.0

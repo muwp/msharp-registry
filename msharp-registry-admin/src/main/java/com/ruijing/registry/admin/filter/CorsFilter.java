@@ -22,7 +22,6 @@ import java.io.IOException;
  * @created 2018/9/4 17:03
  **/
 @Order(1)
-//重点
 @WebFilter(filterName = "corsFilter", urlPatterns = "/*",asyncSupported = true)
 public class CorsFilter implements Filter {
 
@@ -42,11 +41,9 @@ public class CorsFilter implements Filter {
             response.flushBuffer();
         }
         chain.doFilter(request, response);
-
     }
 
     @Override
     public void destroy() {
-
     }
 }

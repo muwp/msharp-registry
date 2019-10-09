@@ -3,7 +3,7 @@ package com.ruijing.registry.admin.data.model;
 import java.util.Date;
 
 /**
- * RegistryMessageMapper
+ * MessageQueueDO
  *
  * @author mwup
  * @version 1.0

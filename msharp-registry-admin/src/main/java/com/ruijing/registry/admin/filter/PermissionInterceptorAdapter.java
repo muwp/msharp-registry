@@ -46,7 +46,6 @@ public class PermissionInterceptorAdapter extends HandlerInterceptorAdapter {
         }
     }
 
-
     public static String getLoginIdentityToken() {
         return LOGIN_IDENTITY_TOKEN;
     }

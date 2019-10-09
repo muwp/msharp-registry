@@ -28,8 +28,20 @@
         SET
         `updateTime` = now()
         <where>
-            <if test="registryId!=null">
-                `registry_id` = #{registryId}
+            <if test="biz!=null">
+                biz=#{biz}
+            </if>
+            <if test="env!=null">
+                AND `env` = #{env}
+            </if>
+            <if test="id!=null">
+                AND id=#{id}
+            </if>
+            <if test="key!=null">
+                AND `key` = #{key}
+            </if>
+            <if test="value!=null">
+                AND `value` = #{value}
             </if>
         </where>
     </update>

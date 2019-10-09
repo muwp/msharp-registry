@@ -157,12 +157,12 @@ public class SimpleApiController {
         if (null == registryData) {
             return Response.FAIL;
         }
-        RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-        registryNodeDO.setBiz(registryData.getBiz());
-        registryNodeDO.setEnv(registryData.getEnv());
-        registryNodeDO.setKey(registryData.getKey());
-        registryNodeDO.setValue(registryData.getValue());
-        return registryService.remove(registryData.getAccessToken(), registryNodeDO);
+        RegistryNodeDO registryNode = new RegistryNodeDO();
+        registryNode.setBiz(registryData.getBiz());
+        registryNode.setEnv(registryData.getEnv());
+        registryNode.setKey(registryData.getKey());
+        registryNode.setValue(registryData.getValue());
+        return registryService.remove(registryData.getAccessToken(), registryNode);
     }
 
     /**

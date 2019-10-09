@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @created 2019/07/23 17:03
  **/
 @Service
-public class RegistryNodeCache implements InitializingBean {
+public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, InitializingBean {
 
     private static final int DEFAULT_BATCH_UPDATE_SIZE = 50;
 
@@ -50,6 +50,7 @@ public class RegistryNodeCache implements InitializingBean {
         this.nodeUpdateExecutor.scheduleWithFixedDelay(this::updateRegistryNode, 1, 2, TimeUnit.SECONDS);
     }
 
+    @Override
     public List<RegistryNodeDO> get(final Long registryId) {
         List<RegistryNodeDO> registryCache = registryIdNodeCache.get(registryId);
         if (CollectionUtils.isEmpty(registryCache)) {
@@ -59,6 +60,7 @@ public class RegistryNodeCache implements InitializingBean {
         return registryCache;
     }
 
+    @Override
     public List<RegistryNodeDO> get(final Triple<String, String, String> key) {
         List<RegistryNodeDO> registryCache = registryNodeCache.get(key);
         if (CollectionUtils.isEmpty(registryCache)) {
@@ -130,5 +132,10 @@ public class RegistryNodeCache implements InitializingBean {
 
     private List<RegistryNodeDO> syncGet(final Long registryId) {
         return registryNodeMapper.findByRegistryId(registryId);
+    }
+
+    @Override
+    public void put(Triple<String, String, String> key, List<RegistryNodeDO> R) {
+
     }
 }

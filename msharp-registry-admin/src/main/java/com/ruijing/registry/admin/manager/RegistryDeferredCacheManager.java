@@ -32,13 +32,13 @@ public class RegistryDeferredCacheManager {
     }
 
     public void remove(String key) {
-        // brocast monitor client
+        // broadcast monitor client
         final List<DeferredResult> deferredResultList = registryDeferredResultMap.get(key);
         if (CollectionUtils.isEmpty(deferredResultList)) {
             return;
         }
         registryDeferredResultMap.remove(key);
-        for (DeferredResult deferredResult : deferredResultList) {
+        for (final DeferredResult deferredResult : deferredResultList) {
             deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
         }
     }

@@ -74,6 +74,12 @@
 
         <dependency>
             <groupId>com.ruijing.fundamental</groupId>
+            <artifactId>cat-spring-boot-starter</artifactId>
+            <version>1.3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ruijing.fundamental</groupId>
             <artifactId>msharp-sharding-spring-boot-starter</artifactId>
             <version>1.3.0-SNAPSHOT</version>
         </dependency>

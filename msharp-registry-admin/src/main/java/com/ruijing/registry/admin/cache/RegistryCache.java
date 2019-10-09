@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @created 2019/07/23 17:03
  **/
 @Service
-public class RegistryCache implements InitializingBean {
+public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
 
     private static final int DEFAULT_BATCH_UPDATE_SIZE = 100;
 
@@ -40,6 +40,7 @@ public class RegistryCache implements InitializingBean {
 
     private volatile Set<Pair<Long, Triple<String, String, String>>> registryIdSet = new ConcurrentHashSet<>();
 
+    @Override
     public RegistryDO get(final Triple<String, String, String> key) {
         RegistryDO registryDO = registryCache.get(key);
         if (null == registryDO) {
@@ -49,6 +50,7 @@ public class RegistryCache implements InitializingBean {
         return registryDO;
     }
 
+    @Override
     public RegistryDO get(final Long id) {
         RegistryDO registryDO = registryIdCache.get(id);
         if (null == registryDO) {
@@ -58,6 +60,7 @@ public class RegistryCache implements InitializingBean {
         return registryDO;
     }
 
+    @Override
     public void put(final Triple<String, String, String> key, RegistryDO registryDO) {
         registryCache.put(key, registryDO);
     }

@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.Properties;
 
 /**
- * RegistryServiceImpl
+ * PropUtil
  *
  * @author mwup
  * @version 1.0

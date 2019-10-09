@@ -1,11 +1,13 @@
 package com.ruijing.registry.admin;
 
+import com.msharp.sharding.jdbc.springboot.autoconfigure.annotation.EnableMSharpDataSource;
+import com.ruijing.cat.springboot.autoconfigure.annotation.EnableCat;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
- * RegistryServiceImpl
+ * RegistryAdminApplication
  *
  * @author mwup
  * @version 1.0
@@ -13,10 +15,11 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
  **/
 @SpringBootApplication
 @ServletComponentScan
-public class XxlRegistryAdminApplication {
+@EnableCat
+@EnableMSharpDataSource
+public class RegistryAdminApplication {
 
 	public static void main(String[] args) {
-        SpringApplication.run(XxlRegistryAdminApplication.class, args);
+        SpringApplication.run(RegistryAdminApplication.class, args);
 	}
-
 }
