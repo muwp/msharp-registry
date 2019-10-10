@@ -12,7 +12,7 @@ CREATE TABLE `xxl_registry`
   `version` varchar(255) NOT NULL COMMENT '版本',
   `status`  tinyint(4)   NOT NULL DEFAULT '0' COMMENT '状态:0-正常、1-锁定、2-禁用,3-下线',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `I_b_e_k` (`biz`, `env`, `key`) USING BTREE
+  UNIQUE KEY `uq_biz_env_key` (`biz`, `env`, `key`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -27,18 +27,8 @@ CREATE TABLE `xxl_registry_data`
   `value`       varchar(255) NOT NULL COMMENT '注册Value',
   `updateTime`  datetime     NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `I_b_e_k_v` (`biz`, `env`, `key`, `value`),
+  UNIQUE KEY `uq_biz_env_key_value` (`biz`, `env`, `key`, `value`),
   key `idx_registry_id` (`registry_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `xxl_registry_message`
-(
-  `id`      int(11)    NOT NULL AUTO_INCREMENT,
-  `type`    tinyint(4) NOT NULL DEFAULT '0' COMMENT '消息类型：0-注册更新',
-  `data`    text       NOT NULL COMMENT '消息内容',
-  `addTime` datetime   NOT NULL COMMENT '添加时间',
-  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -53,7 +43,7 @@ CREATE TABLE `message_queue`
   `update_time` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_sequence_9d` (`sequence_id`),
-  UNIQUE KEY `I_b_e_k_v` (`biz`, `env`, `key`)
+  KEY `idx_sequence_id` (`sequence_id`),
+  UNIQUE KEY `uq_biz_env_key` (`biz`, `env`, `key`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
