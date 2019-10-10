@@ -1,37 +1,40 @@
 package com.ruijing.registry.admin.controller;
 
+import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
+import com.ruijing.registry.client.model.RegistryNode;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.client.model.XxlRegistryDataParamVO;
-import com.ruijing.registry.client.model.XxlRegistryParamVO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * ApiController
+ * SimpleApiController
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
 @Controller
-@RequestMapping("/api")
-@Deprecated
+@RequestMapping("/simple/api")
 public class ApiController {
 
+    @Value("${msharp.registry.accessToken}")
+    private String accessToken;
+
     @Resource
-    private RegistryService xxlRegistryService;
+    private RegistryService registryService;
 
     /**
      * 服务注册 & 续约 API
@@ -53,10 +56,8 @@ public class ApiController {
      * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
-     * "registryDataList" : [{
      * "key" : "service01",
      * "value" : "address01"
-     * }]
      * }
      *
      * @param data
@@ -66,36 +67,53 @@ public class ApiController {
     @ResponseBody
     @PermissionLimit(limit = false)
     public Response<String> registry(@RequestBody(required = false) String data) {
-
         // parse data
-        XxlRegistryParamVO registryParamVO = null;
+        RegistryNode registryData = null;
         try {
-            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
+            registryData = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
+            Cat.logError("method:registry,data:" + data, e);
+        }
+        if (null == registryData) {
+            return Response.FAIL;
+        }
+        final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
+        registryNodeDO.setBiz(registryData.getBiz());
+        registryNodeDO.setEnv(registryData.getEnv());
+        registryNodeDO.setKey(registryData.getKey());
+        registryNodeDO.setValue(registryData.getValue());
+        return registryService.registry(registryData.getAccessToken(), Arrays.asList(registryNodeDO));
+    }
+
+    @RequestMapping("/batch/registry")
+    @ResponseBody
+    @PermissionLimit(limit = false)
+    public Response<String> batchRegistry(@RequestBody(required = false) String data) {
+        // parse data
+        List<RegistryNode> registryDataList = null;
+        try {
+            registryDataList = JsonUtils.parseList(data, RegistryNode.class);
+        } catch (Exception e) {
+            Cat.logError("method:batchRegistry,data:" + data, e);
         }
 
-        // parse param
+        if (CollectionUtils.isEmpty(registryDataList)) {
+            return Response.FAIL;
+        }
         String accessToken = null;
-        String biz = null;
-        String env = null;
-        List<RegistryNodeDO> registryDataList = null;
-
-        if (registryParamVO != null) {
-            accessToken = registryParamVO.getAccessToken();
-            biz = registryParamVO.getBiz();
-            env = registryParamVO.getEnv();
-            if (registryParamVO.getRegistryDataList() != null) {
-                registryDataList = new ArrayList<>();
-                for (XxlRegistryDataParamVO dataParamVO : registryParamVO.getRegistryDataList()) {
-                    RegistryNodeDO dateItem = new RegistryNodeDO();
-                    dateItem.setKey(dataParamVO.getKey());
-                    dateItem.setValue(dataParamVO.getValue());
-                    registryDataList.add(dateItem);
-                }
+        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryDataList.size());
+        for (final RegistryNode registryData : registryDataList) {
+            if (StringUtils.isEmpty(accessToken)) {
+                accessToken = registryData.getAccessToken();
             }
+            final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
+            registryNodeDO.setKey(registryData.getKey());
+            registryNodeDO.setValue(registryData.getValue());
+            registryNodeDO.setBiz(registryData.getBiz());
+            registryNodeDO.setEnv(registryData.getEnv());
+            registryNodeDOList.add(registryNodeDO);
         }
-
-        return xxlRegistryService.registry(accessToken, registryDataList);
+        return registryService.registry(accessToken, registryNodeDOList);
     }
 
     /**
@@ -118,10 +136,8 @@ public class ApiController {
      * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
-     * "registryDataList" : [{
      * "key" : "service01",
      * "value" : "address01"
-     * }]
      * }
      *
      * @param data
@@ -131,38 +147,23 @@ public class ApiController {
     @ResponseBody
     @PermissionLimit(limit = false)
     public Response<String> remove(@RequestBody(required = false) String data) {
-
         // parse data
-        XxlRegistryParamVO registryParamVO = null;
+        RegistryNode registryData = null;
         try {
-            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
+            registryData = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
+            Cat.logError("method:remove,data:" + data, e);
         }
-
-        // parse param
-        String accessToken = null;
-        String biz = null;
-        String env = null;
-        List<RegistryNodeDO> registryDataList = null;
-
-        if (registryParamVO != null) {
-            accessToken = registryParamVO.getAccessToken();
-            biz = registryParamVO.getBiz();
-            env = registryParamVO.getEnv();
-            if (registryParamVO.getRegistryDataList() != null) {
-                registryDataList = new ArrayList<>();
-                for (XxlRegistryDataParamVO dataParamVO : registryParamVO.getRegistryDataList()) {
-                    RegistryNodeDO dateItem = new RegistryNodeDO();
-                    dateItem.setKey(dataParamVO.getKey());
-                    dateItem.setValue(dataParamVO.getValue());
-                    registryDataList.add(dateItem);
-                }
-            }
+        if (null == registryData) {
+            return Response.FAIL;
         }
-
-        return xxlRegistryService.remove(accessToken, registryDataList);
+        RegistryNodeDO registryNode = new RegistryNodeDO();
+        registryNode.setBiz(registryData.getBiz());
+        registryNode.setEnv(registryData.getEnv());
+        registryNode.setKey(registryData.getKey());
+        registryNode.setValue(registryData.getValue());
+        return registryService.remove(registryData.getAccessToken(), registryNode);
     }
-
 
     /**
      * 服务发现 API
@@ -184,10 +185,7 @@ public class ApiController {
      * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
-     * "keys" : [
      * "service01",
-     * "service02"
-     * ]
      * }
      *
      * @param data
@@ -196,29 +194,19 @@ public class ApiController {
     @RequestMapping("/discovery")
     @ResponseBody
     @PermissionLimit(limit = false)
-    public Response<Map<String, List<String>>> discovery(@RequestBody(required = false) String data) {
-
+    public Response<List<String>> discovery(@RequestBody(required = false) String data) {
         // parse data
-        XxlRegistryParamVO registryParamVO = null;
+        RegistryNode registryData = null;
         try {
-            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
+            registryData = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
+            Cat.logError("method:discovery,data:" + data, e);
         }
-
-        // parse param
-        String accessToken = null;
-        String biz = null;
-        String env = null;
-        List<String> keys = null;
-
-        if (registryParamVO != null) {
-            accessToken = registryParamVO.getAccessToken();
-            biz = registryParamVO.getBiz();
-            env = registryParamVO.getEnv();
-            keys = registryParamVO.getKeys();
+        if (null == registryData) {
+            return null;
         }
-
-        return xxlRegistryService.discovery(accessToken, biz, env, keys);
+        final Response<List<String>> returnT = registryService.discovery(registryData.getAccessToken(), registryData.getBiz(), registryData.getEnv(), registryData.getKey());
+        return returnT;
     }
 
     /**
@@ -241,10 +229,7 @@ public class ApiController {
      * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
-     * "keys" : [
-     * "service01",
      * "service02"
-     * ]
      * }
      *
      * @param data
@@ -254,28 +239,20 @@ public class ApiController {
     @ResponseBody
     @PermissionLimit(limit = false)
     public DeferredResult monitor(@RequestBody(required = false) String data) {
-
         // parse data
-        XxlRegistryParamVO registryParamVO = null;
+        RegistryNode registryNode = null;
         try {
-            registryParamVO = JsonUtils.fromJson(data, XxlRegistryParamVO.class);
+            registryNode = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
-
+            Cat.logError("method:monitor,data:" + data, e);
         }
 
-        // parse param
-        String accessToken = null;
-        String biz = null;
-        String env = null;
-        List<String> keys = null;
-
-        if (registryParamVO != null) {
-            accessToken = registryParamVO.getAccessToken();
-            biz = registryParamVO.getBiz();
-            env = registryParamVO.getEnv();
-            keys = registryParamVO.getKeys();
+        if (null == registryNode) {
+            DeferredResult result = new DeferredResult();
+            result.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
+            return result;
         }
 
-        return xxlRegistryService.monitor(accessToken, biz, env, keys);
+        return registryService.monitor(registryNode.getAccessToken(), registryNode.getBiz(), registryNode.getEnv(), Arrays.asList(registryNode.getKey()));
     }
 }

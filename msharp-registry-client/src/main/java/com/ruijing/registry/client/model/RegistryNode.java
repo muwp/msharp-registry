@@ -1,12 +1,15 @@
 package com.ruijing.registry.client.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * @author xuxueli 2018-11-23
- */
-public class MSharpRegistryData implements Serializable {
+ * RegistryNodeDO
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2019/07/23 17:03
+ **/
+public class RegistryNode implements Serializable {
 
     /**
      * access Token
@@ -32,11 +35,6 @@ public class MSharpRegistryData implements Serializable {
      * 注册Value
      */
     private String value;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
     public String getAccessToken() {
         return accessToken;
@@ -78,22 +76,15 @@ public class MSharpRegistryData implements Serializable {
         this.value = value;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
-        return "MSharpRegistryData{" +
-                "biz='" + biz + '\'' +
-                ", env='" + env + '\'' +
-                ", key='" + key + '\'' +
-                ", value='" + value + '\'' +
-                ", updateTime=" + updateTime +
-                '}';
+        final StringBuilder sb = new StringBuilder("RegistryNode{");
+        sb.append("accessToken='").append(accessToken).append('\'');
+        sb.append(", biz='").append(biz).append('\'');
+        sb.append(", env='").append(env).append('\'');
+        sb.append(", key='").append(key).append('\'');
+        sb.append(", value='").append(value).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

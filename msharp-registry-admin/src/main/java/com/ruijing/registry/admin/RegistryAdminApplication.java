@@ -2,9 +2,11 @@ package com.ruijing.registry.admin;
 
 import com.msharp.sharding.jdbc.springboot.autoconfigure.annotation.EnableMSharpDataSource;
 import com.ruijing.cat.springboot.autoconfigure.annotation.EnableCat;
+import com.ruijing.pearl.annotation.EnablePearl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * RegistryAdminApplication
@@ -17,6 +19,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @ServletComponentScan
 @EnableCat
 @EnableMSharpDataSource
+@EnablePearl
 public class RegistryAdminApplication {
 
 	public static void main(String[] args) {
