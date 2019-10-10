@@ -1,7 +1,5 @@
 package com.ruijing.registry.admin.data.model;
 
-import java.util.List;
-
 /**
  * RegistryDO
  *
@@ -42,11 +40,6 @@ public class RegistryDO {
      * 状态：0-正常、1-锁定、2-禁用,3-下线
      */
     private int status;
-
-    /**
-     * plugin(用于返回客户端结果)
-     */
-    private List<String> dataList;
 
     public Long getId() {
         return id;
@@ -104,14 +97,6 @@ public class RegistryDO {
         this.status = status;
     }
 
-    public List<String> getDataList() {
-        return dataList;
-    }
-
-    public void setDataList(List<String> dataList) {
-        this.dataList = dataList;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryDO{");
@@ -122,7 +107,6 @@ public class RegistryDO {
         sb.append(", data='").append(data).append('\'');
         sb.append(", version='").append(version).append('\'');
         sb.append(", status=").append(status);
-        sb.append(", dataList=").append(dataList);
         sb.append('}');
         return sb.toString();
     }

@@ -6,6 +6,7 @@ import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
+import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
@@ -66,17 +67,16 @@ public class RegistryServiceImpl implements RegistryService {
             len = registryMapper.pageListCount(start, length, biz, env, key);
             for (int i = 0, size = list.size(); i < size; i++) {
                 final RegistryDO registryDO = list.get(i);
-                if (registryDO.getStatus() == 1 || registryDO.getStatus() == 2) {
+                if (registryDO.getStatus() == RegistryStatusEnum.LOCKED.getCode() || registryDO.getStatus() == RegistryStatusEnum.FORBID.getCode()) {
                     //
                 } else {
                     final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
                     if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
                         List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList());
-                        registryDO.setDataList(result);
                         registryDO.setData(JsonUtils.toJson(result));
                     } else {
                         registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
-                        registryDO.setStatus(3);
+                        registryDO.setStatus(RegistryStatusEnum.OFFLINE.getCode());
                     }
                 }
             }
@@ -306,7 +306,7 @@ public class RegistryServiceImpl implements RegistryService {
             return EMPTY_RETURN_LIST;
         }
 
-        if (registryDO.getStatus() == 1 || registryDO.getStatus() == 2) {
+        if (registryDO.getStatus() == RegistryStatusEnum.LOCKED.getCode() || registryDO.getStatus() == RegistryStatusEnum.FORBID.getCode()) {
             return new Response(JsonUtils.parseList(registryDO.getData(), String.class));
         }
 

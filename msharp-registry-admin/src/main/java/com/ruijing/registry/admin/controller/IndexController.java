@@ -31,15 +31,15 @@ import java.util.Date;
 public class IndexController {
 
     @Resource
-    private RegistryMapper xxlRegistryDao;
+    private RegistryMapper registryMapper;
 
     @Resource
-    private RegistryNodeMapper xxlRegistryDataDao;
+    private RegistryNodeMapper registryNodeMapper;
 
     @RequestMapping("/")
     public String index(Model model, HttpServletRequest request) {
-        int registryNum = xxlRegistryDao.pageListCount(0, 1, null, null, null);
-        int registryDataNum = xxlRegistryDataDao.count();
+        int registryNum = registryMapper.pageListCount(0, 1, null, null, null);
+        int registryDataNum = registryNodeMapper.count();
         model.addAttribute("registryNum", registryNum);
         model.addAttribute("registryDataNum", registryDataNum);
         return "index";

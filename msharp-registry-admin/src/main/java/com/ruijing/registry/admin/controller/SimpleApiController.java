@@ -246,6 +246,13 @@ public class SimpleApiController {
         } catch (Exception e) {
             Cat.logError("method:monitor,data:" + data, e);
         }
+
+        if (null == registryData) {
+            DeferredResult result = new DeferredResult();
+            result.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
+            return result;
+        }
+
         return registryService.monitor(registryData.getAccessToken(), registryData.getBiz(), registryData.getEnv(), Arrays.asList(registryData.getKey()));
     }
 }
