@@ -211,6 +211,7 @@ public class RegistryServiceImpl implements RegistryService {
         if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
             return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
         }
+
         this.registryManager.addRegistryNodeList(registryNodeList);
         return Response.SUCCESS;
     }
@@ -277,7 +278,6 @@ public class RegistryServiceImpl implements RegistryService {
                 result.put(key, returnT.getData());
             }
         }
-
         return new Response<>(result);
     }
 

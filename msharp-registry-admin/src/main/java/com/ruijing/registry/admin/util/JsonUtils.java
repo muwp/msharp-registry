@@ -21,7 +21,7 @@ import java.util.Map;
  * @version 1.0
  * @created 2018/9/4 17:03
  **/
-public class JsonUtils {
+public final class JsonUtils {
 
     private static Logger logger = LoggerFactory.getLogger(JsonMapper.class);
 

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-public class CookieUtil {
+public final class CookieUtil {
 
     /**
      * 默认缓存时间,单位/秒, 2H

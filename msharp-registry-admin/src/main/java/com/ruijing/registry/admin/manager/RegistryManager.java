@@ -1,6 +1,8 @@
 package com.ruijing.registry.admin.manager;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.mapper.MessageQueueMapper;
@@ -9,12 +11,9 @@ import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import com.ruijing.registry.admin.data.model.MessageQueueDO;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.service.impl.RegistryServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,6 @@ import java.util.concurrent.*;
  **/
 @Service
 public class RegistryManager implements InitializingBean {
-
-    private static Logger logger = LoggerFactory.getLogger(RegistryServiceImpl.class);
 
     @Resource
     private RegistryMapper registryMapper;
@@ -102,8 +99,9 @@ public class RegistryManager implements InitializingBean {
                 if (null == registryNode) {
                     continue;
                 }
+
                 // refresh or add
-                final Long nodeId = this.syncUpdateRegistry(registryNode);
+                final Long nodeId = this.syncUpdateRegistryAndReturnNodeId(registryNode);
                 final RegistryNodeDO node = new RegistryNodeDO();
                 if (null != nodeId) {
                     node.setId(nodeId);
@@ -113,16 +111,42 @@ public class RegistryManager implements InitializingBean {
                     node.setKey(registryNode.getKey());
                     node.setValue(registryNode.getValue());
                 }
-                final int updateSize = registryNodeMapper.refresh(node);
+
+                int updateSize = 0;
+                Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.refresh");
+                try {
+                    updateSize = registryNodeMapper.refresh(node);
+                    transaction.setSuccessStatus();
+                } catch (Exception ex) {
+                    transaction.setStatus(ex);
+                } finally {
+                    transaction.complete();
+                }
+
                 if (updateSize == 0) {
+                    boolean isUpdate = true;
                     final RegistryDO registryDO = registryCache.get(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
                     registryNode.setRegistryId(registryDO.getId());
-                    registryNodeMapper.add(registryNode);
-                    this.sendMessageQueue(registryNode);
+                    Transaction newTransaction = Cat.newTransaction("registryManager", "registryNodeMapper.add");
+                    try {
+                        registryNodeMapper.add(registryNode);
+                        newTransaction.setSuccessStatus();
+                    } catch (Exception ex) {
+                        if (ex instanceof MySQLIntegrityConstraintViolationException) {
+                            isUpdate = false;
+                            Cat.logError("registryManager", "registryNodeMapper.add", null, ex);
+                        }
+                        newTransaction.setStatus(ex);
+                    } finally {
+                        newTransaction.complete();
+                    }
+
+                    if (isUpdate) {
+                        this.sendMessageQueue(registryNode);
+                    }
                 }
             } catch (Exception e) {
                 Cat.logError("RegistryManager", "scheduledSaveOrUpdateRegistryNode", StringUtils.EMPTY, e);
-                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -137,14 +161,23 @@ public class RegistryManager implements InitializingBean {
                 if (null == registryNode) {
                     continue;
                 }
+
                 // delete
-                final int size = registryNodeMapper.deleteDataValue(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey(), registryNode.getValue());
-                if (size > 0) {
+                int deletedSize = 0;
+                Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.deleteDataValue");
+                try {
+                    deletedSize = registryNodeMapper.deleteDataValue(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey(), registryNode.getValue());
+                    transaction.setSuccessStatus();
+                } catch (Exception ex) {
+                    transaction.setStatus(ex);
+                } finally {
+                    transaction.complete();
+                }
+                if (deletedSize > 0) {
                     this.sendMessageQueue(registryNode);
                 }
             } catch (Exception e) {
                 Cat.logError("RegistryManager", "scheduledClearRegistryNode", StringUtils.EMPTY, e);
-                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -152,7 +185,7 @@ public class RegistryManager implements InitializingBean {
     /**
      * add Registry
      */
-    private Long syncUpdateRegistry(final RegistryNodeDO registryNode) {
+    private Long syncUpdateRegistryAndReturnNodeId(final RegistryNodeDO registryNode) {
         final Triple<String, String, String> triple = Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
         RegistryDO registryDO = this.registryCache.get(triple);
         if (null == registryDO) {
@@ -163,10 +196,14 @@ public class RegistryManager implements InitializingBean {
             registryDO.setKey(registryNode.getKey());
             registryDO.setData(StringUtils.EMPTY);
             registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
+            Transaction transaction = Cat.newTransaction("registryManager", "registryMapper.add");
             try {
                 this.registryMapper.add(registryDO);
+                transaction.setSuccessStatus();
             } catch (Exception ex) {
-                //volatile
+                transaction.setStatus(ex);
+            } finally {
+                transaction.complete();
             }
         }
 
@@ -174,9 +211,10 @@ public class RegistryManager implements InitializingBean {
         if (CollectionUtils.isEmpty(registryNodeDOList)) {
             return null;
         }
+
         for (int i = 0, size = registryNodeDOList.size(); i < size; i++) {
             final RegistryNodeDO tmp = registryNodeDOList.get(i);
-            if (registryNode.getValue().trim().equals(tmp.getValue())) {
+            if (Objects.equals(registryNode.getValue(), tmp.getValue())) {
                 return tmp.getId();
             }
         }
@@ -197,10 +235,14 @@ public class RegistryManager implements InitializingBean {
                 final Date date = new Date();
                 queueDO.setUpdateTime(date);
                 queueDO.setSequenceId(System.currentTimeMillis());
+                Transaction transaction = Cat.newTransaction("registryManager", "messageQueueMapper.insertSelective");
                 try {
                     this.messageQueueMapper.insertSelective(queueDO);
+                    transaction.setSuccessStatus();
                 } catch (Exception ex) {
-                    Cat.logError("RegistryManager", "insertSelective", null, ex);
+                    transaction.setStatus(ex);
+                } finally {
+                    transaction.complete();
                 }
             } else {
                 final MessageQueueDO messageQueueDO = new MessageQueueDO();
@@ -208,7 +250,15 @@ public class RegistryManager implements InitializingBean {
                 messageQueueDO.setUpdateTime(date);
                 messageQueueDO.setSequenceId(System.currentTimeMillis());
                 messageQueueDO.setId(list.get(0).getId());
-                this.messageQueueMapper.updateByPrimaryKeySelective(messageQueueDO);
+                Transaction transaction = Cat.newTransaction("registryManager", "messageQueueMapper.updateByPrimaryKeySelective");
+                try {
+                    this.messageQueueMapper.updateByPrimaryKeySelective(messageQueueDO);
+                    transaction.setSuccessStatus();
+                } catch (Exception ex) {
+                    transaction.setStatus(ex);
+                } finally {
+                    transaction.complete();
+                }
             }
         } catch (Exception e) {
             Cat.logError("RegistryManager", "syncMessageQueue", null, e);

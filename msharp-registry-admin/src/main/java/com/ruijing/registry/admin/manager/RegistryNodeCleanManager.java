@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.manager;
 
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RegistryNodeCleanManager implements InitializingBean {
 
+    private static final int DEFAULT_TIME_OUT = 60;
+
     @Resource
     private RegistryNodeMapper registryNodeMapper;
 
@@ -35,11 +38,15 @@ public class RegistryNodeCleanManager implements InitializingBean {
     }
 
     private void cleanOverdueNode() {
+        Transaction transaction = Cat.newTransaction("RegistryNodeCleanManager", "cleanOverdueNode");
         try {
             // clean old registry-data in db
-            registryNodeMapper.cleanData(60);
+            registryNodeMapper.cleanData(DEFAULT_TIME_OUT);
+            transaction.setSuccessStatus();
         } catch (Exception ex) {
-            Cat.logError("RegistryManager", "cleanOverdueRegistryNode", null, ex);
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
         }
     }
 }
