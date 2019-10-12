@@ -122,4 +122,10 @@
             `status`  = #{status}
         WHERE `id` = #{id}
     </update>
+
+    <delete id="delete" parameterType="long">
+        delete
+        from xxl_registry
+        WHERE `id` = #{id}
+    </delete>
 </mapper>

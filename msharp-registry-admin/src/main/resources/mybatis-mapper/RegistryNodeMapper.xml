@@ -139,6 +139,13 @@
           and `value` = #{value}
     </delete>
 
+    <delete id="delete" parameterType="long">
+        DELETE
+        FROM xxl_registry_data
+        WHERE `id` = #{id}
+    </delete>
+
+
     <select id="count" resultType="java.lang.Integer">
         SELECT count(1)
         FROM xxl_registry_data

@@ -18,4 +18,12 @@ public interface Cache<R> {
     R get(final Triple<String, String, String> key);
 
     void put(final Triple<String, String, String> key, R R);
+
+    boolean remove(final Long id);
+
+    boolean remove(R R);
+
+    int persist(R r);
+
+    int refresh(R r);
 }

@@ -11,10 +11,7 @@ import java.io.Serializable;
  **/
 public class RegistryNode implements Serializable {
 
-    /**
-     * access Token
-     */
-    private String accessToken;
+    public static final long serialVersionUID = 42L;
 
     /**
      * 业务标识
@@ -35,14 +32,6 @@ public class RegistryNode implements Serializable {
      * 注册Value
      */
     private String value;
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
 
     public String getBiz() {
         return biz;
@@ -79,7 +68,6 @@ public class RegistryNode implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNode{");
-        sb.append("accessToken='").append(accessToken).append('\'');
         sb.append(", biz='").append(biz).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", key='").append(key).append('\'');

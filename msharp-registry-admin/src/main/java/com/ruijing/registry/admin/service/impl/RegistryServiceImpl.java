@@ -20,7 +20,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -54,9 +53,6 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Autowired
     private RegistryDeferredCacheManager deferredResultCache;
-
-    @Value("${msharp.registry.accessToken}")
-    private String accessToken;
 
     @Override
     public Map<String, Object> pageList(int start, int length, String biz, String env, String key) {
@@ -100,6 +96,8 @@ public class RegistryServiceImpl implements RegistryService {
         if (null == registryDO) {
             return Response.SUCCESS;
         }
+
+        registryCache.remove(registryDO.getId());
 
         final List<RegistryNodeDO> list = registryNodeCache.get(registryDO.getId());
         registryManager.removeRegistryNodeList(list);
@@ -206,23 +204,14 @@ public class RegistryServiceImpl implements RegistryService {
     // ------------------------ remote registry ------------------------
 
     @Override
-    public Response<String> registry(String accessToken, List<RegistryNodeDO> registryNodeList) {
-        // valid
-        if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
-        }
+    public Response<String> registry(List<RegistryNodeDO> registryNodeList) {
 
         this.registryManager.addRegistryNodeList(registryNodeList);
         return Response.SUCCESS;
     }
 
     @Override
-    public Response<String> remove(String accessToken, List<RegistryNodeDO> registryNodeList) {
-
-        // valid
-        if (this.accessToken != null && this.accessToken.trim().length() > 0 && !this.accessToken.equals(accessToken)) {
-            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
-        }
+    public Response<String> remove(List<RegistryNodeDO> registryNodeList) {
 
         if (CollectionUtils.isEmpty(registryNodeList)) {
             return new Response<>(Response.FAIL_CODE, "Registry DataList Invalid");
@@ -235,11 +224,7 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<String> remove(final String accessToken, final RegistryNodeDO registryNode) {
-        // valid
-        if (this.accessToken != null && this.accessToken.trim().length() > 0 && !this.accessToken.equals(accessToken)) {
-            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
-        }
+    public Response<String> remove(final RegistryNodeDO registryNode) {
 
         // fill + add queue
         registryManager.removeRegistryNode(registryNode);
@@ -248,14 +233,9 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys) {
+    public Response<Map<String, List<String>>> discovery(String biz, String env, List<String> keys) {
         if (CollectionUtils.isEmpty(keys)) {
             return new Response<>(Collections.emptyMap());
-        }
-
-        // valid
-        if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
         }
 
         if (StringUtils.isBlank(biz)) {
@@ -273,7 +253,7 @@ public class RegistryServiceImpl implements RegistryService {
         final Map<String, List<String>> result = New.mapWithCapacity(keys.size());
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
-            Response<List<String>> returnT = this.discovery(accessToken, biz, env, key);
+            Response<List<String>> returnT = this.discovery(biz, env, key);
             if (returnT.getCode() == Response.SUCCESS_CODE) {
                 result.put(key, returnT.getData());
             }
@@ -282,11 +262,7 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<List<String>> discovery(String accessToken, String biz, String env, String key) {
-        // valid
-        if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            return new Response<>(Response.FAIL_CODE, "AccessToken Invalid");
-        }
+    public Response<List<String>> discovery(String biz, String env, String key) {
 
         if (StringUtils.isBlank(key)) {
             return new Response<>(Response.FAIL_CODE, "env empty");
@@ -321,16 +297,10 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public DeferredResult<Response<String>> monitor(String accessToken, String biz, String env, List<String> keys) {
+    public DeferredResult<Response<String>> monitor(String biz, String env, List<String> keys) {
 
         // init
         final DeferredResult deferredResult = new DeferredResult(30 * 1000L, new Response<>(Response.FAIL_CODE, "Monitor timeout."));
-
-        // valid
-        if (StringUtils.isNotBlank(this.accessToken) && !this.accessToken.equals(accessToken)) {
-            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "AccessToken is empty"));
-            return deferredResult;
-        }
 
         if (StringUtils.isBlank(biz)) {
             deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Biz is empty"));

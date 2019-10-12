@@ -1,7 +1,9 @@
 package com.ruijing.registry.admin.cache;
 
 import cn.hutool.core.thread.NamedThreadFactory;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
@@ -75,6 +77,113 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         return registryCache;
     }
 
+    @Override
+    public boolean remove(final Long id) {
+        List<RegistryNodeDO> registryNodeList = registryIdNodeCache.get(id);
+        if (null == registryNodeList) {
+            return false;
+        }
+
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+            RegistryNodeDO registryNode = registryNodeList.get(i);
+            if (id.equals(registryNode.getId())) {
+                return deleteNode(registryNode.getId()) > 0;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean remove(final List<RegistryNodeDO> registryNodeList) {
+        int del = 0;
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+            final RegistryNodeDO registryNode = registryNodeList.get(i);
+            del += registryNode.getId() == null ? deleteNode(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey(), registryNode.getValue()) : deleteNode(registryNode.getId());
+        }
+        return del > 0;
+    }
+
+    @Override
+    public int refresh(List<RegistryNodeDO> registryNodeList) {
+        int updateSize = 0;
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+            final RegistryNodeDO registryNode = registryNodeList.get(i);
+            updateSize += refreshNode(registryNode);
+        }
+        return updateSize;
+    }
+
+    private int refreshNode(RegistryNodeDO registryNode) {
+        int updateSize = 0;
+        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.refresh");
+        try {
+            updateSize = registryNodeMapper.refresh(registryNode);
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return updateSize;
+    }
+
+    @Override
+    public int persist(final List<RegistryNodeDO> registryNodeList) {
+        int updateSize = 0;
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+            final RegistryNodeDO registryNode = registryNodeList.get(i);
+            updateSize += addNode(registryNode);
+        }
+        return updateSize;
+    }
+
+    private int addNode(RegistryNodeDO registryNode) {
+        int updateSize = 0;
+        Transaction newTransaction = Cat.newTransaction("registryManager", "registryNodeMapper.add");
+        try {
+            updateSize = registryNodeMapper.add(registryNode);
+            newTransaction.setSuccessStatus();
+        } catch (Exception ex) {
+            if (ex instanceof MySQLIntegrityConstraintViolationException) {
+                Cat.logError("registryManager", "registryNodeMapper.add", null, ex);
+            }
+            newTransaction.setStatus(ex);
+        } finally {
+            newTransaction.complete();
+        }
+        return updateSize;
+    }
+
+    private int deleteNode(String biz, String env, String key, String value) {
+        // delete
+        int deletedSize = 0;
+        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.deleteDataValue");
+        try {
+            deletedSize = registryNodeMapper.deleteDataValue(biz, env, key, value);
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return deletedSize;
+    }
+
+    private int deleteNode(Long id) {
+        // delete
+        int deletedSize = 0;
+        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.delete");
+        try {
+            deletedSize = registryNodeMapper.delete(id);
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return deletedSize;
+    }
+
     private void updateRegistryNode() {
         try {
             final List<Pair<Long, Triple<String, String, String>>> registryCacheList = registryCache.getRegistryList();
@@ -85,7 +194,6 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
             int index = 1;
             int size = registryCacheList.size();
             while (true) {
-                final List<Long> registryIdList = new ArrayList<>();
                 int fromIndex = (index - 1) * DEFAULT_BATCH_UPDATE_SIZE;
                 if (fromIndex >= size) {
                     break;
@@ -94,16 +202,27 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
                 toIndex = toIndex > size ? size : toIndex;
                 final List<Pair<Long, Triple<String, String, String>>> subList = registryCacheList.subList(fromIndex, toIndex);
                 index++;
-                subList.stream().forEach(t -> registryIdList.add(t.getKey()));
+
+                final List<Long> registryIdList = New.listWithCapacity(subList.size());
+                for (int i = 0, len = subList.size(); i < len; i++) {
+                    registryIdList.add(subList.get(i).getKey());
+                }
 
                 final List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.findByRegistryIdList(registryIdList);
 
-                if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                    final Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> map = toMap(registryNodeDOList);
-                    for (final Map.Entry<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> entry : map.entrySet()) {
-                        final Pair<Long, Triple<String, String, String>> pair = entry.getKey();
-                        this.registryIdNodeCache.put(pair.getKey(), entry.getValue());
-                        this.registryNodeCache.put(pair.getRight(), entry.getValue());
+                final Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> map = toMap(registryNodeDOList);
+
+                for (int i = 0, len = subList.size(); i < len; i++) {
+                    final Pair<Long, Triple<String, String, String>> pair = subList.get(i);
+                    final List<RegistryNodeDO> list = map.get(pair);
+                    if (null == list) {
+                        if (registryIdNodeCache.containsKey(pair.getKey())) {
+                            this.registryIdNodeCache.remove(pair.getKey());
+                            this.registryNodeCache.remove(pair.getRight());
+                        }
+                    } else {
+                        this.registryIdNodeCache.put(pair.getKey(), list);
+                        this.registryNodeCache.put(pair.getRight(), list);
                     }
                 }
 
@@ -117,6 +236,9 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     }
 
     private Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> toMap(final List<RegistryNodeDO> registryNodeList) {
+        if (CollectionUtils.isEmpty(registryNodeList)) {
+            return Collections.emptyMap();
+        }
         final Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> registryNodeCache = New.mapWithCapacity(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO registryNode = registryNodeList.get(i);

@@ -2,15 +2,14 @@ package com.ruijing.registry.admin.controller;
 
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
+import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.client.model.RegistryNode;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,9 +29,6 @@ import java.util.*;
 @RequestMapping("/simple/api")
 public class ApiController {
 
-    @Value("${msharp.registry.accessToken}")
-    private String accessToken;
-
     @Resource
     private RegistryService registryService;
 
@@ -45,7 +41,6 @@ public class ApiController {
      * 地址格式：{服务注册中心跟地址}/registry
      * <p>
      * 请求参数说明：
-     * 1、accessToken：请求令牌；
      * 2、biz：业务标识
      * 2、env：环境标识
      * 3、registryDataList：服务注册信息
@@ -53,7 +48,6 @@ public class ApiController {
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
      * "key" : "service01",
@@ -66,6 +60,7 @@ public class ApiController {
     @RequestMapping("/registry")
     @ResponseBody
     @PermissionLimit(limit = false)
+    @RegistryClient
     public Response<String> registry(@RequestBody(required = false) String data) {
         // parse data
         RegistryNode registryData = null;
@@ -74,6 +69,7 @@ public class ApiController {
         } catch (Exception e) {
             Cat.logError("method:registry,data:" + data, e);
         }
+
         if (null == registryData) {
             return Response.FAIL;
         }
@@ -82,12 +78,13 @@ public class ApiController {
         registryNodeDO.setEnv(registryData.getEnv());
         registryNodeDO.setKey(registryData.getKey());
         registryNodeDO.setValue(registryData.getValue());
-        return registryService.registry(registryData.getAccessToken(), Arrays.asList(registryNodeDO));
+        return registryService.registry(Arrays.asList(registryNodeDO));
     }
 
     @RequestMapping("/batch/registry")
     @ResponseBody
     @PermissionLimit(limit = false)
+    @RegistryClient
     public Response<String> batchRegistry(@RequestBody(required = false) String data) {
         // parse data
         List<RegistryNode> registryDataList = null;
@@ -100,12 +97,8 @@ public class ApiController {
         if (CollectionUtils.isEmpty(registryDataList)) {
             return Response.FAIL;
         }
-        String accessToken = null;
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryDataList.size());
         for (final RegistryNode registryData : registryDataList) {
-            if (StringUtils.isEmpty(accessToken)) {
-                accessToken = registryData.getAccessToken();
-            }
             final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setKey(registryData.getKey());
             registryNodeDO.setValue(registryData.getValue());
@@ -113,7 +106,7 @@ public class ApiController {
             registryNodeDO.setEnv(registryData.getEnv());
             registryNodeDOList.add(registryNodeDO);
         }
-        return registryService.registry(accessToken, registryNodeDOList);
+        return registryService.registry(registryNodeDOList);
     }
 
     /**
@@ -125,7 +118,6 @@ public class ApiController {
      * 地址格式：{服务注册中心跟地址}/remove
      * <p>
      * 请求参数说明：
-     * 1、accessToken：请求令牌；
      * 2、biz：业务标识
      * 2、env：环境标识
      * 3、registryDataList：服务注册信息
@@ -133,7 +125,6 @@ public class ApiController {
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
      * "key" : "service01",
@@ -146,6 +137,7 @@ public class ApiController {
     @RequestMapping("/remove")
     @ResponseBody
     @PermissionLimit(limit = false)
+    @RegistryClient
     public Response<String> remove(@RequestBody(required = false) String data) {
         // parse data
         RegistryNode registryData = null;
@@ -162,7 +154,7 @@ public class ApiController {
         registryNode.setEnv(registryData.getEnv());
         registryNode.setKey(registryData.getKey());
         registryNode.setValue(registryData.getValue());
-        return registryService.remove(registryData.getAccessToken(), registryNode);
+        return registryService.remove(registryNode);
     }
 
     /**
@@ -174,7 +166,6 @@ public class ApiController {
      * 地址格式：{服务注册中心跟地址}/discovery
      * <p>
      * 请求参数说明：
-     * 1、accessToken：请求令牌；
      * 2、biz：业务标识
      * 2、env：环境标识
      * 3、keys：服务注册Key列表
@@ -182,7 +173,6 @@ public class ApiController {
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
      * "service01",
@@ -194,6 +184,7 @@ public class ApiController {
     @RequestMapping("/discovery")
     @ResponseBody
     @PermissionLimit(limit = false)
+    @RegistryClient
     public Response<List<String>> discovery(@RequestBody(required = false) String data) {
         // parse data
         RegistryNode registryData = null;
@@ -205,7 +196,7 @@ public class ApiController {
         if (null == registryData) {
             return null;
         }
-        final Response<List<String>> returnT = registryService.discovery(registryData.getAccessToken(), registryData.getBiz(), registryData.getEnv(), registryData.getKey());
+        final Response<List<String>> returnT = registryService.discovery(registryData.getBiz(), registryData.getEnv(), registryData.getKey());
         return returnT;
     }
 
@@ -218,7 +209,6 @@ public class ApiController {
      * 地址格式：{服务注册中心跟地址}/monitor
      * <p>
      * 请求参数说明：
-     * 1、accessToken：请求令牌；
      * 2、biz：业务标识
      * 2、env：环境标识
      * 3、keys：服务注册Key列表
@@ -226,7 +216,6 @@ public class ApiController {
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "accessToken" : "xx",
      * "biz" : "xx",
      * "env" : "xx",
      * "service02"
@@ -238,6 +227,7 @@ public class ApiController {
     @RequestMapping("/monitor")
     @ResponseBody
     @PermissionLimit(limit = false)
+    @RegistryClient
     public DeferredResult monitor(@RequestBody(required = false) String data) {
         // parse data
         RegistryNode registryNode = null;
@@ -253,6 +243,6 @@ public class ApiController {
             return result;
         }
 
-        return registryService.monitor(registryNode.getAccessToken(), registryNode.getBiz(), registryNode.getEnv(), Arrays.asList(registryNode.getKey()));
+        return registryService.monitor(registryNode.getBiz(), registryNode.getEnv(), Arrays.asList(registryNode.getKey()));
     }
 }

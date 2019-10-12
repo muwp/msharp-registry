@@ -30,4 +30,6 @@ public interface RegistryMapper {
     int add(RegistryDO registryDO);
 
     int update(RegistryDO registryDO);
+
+    int delete(Long id);
 }

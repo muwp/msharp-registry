@@ -35,5 +35,7 @@ public interface RegistryNodeMapper {
 
     int deleteDataValue(@Param("biz") String biz, @Param("env") String env, @Param("key") String key, @Param("value") String value);
 
+    int delete(Long id);
+
     int count();
 }

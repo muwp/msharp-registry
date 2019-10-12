@@ -30,60 +30,54 @@ public interface RegistryService {
     /**
      * refresh registry-value, check update and broadcase
      *
-     * @param accessToken      acc
      * @param registryNodeList re
      * @return
      */
-    Response<String> registry(String accessToken, List<RegistryNodeDO> registryNodeList);
+    Response<String> registry(List<RegistryNodeDO> registryNodeList);
 
     /**
      * remove registry-value, check update and broacase
      *
-     * @param accessToken      a
      * @param registryDataList r
      * @return x
      */
-    Response<String> remove(String accessToken, List<RegistryNodeDO> registryDataList);
+    Response<String> remove(List<RegistryNodeDO> registryDataList);
 
     /**
      * remove registry-value, check update and broacase
      *
-     * @param accessToken  a
-     * @param registryNode r
+     * @param registryNode
      * @return x
      */
-    Response<String> remove(String accessToken, RegistryNodeDO registryNode);
+    Response<String> remove(RegistryNodeDO registryNode);
 
     /**
      * discovery registry-data, read file
      *
-     * @param accessToken a
-     * @param biz         b
-     * @param env         e
-     * @param key         k
+     * @param biz b
+     * @param env e
+     * @param key k
      * @return
      */
-    Response<List<String>> discovery(String accessToken, String biz, String env, String key);
+    Response<List<String>> discovery(String biz, String env, String key);
 
     /**
      * discovery registry-data, read file
      *
-     * @param accessToken a
-     * @param biz         b
-     * @param env         e
-     * @param keys        k
+     * @param biz  b
+     * @param env  e
+     * @param keys k
      * @return
      */
-    Response<Map<String, List<String>>> discovery(String accessToken, String biz, String env, List<String> keys);
+    Response<Map<String, List<String>>> discovery(String biz, String env, List<String> keys);
 
     /**
      * monitor update
      *
-     * @param accessToken a
      * @param biz         b
      * @param env         e
      * @param keys        k
      * @return
      */
-    DeferredResult<Response<String>> monitor(String accessToken, String biz, String env, List<String> keys);
+    DeferredResult<Response<String>> monitor(String biz, String env, List<String> keys);
 }
