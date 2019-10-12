@@ -85,7 +85,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         }
 
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
-            RegistryNodeDO registryNode = registryNodeList.get(i);
+            final RegistryNodeDO registryNode = registryNodeList.get(i);
             if (id.equals(registryNode.getId())) {
                 return deleteNode(registryNode.getId()) > 0;
             }
@@ -169,7 +169,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         return deletedSize;
     }
 
-    private int deleteNode(Long id) {
+    private int deleteNode(final Long id) {
         // delete
         int deletedSize = 0;
         Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.delete");

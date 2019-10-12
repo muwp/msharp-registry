@@ -202,10 +202,8 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     // ------------------------ remote registry ------------------------
-
     @Override
     public Response<String> registry(List<RegistryNodeDO> registryNodeList) {
-
         this.registryManager.addRegistryNodeList(registryNodeList);
         return Response.SUCCESS;
     }
