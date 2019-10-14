@@ -6,7 +6,6 @@ import com.ruijing.pearl.annotation.EnablePearl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * RegistryAdminApplication
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @EnablePearl
 public class RegistryAdminApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(RegistryAdminApplication.class, args);
-	}
+    }
 }

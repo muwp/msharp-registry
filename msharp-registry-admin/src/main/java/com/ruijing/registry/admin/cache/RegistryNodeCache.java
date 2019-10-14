@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, InitializingBean {
 
-    private static final int DEFAULT_BATCH_UPDATE_SIZE = 50;
+    private static final int DEFAULT_BATCH_UPDATE_SIZE = 80;
 
     @Resource
     private RegistryNodeMapper registryNodeMapper;
@@ -54,12 +54,12 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
 
     @Override
     public List<RegistryNodeDO> get(final Long registryId) {
-        List<RegistryNodeDO> registryCache = registryIdNodeCache.get(registryId);
-        if (CollectionUtils.isEmpty(registryCache)) {
+        List<RegistryNodeDO> registryListCache = registryIdNodeCache.get(registryId);
+        if (CollectionUtils.isEmpty(registryListCache)) {
             //如果miss hit则重新从db中获取一次，此事件发生的概率非常小
-            registryCache = syncGet(registryId);
+            registryListCache = syncGet(registryId);
         }
-        return registryCache;
+        return registryListCache;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
 
     @Override
     public boolean remove(final Long id) {
-        List<RegistryNodeDO> registryNodeList = registryIdNodeCache.get(id);
+        final List<RegistryNodeDO> registryNodeList = registryIdNodeCache.get(id);
         if (null == registryNodeList) {
             return false;
         }
@@ -113,7 +113,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         return updateSize;
     }
 
-    private int refreshNode(RegistryNodeDO registryNode) {
+    private int refreshNode(final RegistryNodeDO registryNode) {
         int updateSize = 0;
         Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.refresh");
         try {
@@ -172,9 +172,9 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     private int deleteNode(final Long id) {
         // delete
         int deletedSize = 0;
-        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.delete");
+        final Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.delete");
         try {
-            deletedSize = registryNodeMapper.delete(id);
+            deletedSize = this.registryNodeMapper.delete(id);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);

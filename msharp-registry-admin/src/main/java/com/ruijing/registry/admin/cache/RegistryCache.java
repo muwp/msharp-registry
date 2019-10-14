@@ -47,6 +47,9 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
         if (null == registryDO) {
             //如果miss hit则重新从db中获取一次，此事件发生的概率非常小
             registryDO = syncGet(key);
+            if (null != registryDO) {
+                registryCache.put(key, registryDO);
+            }
         }
         return registryDO;
     }
@@ -62,6 +65,9 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
         if (null == registryDO) {
             //如果miss hit则重新从db中获取一次，此事件发生的概率非常小
             registryDO = syncGet(id);
+            if (null != registryDO) {
+                this.registryIdCache.put(id, registryDO);
+            }
         }
         return registryDO;
     }
@@ -75,42 +81,70 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
     public boolean remove(final Long id) {
         RegistryDO registryDO = registryIdCache.getIfPresent(id);
         if (null != registryDO) {
+            int updateSize = delete(registryDO.getId());
             registryIdCache.invalidate(id);
             registryCache.invalidate(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()));
-            int size = registryMapper.delete(id);
-            return size >= 1;
+            return updateSize >= 1;
         }
         return false;
     }
 
     @Override
-    public boolean remove(RegistryDO R) {
+    public boolean remove(final RegistryDO R) {
         Triple<String, String, String> key = Triple.of(R.getBiz(), R.getEnv(), R.getKey());
         RegistryDO registryDO = registryCache.getIfPresent(key);
         if (null != registryDO) {
+            int updateSize = delete(registryDO.getId());
             registryCache.invalidate(key);
             registryIdCache.invalidate(registryDO.getId());
-            int size = registryMapper.delete(registryDO.getId());
-            return size >= 1;
+            return updateSize >= 1;
         }
         return false;
     }
 
     @Override
-    public int refresh(RegistryDO registryDO) {
-        this.registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
-        this.registryIdCache.put(registryDO.getId(), registryDO);
-        return registryMapper.update(registryDO);
+    public int refresh(final RegistryDO registryDO) {
+        final Transaction transaction = Cat.newTransaction("registryManager", "registryMapper.update");
+        int updateSize = 0;
+        try {
+            updateSize = this.registryMapper.update(registryDO);
+            if (updateSize > 0) {
+                this.registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
+                this.registryIdCache.put(registryDO.getId(), registryDO);
+            }
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return updateSize;
     }
 
     @Override
-    public int persist(RegistryDO registryDO) {
+    public int persist(final RegistryDO registryDO) {
         int updateSize = 0;
         Transaction transaction = Cat.newTransaction("registryManager", "registryMapper.add");
         try {
             updateSize = this.registryMapper.add(registryDO);
-            registryIdCache.put(registryDO.getId(), registryDO);
-            registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
+            if (updateSize > 0) {
+                registryIdCache.put(registryDO.getId(), registryDO);
+                registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
+            }
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return updateSize;
+    }
+
+    private int delete(final Long id) {
+        int updateSize = 0;
+        Transaction transaction = Cat.newTransaction("registryManager", "registryMapper.delete");
+        try {
+            updateSize = registryMapper.delete(id);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
@@ -127,7 +161,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 5, TimeUnit.SECONDS);
+        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 8, TimeUnit.SECONDS);
     }
 
     private void updateRegistry() {

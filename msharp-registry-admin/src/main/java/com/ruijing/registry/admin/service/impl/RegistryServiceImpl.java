@@ -79,7 +79,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         // package result
-        final Map<String, Object> result = new HashMap<String, Object>((int) (3 / 0.75));
+        final Map<String, Object> result = New.mapWithCapacity(3);
 
         // 总记录数
         result.put("recordsTotal", len);
@@ -87,6 +87,7 @@ public class RegistryServiceImpl implements RegistryService {
         result.put("recordsFiltered", len);
         // 分页列表
         result.put("data", list);
+
         return result;
     }
 
@@ -137,7 +138,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-        this.registryMapper.update(registryDO);
+        this.registryCache.refresh(registryDO);
 
         final List<RegistryNodeDO> registryNodeList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
@@ -201,7 +202,6 @@ public class RegistryServiceImpl implements RegistryService {
         return Response.SUCCESS;
     }
 
-    // ------------------------ remote registry ------------------------
     @Override
     public Response<String> registry(List<RegistryNodeDO> registryNodeList) {
         this.registryManager.addRegistryNodeList(registryNodeList);
@@ -251,7 +251,7 @@ public class RegistryServiceImpl implements RegistryService {
         final Map<String, List<String>> result = New.mapWithCapacity(keys.size());
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
-            Response<List<String>> returnT = this.discovery(biz, env, key);
+            final Response<List<String>> returnT = this.discovery(biz, env, key);
             if (returnT.getCode() == Response.SUCCESS_CODE) {
                 result.put(key, returnT.getData());
             }

@@ -11,7 +11,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * RegistryCache
+ * AppKeyCache
  *
  * @author mwup
  * @version 1.0
