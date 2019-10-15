@@ -29,7 +29,7 @@ public class TokenController {
 
     private String test = "test";
 
-   // @Autowired
+    @Autowired
     private TokenCache tokenCache;
 
     @PermissionLimit(limit = false)
@@ -48,6 +48,7 @@ public class TokenController {
         if (StringUtils.isNotBlank(token)) {
             return RemoteResponse.custom().setData(token).setSuccess().build();
         }
+
         token = RandNumUtil.genRandomNum();
         final TokenDO tokenDO = new TokenDO();
         tokenDO.setClientAppkey(appkey);

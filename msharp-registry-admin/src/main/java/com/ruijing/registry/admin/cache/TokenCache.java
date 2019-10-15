@@ -9,9 +9,9 @@ import com.ruijing.registry.admin.data.mapper.TokenMapper;
 import com.ruijing.registry.admin.data.model.TokenDO;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -24,10 +24,10 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-//@Service
+@Service
 public class TokenCache implements InitializingBean {
 
-    @Resource
+    @Autowired
     private TokenMapper tokenMapper;
 
     private final Cache<String, TokenDO> tokenMap = CacheBuilder.newBuilder().expireAfterWrite(80, TimeUnit.SECONDS).build();
