@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-@Service
+//@Service
 public class TokenCache implements InitializingBean {
 
     @Resource
@@ -44,11 +44,14 @@ public class TokenCache implements InitializingBean {
 
     public String syncGet(final String clientAppkey) {
         final TokenDO tokenDO = tokenMap.getIfPresent(clientAppkey);
-        if (null == tokenDO) {
-            final List<TokenDO> tokenDOList = tokenMapper.get(clientAppkey);
-            if (CollectionUtils.isNotEmpty(tokenDOList)) {
-                return tokenDOList.get(0).getToken();
-            }
+        if (null != tokenDO) {
+            return tokenDO.getToken();
+        }
+        final List<TokenDO> tokenDOList = tokenMapper.get(clientAppkey);
+        if (CollectionUtils.isNotEmpty(tokenDOList)) {
+            final TokenDO token = tokenDOList.get(0);
+            tokenMap.put(token.getClientAppkey(), token);
+            return token.getToken();
         }
         return null;
     }
@@ -71,7 +74,7 @@ public class TokenCache implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::updateToken, 1, 30, TimeUnit.SECONDS);
+        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::updateToken, 1, 60, TimeUnit.SECONDS);
     }
 
     public void updateToken() {

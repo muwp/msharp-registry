@@ -8,6 +8,9 @@ import com.ruijing.fundamental.mhttp.common.HttpClientHelper;
 import com.ruijing.registry.common.http.Separator;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * KeyUtil
  *
@@ -17,12 +20,16 @@ import org.apache.commons.lang3.StringUtils;
  **/
 public final class KeyUtil {
 
+    private static final Map<String, Boolean> VALID_KEY_MAP = new ConcurrentHashMap<>();
 
     public static String getKey(String biz, String env, String key) {
         return biz + Separator.DOT + env + Separator.DOT + key;
     }
 
     public static boolean validAppkey(String appkey) {
+        if (VALID_KEY_MAP.containsKey(appkey)) {
+            return VALID_KEY_MAP.get(appkey);
+        }
         //check config center
         String configCenter = Environment.getConfigCenter();
         if (!configCenter.endsWith(com.ruijing.fundamental.mhttp.common.Separator.BACKLASH)) {
@@ -45,6 +52,9 @@ public final class KeyUtil {
             return true;
         }
 
+        if (response.getData()) {
+            VALID_KEY_MAP.put(appkey, response.getData());
+        }
         return response.getData();
     }
 }

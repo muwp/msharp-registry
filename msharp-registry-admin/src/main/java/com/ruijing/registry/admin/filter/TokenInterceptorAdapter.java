@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServletResponse;
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-@Component
+//@Component
 public class TokenInterceptorAdapter extends HandlerInterceptorAdapter {
 
-    @Autowired
+    //@Autowired
     private TokenCache tokenCache;
 
     @Override

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RegistryNodeCleanManager implements InitializingBean {
 
-    private static final int DEFAULT_TIME_OUT = 60;
+    private static final int DEFAULT_TIME_OUT = 90;
 
     @Resource
     private RegistryNodeMapper registryNodeMapper;

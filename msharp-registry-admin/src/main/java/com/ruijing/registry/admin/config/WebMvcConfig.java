@@ -26,13 +26,13 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Resource
     private CookieInterceptor cookieInterceptor;
 
-    @Autowired
-    private TokenInterceptorAdapter tokenInterceptorAdapter;
-
+    //    @Autowired
+//    private TokenInterceptorAdapter tokenInterceptorAdapter;
+//
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(interceptorAdapter).addPathPatterns("/**");
-        registry.addInterceptor(tokenInterceptorAdapter).addPathPatterns("/**");
+        //    registry.addInterceptor(tokenInterceptorAdapter).addPathPatterns("/**");
         registry.addInterceptor(cookieInterceptor).addPathPatterns("/**");
         super.addInterceptors(registry);
     }

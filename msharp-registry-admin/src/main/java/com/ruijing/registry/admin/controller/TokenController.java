@@ -27,13 +27,19 @@ import java.util.Date;
 @RequestMapping(value = "/token")
 public class TokenController {
 
-    @Autowired
+    private String test = "test";
+
+   // @Autowired
     private TokenCache tokenCache;
 
     @PermissionLimit(limit = false)
     @RequestMapping(value = "/get")
     @ResponseBody
     public RemoteResponse<String> token(@RequestParam(value = "appkey") String appkey) {
+        if (test.equalsIgnoreCase(appkey)) {
+            return RemoteResponse.custom().setData(false).setFailure("这是个测试appkey, 请输入正确的appkey").build();
+        }
+
         if (!KeyUtil.validAppkey(appkey)) {
             return RemoteResponse.custom().setData(false).setFailure("appkey无效").build();
         }
