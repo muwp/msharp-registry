@@ -47,3 +47,20 @@ CREATE TABLE `message_queue`
   UNIQUE KEY `uq_biz_env_key` (`biz`, `env`, `key`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+##
+CREATE TABLE `biz_token`
+(
+  `id`            BIGINT(20)   NOT NULL AUTO_INCREMENT,
+  `client_appkey` VARCHAR(50)  NOT NULL DEFAULT '' COMMENT '',
+  `token`         VARCHAR(255) NOT NULL DEFAULT '' COMMENT '',
+  `env`           VARCHAR(25)  NOT NULL DEFAULT 0,
+  `status`        tinyint(4)   NOT NULL DEFAULT '0',
+  `create_time`   DATETIME     NOT NULL DEFAULT '1970-10-10 10:00:00' COMMENT '创建时间',
+  `update_time`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
+    COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_client_appkey_env` (`client_appkey`, `env`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT ='注册中心的鉴权中心';

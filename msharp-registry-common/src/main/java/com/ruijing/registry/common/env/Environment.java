@@ -25,56 +25,63 @@ public class Environment {
     private static final String APP_EVN_CONFIG = "META-INF/app.properties";
 
     /**
+     * 应用配制文件(spring boot [application.properties]
+     */
+    private static final String APPLICATION_EVN_CONFIG = "application.properties";
+
+    /**
      * 默认的环境变量
      */
     public static final String DEFAULT_DEPLOY_ENV = "dev";
 
     /**
-     * default offline zk server ip list
-     * <p>
-     * 120.78.81.219:2181,120.78.81.219:2182,120.78.81.219:2183/
-     */
-    public static final String DEFAULT_TEST_ZK_SERVER = "39.108.108.154:2181,39.108.188.51:2181,120.79.63.24:2181/";
-
-    /**
-     * default online zk server ip list
-     */
-    public static final String DEFAULT_ON_LINE_ZK_SERVER = "39.108.108.154:2181,39.108.188.51:2181,120.79.63.24:2181/";
-
-    /**
-     * test 配制中心
+     * test 配制中心【基于http协议】
      */
     public static final String DEFAULT_TEST_CONFIG_CENTER_URL = "http://192.168.2.200:8080/pearl-server";
 
     /**
-     * online配制中心
+     * online配制中心【基于http协议】
      */
     public static final String DEFAULT_ON_LINE_CONFIG_CENTER_URL = "http://pearl.rjmart.cn/pearl-server/";
 
     /**
-     * online配制中心
+     * pearl test 配制中心 【基于tcp协议】
      */
-    public static final String DEFAULT_ON_LINE_CAT_CENTER_URL = "http://cat.rjmart.cn";
+    private static final String DEFAULT_PEARL_TEST_CONFIG_CENTER_URL = "192.168.2.200:41000";
 
     /**
-     * offline配制中心
+     * pearl online配制中心 【基于tcp协议】
      */
-    public static final String DEFAULT_OFF_LINE_CAT_CENTER_URL = "http://192.168.2.201:8080";
+    private static final String DEFAULT_PEARL_ON_LINE_CONFIG_CENTER_URL = "172.18.197.90:41000,172.18.197.89:41000";
+
+    /**
+     * 线上注册中心
+     */
+    public static final String DEFAULT_ON_REGISTRY_CENTER = "http://pearl.rjmart.cn:8081/msharp-admin";
+
+    /**
+     * 线下注册中心
+     */
+    public static final String DEFAULT_OFF_REGISTRY_CENTER = "http://192.168.2.200:8081/msharp-admin";
 
     /**
      * 发布的环境变量
      */
     public static final String KEY_DEPLOY_ENV = "deployenv";
 
-    /**
-     * zk服务器列表
-     */
-    public static final String KEY_ZK_SERVER = "zkserver";
+    public static final String REGISTER_CENTER = "registrycenter";
+
+    private static final String APPKEY = "appkey";
 
     /**
-     * 配制中心
+     * 配制中心(基于http)
      */
     public static final String CONFIG_CENTER = "configcenter";
+
+    /**
+     * pearl 配制中心(基于tpc)
+     */
+    public static final String PEARL_CONFIG_CENTER = "pearlconfigcenter";
 
     /**
      * 线上环境
@@ -122,11 +129,6 @@ public class Environment {
     public static final String ENV_DEV = "dev";
 
     /**
-     * cat url variable
-     */
-    public static final String CAT_URL = "catUrl";
-
-    /**
      * 环境变量值
      */
     private static Properties DEFAULT_PROPERTY = new Properties();
@@ -142,30 +144,49 @@ public class Environment {
     private static String DEPLOY_ENV;
 
     /**
-     * zk服务器列表
-     */
-    private static String ZK_SERVER;
-
-    /**
-     * 配制中心url
+     * 配制中心url(基于http)
      */
     private static String CONFIG_CENTER_URL;
 
-    private static String CAT_URL_ADDRESS;
+    /**
+     * 配制中心url(基于tcp)
+     */
+    private static String PEARL_CONFIG_CENTER_URL;
+
+    /**
+     * 注册中心
+     */
+    private static String REGISTER_CENTER_URL;
 
     static {
         loadAppEnv();
-        APP_KEY = DEFAULT_PROPERTY.getProperty("appkey");
+        APP_KEY = DEFAULT_PROPERTY.getProperty(APPKEY);
         APP_KEY = StringUtils.trimToNull(APP_KEY);
-        ZK_SERVER = DEFAULT_PROPERTY.getProperty(KEY_ZK_SERVER);
         DEPLOY_ENV = DEFAULT_PROPERTY.getProperty(KEY_DEPLOY_ENV);
         CONFIG_CENTER_URL = DEFAULT_PROPERTY.getProperty(CONFIG_CENTER);
-        CAT_URL_ADDRESS = DEFAULT_PROPERTY.getProperty(CAT_URL);
-        System.out.println(String.format("loaded appenv:  env [%s],appkey [%s], zkserverList [%s],configcenter [%s]", DEPLOY_ENV, APP_KEY, ZK_SERVER, CONFIG_CENTER_URL));
+        PEARL_CONFIG_CENTER_URL = DEFAULT_PROPERTY.getProperty(PEARL_CONFIG_CENTER);
+        REGISTER_CENTER_URL = DEFAULT_PROPERTY.getProperty(REGISTER_CENTER);
+        System.out.println(String.format("MSharp-Config[loaded appenv:  env [%s],appkey [%s],configcenter [%s],registrycenter[%s] ]", DEPLOY_ENV, APP_KEY, CONFIG_CENTER_URL, REGISTER_CENTER_URL));
     }
 
     public static String getProperty(final String key) {
         return DEFAULT_PROPERTY.getProperty(key);
+    }
+
+    public static void setProperty(final String key, final String value) {
+        DEFAULT_PROPERTY.setProperty(key, value);
+    }
+
+    public static String getSystemProperty(final String key) {
+        return System.getProperty(key);
+    }
+
+    public static String getSystemProperty(final String key, final String value) {
+        return System.getProperty(key, value);
+    }
+
+    public static String getProperty(final String key, final String defaultValue) {
+        return DEFAULT_PROPERTY.getProperty(key, defaultValue);
     }
 
     public static String getAppKey() {
@@ -184,8 +205,8 @@ public class Environment {
         return CONFIG_CENTER_URL;
     }
 
-    public static String getZKAddress() {
-        return ZK_SERVER;
+    public static String getPearlConfigCenter() {
+        return PEARL_CONFIG_CENTER_URL;
     }
 
     public static boolean isOnlineEnv() {
@@ -224,21 +245,25 @@ public class Environment {
         return ENV_PRODUCT.equalsIgnoreCase(DEPLOY_ENV) || ENV_PROD.equalsIgnoreCase(DEPLOY_ENV);
     }
 
-    public static String getCatUrl() {
-        return CAT_URL_ADDRESS;
-    }
-
     public static boolean isNonPublicProdEnv() {
         return ENV_NON_PUBLIC_PROD.equalsIgnoreCase(DEPLOY_ENV);
     }
 
+    public static String getRegistryCenter() {
+        return REGISTER_CENTER_URL;
+    }
+
+    public static boolean contains(String key) {
+        return DEFAULT_PROPERTY.contains(key);
+    }
+
     private static Properties loadAppEnv() {
         String loadFile = null;
-        Properties props;
-        props = loadApp();
+        Properties props = loadApp();
         if (MapUtils.isNotEmpty(props)) {
             DEFAULT_PROPERTY.putAll(props);
         }
+        Properties tmp = props;
         try {
             loadFile = EVN_CONFIG;
             // load from /data/configs/env/appenv
@@ -247,11 +272,24 @@ public class Environment {
                 props = PropertiesUtils.loadFromClassPath(loadFile);
             }
         } catch (Throwable e) {
+            if (tmp == props) {
+                props = null;
+            }
             System.err.println("failed to load data from " + loadFile);
         }
 
         if (null != props) {
             DEFAULT_PROPERTY.putAll(props);
+        }
+
+        final String appkey = System.getProperty(APPKEY);
+        if (StringUtils.isNotBlank(appkey)) {
+            DEFAULT_PROPERTY.put(APPKEY, appkey);
+        }
+
+        final String deployEnv = System.getProperty(KEY_DEPLOY_ENV);
+        if (StringUtils.isNotBlank(deployEnv)) {
+            DEFAULT_PROPERTY.put(KEY_DEPLOY_ENV, deployEnv);
         }
 
         props = getDefaultAppEnv();
@@ -264,6 +302,7 @@ public class Environment {
     private static Properties loadApp() {
         String loadFile = null;
         Properties props = null;
+
         try {
             // load from META-INF/app.properties
             loadFile = APP_EVN_CONFIG;
@@ -271,8 +310,39 @@ public class Environment {
         } catch (Throwable e) {
             System.err.println("failed to load data from " + loadFile);
         }
+
+        if (null != props && props.containsKey(KEY_DEPLOY_ENV)) {
+            props.remove(KEY_DEPLOY_ENV);
+        }
+
+        if (null == props) {
+            props = new Properties();
+        }
+
+        // load from application.properties
+        loadFile = APPLICATION_EVN_CONFIG;
+        final Properties springBootProps = getProperties(loadFile);
+        if (MapUtils.isNotEmpty(springBootProps)) {
+            if (springBootProps.containsKey(KEY_DEPLOY_ENV)) {
+                springBootProps.remove(KEY_DEPLOY_ENV);
+            }
+            props.putAll(springBootProps);
+        }
+
         return props;
     }
+
+    private static Properties getProperties(final String app) {
+        Properties properties = null;
+        try {
+            // load from application.properties
+            properties = PropertiesUtils.loadFromClassPath(app);
+        } catch (Throwable e) {
+            System.err.println("failed to load data from " + app);
+        }
+        return properties;
+    }
+
 
     private static Properties getDefaultAppEnv() {
         final Properties props = new Properties();
@@ -285,16 +355,9 @@ public class Environment {
          * 设置zk ip list
          */
         final String env = (String) DEFAULT_PROPERTY.get(KEY_DEPLOY_ENV);
-        if (!DEFAULT_PROPERTY.containsKey(KEY_ZK_SERVER)) {
-            if (online(env)) {
-                props.put(KEY_ZK_SERVER, DEFAULT_ON_LINE_ZK_SERVER);
-            } else {
-                props.put(KEY_ZK_SERVER, DEFAULT_TEST_ZK_SERVER);
-            }
-        }
 
         /**
-         * 设置config center domain
+         * 设置config center domain(基于http)
          */
         if (!DEFAULT_PROPERTY.containsKey(CONFIG_CENTER)) {
             if (online(env)) {
@@ -305,13 +368,24 @@ public class Environment {
         }
 
         /**
-         * 设置config center domain
+         * 设置config center domain(基于tcp)
          */
-        if (!DEFAULT_PROPERTY.containsKey(CAT_URL)) {
+        if (!DEFAULT_PROPERTY.containsKey(PEARL_CONFIG_CENTER)) {
             if (online(env)) {
-                props.put(CAT_URL, DEFAULT_ON_LINE_CAT_CENTER_URL);
+                props.put(PEARL_CONFIG_CENTER, DEFAULT_PEARL_ON_LINE_CONFIG_CENTER_URL);
             } else {
-                props.put(CAT_URL, DEFAULT_OFF_LINE_CAT_CENTER_URL);
+                props.put(PEARL_CONFIG_CENTER, DEFAULT_PEARL_TEST_CONFIG_CENTER_URL);
+            }
+        }
+
+        /**
+         * 设置registry center domain
+         */
+        if (!DEFAULT_PROPERTY.containsKey(REGISTER_CENTER)) {
+            if (online(env)) {
+                props.put(REGISTER_CENTER, DEFAULT_ON_REGISTRY_CENTER);
+            } else {
+                props.put(REGISTER_CENTER, DEFAULT_OFF_REGISTRY_CENTER);
             }
         }
         return props;

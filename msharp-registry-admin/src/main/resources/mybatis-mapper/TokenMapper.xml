@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruijing.registry.admin.data.mapper.TokenMapper">
+    <resultMap id="BaseResultMap" type="com.ruijing.registry.admin.data.model.TokenDO">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="client_appkey" property="clientAppkey" jdbcType="VARCHAR"/>
+        <result column="token" property="token" jdbcType="VARCHAR"/>
+        <result column="env" property="env" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        client_appkey,
+        token,
+        env,
+        `status`,
+        create_time,
+        update_time
+    </sql>
+
+    <insert id="insertSelective" parameterType="com.ruijing.registry.admin.data.model.TokenDO" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into biz_token
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="clientAppkey != null">
+                client_appkey,
+            </if>
+            <if test="token != null">
+                token,
+            </if>
+            <if test="env != null">
+                env,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="clientAppkey != null">
+                #{clientAppkey,jdbcType=VARCHAR},
+            </if>
+            <if test="token != null">
+                #{token,jdbcType=VARCHAR},
+            </if>
+            <if test="env != null">
+                #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from biz_token
+        where id=#{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="listBizToken" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from biz_token
+        where `status`=1
+    </select>
+
+    <select id="get" resultMap="BaseResultMap" parameterType="string">
+        select
+        <include refid="Base_Column_List"/>
+        from biz_token
+        where client_appkey = #{clientAppkey,jdbcType=VARCHAR} and `status`=1
+    </select>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.ruijing.registry.admin.data.model.TokenDO">
+        update biz_token
+        <set>
+            <if test="clientAppkey != null">
+                client_appkey = #{clientAppkey,jdbcType=VARCHAR},
+            </if>
+            <if test="token != null">
+                token = #{token,jdbcType=VARCHAR},
+            </if>
+            <if test="env != null">
+                env = #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

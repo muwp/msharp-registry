@@ -15,11 +15,15 @@ public class Response<T> implements Serializable {
 
     public static final int SUCCESS_CODE = 200;
 
+    public static final int FORBIDDEN_CODE = 403;
+
     public static final int FAIL_CODE = 500;
 
-    public static final Response<String> SUCCESS = new Response<String>(null);
+    public static final Response<String> SUCCESS = new Response<>(null);
 
-    public static final Response<String> FAIL = new Response<String>(FAIL_CODE, null);
+    public static final Response<String> FAIL = new Response<>(FAIL_CODE, null);
+
+    public static final Response<String> FORBIDDEN = new Response<>(FORBIDDEN_CODE, null);
 
     private int code;
 

@@ -1,12 +1,12 @@
 package com.ruijing.registry.common.env;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -74,6 +74,30 @@ public class PropertiesUtils {
         }
     }
 
+    private static void toMap(final Map<String, Object> map, final Map<String, String> result, final StringBuilder builder) {
+        if (MapUtils.isEmpty(map)) {
+            return;
+        }
+        final String parentKey = builder.toString();
+        for (final Map.Entry<String, Object> entry : map.entrySet()) {
+            final String key = entry.getKey();
+            final Object value = entry.getValue();
+            if (value instanceof Map) {
+                if (StringUtils.isBlank(parentKey)) {
+                    toMap((Map) value, result, new StringBuilder(key));
+                } else {
+                    toMap((Map) value, result, new StringBuilder(builder).append(".").append(key));
+                }
+            } else {
+                if (StringUtils.isBlank(parentKey)) {
+                    result.put(key, String.valueOf(value));
+                } else {
+                    result.put(parentKey + "." + key, String.valueOf(value));
+                }
+            }
+        }
+    }
+
     public static void save(Map<String, String> properties, String fileName) throws IOException {
         if (properties == null) {
             throw new NullPointerException("properties is null");
@@ -117,3 +141,4 @@ public class PropertiesUtils {
         return value == null ? defaultValue : Boolean.valueOf(value);
     }
 }
+
