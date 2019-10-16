@@ -33,9 +33,6 @@ import java.util.*;
 @RequestMapping("/simple/api")
 public class ApiController {
 
-    public static final Response<List<String>> FORBIDDEN = new Response<>(403, null);
-
-
     @Autowired
     private TokenCache tokenCache;
 
@@ -255,24 +252,5 @@ public class ApiController {
         }
 
         return registryService.monitor(registryNode.getBiz(), registryNode.getEnv(), Arrays.asList(registryNode.getKey()));
-    }
-
-    private Response<String> valid(HttpServletRequest request) {
-        final String accessToken = request.getHeader("access_token");
-        final String clientAppkey = request.getHeader("client_appkey");
-        if (StringUtils.isBlank(accessToken)) {
-            return null;
-        }
-
-        final String serverToken = tokenCache.get(clientAppkey);
-        if (StringUtils.isBlank(serverToken)) {
-            return null;
-        }
-
-        if (serverToken.trim().equalsIgnoreCase(accessToken)) {
-            return null;
-        }
-
-        return Response.FORBIDDEN;
     }
 }

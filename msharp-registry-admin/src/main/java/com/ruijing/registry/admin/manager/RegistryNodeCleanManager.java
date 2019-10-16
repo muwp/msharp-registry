@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RegistryNodeCleanManager implements InitializingBean {
 
-    private static final int DEFAULT_TIME_OUT = 90;
+    private static final int DEFAULT_TIME_OUT = 60;
 
     @Resource
     private RegistryNodeMapper registryNodeMapper;
@@ -30,7 +30,7 @@ public class RegistryNodeCleanManager implements InitializingBean {
     /**
      * 轮询服务
      */
-    private final ScheduledExecutorService cleanExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("pearl-message-queue-thread", true));
+    private final ScheduledExecutorService cleanExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("registry-message-queue-thread", true));
 
     @Override
     public void afterPropertiesSet() throws Exception {
