@@ -3,14 +3,11 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
-import com.ruijing.registry.admin.cache.TokenCache;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.client.model.RegistryNode;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -32,9 +28,6 @@ import java.util.*;
 @Controller
 @RequestMapping("/simple/api")
 public class ApiController {
-
-    @Autowired
-    private TokenCache tokenCache;
 
     @Resource
     private RegistryService registryService;
