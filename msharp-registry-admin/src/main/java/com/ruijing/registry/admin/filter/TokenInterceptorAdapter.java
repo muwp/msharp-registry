@@ -5,6 +5,7 @@ import com.ruijing.registry.admin.cache.TokenCache;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  **/
 public class TokenInterceptorAdapter extends HandlerInterceptorAdapter {
 
+    @Autowired
     private TokenCache tokenCache;
 
     @Override

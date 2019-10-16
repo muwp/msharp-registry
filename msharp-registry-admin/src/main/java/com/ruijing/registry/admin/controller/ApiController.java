@@ -3,11 +3,14 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
+import com.ruijing.registry.admin.cache.TokenCache;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.client.model.RegistryNode;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -28,6 +32,12 @@ import java.util.*;
 @Controller
 @RequestMapping("/simple/api")
 public class ApiController {
+
+    public static final Response<List<String>> FORBIDDEN = new Response<>(403, null);
+
+
+    @Autowired
+    private TokenCache tokenCache;
 
     @Resource
     private RegistryService registryService;
@@ -62,6 +72,7 @@ public class ApiController {
     @PermissionLimit(limit = false)
     @RegistryClient
     public Response<String> registry(@RequestBody(required = false) String data) {
+
         // parse data
         RegistryNode registryData = null;
         try {
@@ -244,5 +255,24 @@ public class ApiController {
         }
 
         return registryService.monitor(registryNode.getBiz(), registryNode.getEnv(), Arrays.asList(registryNode.getKey()));
+    }
+
+    private Response<String> valid(HttpServletRequest request) {
+        final String accessToken = request.getHeader("access_token");
+        final String clientAppkey = request.getHeader("client_appkey");
+        if (StringUtils.isBlank(accessToken)) {
+            return null;
+        }
+
+        final String serverToken = tokenCache.get(clientAppkey);
+        if (StringUtils.isBlank(serverToken)) {
+            return null;
+        }
+
+        if (serverToken.trim().equalsIgnoreCase(accessToken)) {
+            return null;
+        }
+
+        return Response.FORBIDDEN;
     }
 }
