@@ -82,7 +82,9 @@ public class TokenCache implements InitializingBean {
             final List<TokenDO> tokenDOList = tokenMapper.listBizToken();
             if (CollectionUtils.isNotEmpty(tokenDOList)) {
                 for (final TokenDO tokenDO : tokenDOList) {
-                    tokenMap.put(tokenDO.getClientAppkey(), tokenDO);
+                    if (tokenDO.getStatus() != null && tokenDO.getStatus() == 1) {
+                        tokenMap.put(tokenDO.getClientAppkey(), tokenDO);
+                    }
                 }
             }
         } catch (Exception ex) {
