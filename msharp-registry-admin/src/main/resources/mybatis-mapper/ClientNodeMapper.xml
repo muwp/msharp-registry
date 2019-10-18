@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruijing.registry.admin.data.mapper.ClientNodeMapper">
+    <resultMap id="BaseResultMap" type="com.ruijing.registry.admin.data.model.ClientNodeDO">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="client_appkey" property="clientAppkey" jdbcType="VARCHAR"/>
+        <result column="service_name" property="serviceName" jdbcType="VARCHAR"/>
+        <result column="env" property="env" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        client_appkey,
+        service_name,
+        env,
+        update_time
+    </sql>
+
+    <select id="queryForList" parameterType="com.ruijing.registry.admin.data.query.ClientNodeQuery"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM client_node
+        <where>
+            <if test="serviceName!=null">
+                service_name=#{serviceName}
+            </if>
+            <if test="env!=null">
+                AND `env` = #{env}
+            </if>
+            <if test="id!=null">
+                AND id = #{id}
+            </if>
+            <if test="clientAppkey!=null">
+                AND `client_appkey` = #{clientAppkey}
+            </if>
+        </where>
+        <if test="offset!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
+    <insert id="insertSelective" parameterType="com.ruijing.registry.admin.data.model.ClientNodeDO" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into client_node
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="clientAppkey != null">
+                client_appkey,
+            </if>
+            <if test="serviceName != null">
+                service_name,
+            </if>
+            <if test="env != null">
+                env,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="clientAppkey != null">
+                #{clientAppkey,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceName != null">
+                #{serviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="env != null">
+                #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from client_node
+        where id=#{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="query" resultMap="BaseResultMap" parameterType="com.ruijing.registry.admin.data.model.ClientNodeDO">
+        select
+        <include refid="Base_Column_List"/>
+        from client_node
+        where service_name = #{serviceName,jdbcType=VARCHAR}
+        and
+        env = #{env,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.ruijing.registry.admin.data.model.ClientNodeDO">
+        update client_node
+        <set>
+            <if test="clientAppkey != null">
+                client_appkey = #{clientAppkey,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceName != null">
+                service_name = #{serviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="env != null">
+                env = #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="refresh" parameterType="com.ruijing.registry.admin.data.model.ClientNodeDO">
+        update client_node
+        set update_time=now()
+        where client_appkey = #{clientAppkey,jdbcType=VARCHAR}
+          and service_name = #{serviceName,jdbcType=VARCHAR}
+          and env = #{env,jdbcType=VARCHAR}
+
+    </update>
+</mapper>

@@ -64,3 +64,19 @@ CREATE TABLE `biz_token`
   UNIQUE KEY `uk_client_appkey_env` (`client_appkey`, `env`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='注册中心的鉴权中心';
+
+## 注册表详细信息
+CREATE TABLE `client_node`
+(
+  `id`            BIGINT(20)   NOT NULL AUTO_INCREMENT,
+  `client_appkey` varchar(50)  NOT NULL COMMENT '客户端appkey',
+  `env`           varchar(255) NOT NULL COMMENT '环境标识',
+  `service_name`  varchar(255) NOT NULL COMMENT '服务名称',
+  `update_time`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
+    COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_service_name_env_client_APPKEY` (`service_name`, `client_appkey`, `env`),
+  key `update_time` (`update_time`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;

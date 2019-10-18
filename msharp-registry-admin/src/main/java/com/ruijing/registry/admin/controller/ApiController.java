@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- * SimpleApiController
+ * ApiController
  *
  * @author mwup
  * @version 1.0
@@ -64,22 +64,22 @@ public class ApiController {
     public Response<String> registry(@RequestBody(required = false) String data) {
 
         // parse data
-        RegistryNode registryData = null;
+        RegistryNode node = null;
         try {
-            registryData = JsonUtils.fromJson(data, RegistryNode.class);
+            node = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
             Cat.logError("method:registry,data:" + data, e);
         }
 
-        if (null == registryData) {
+        if (null == node) {
             return Response.FAIL;
         }
         final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-        registryNodeDO.setBiz(registryData.getBiz());
-        registryNodeDO.setEnv(registryData.getEnv());
-        registryNodeDO.setKey(registryData.getKey());
-        registryNodeDO.setValue(registryData.getValue());
-        return registryService.registry(Arrays.asList(registryNodeDO));
+        registryNodeDO.setBiz(node.getBiz());
+        registryNodeDO.setEnv(node.getEnv());
+        registryNodeDO.setKey(node.getKey());
+        registryNodeDO.setValue(node.getValue());
+        return registryService.registry(registryNodeDO);
     }
 
     @RequestMapping("/batch/registry")
@@ -94,7 +94,6 @@ public class ApiController {
         } catch (Exception e) {
             Cat.logError("method:batchRegistry,data:" + data, e);
         }
-
         if (CollectionUtils.isEmpty(registryDataList)) {
             return Response.FAIL;
         }
@@ -176,7 +175,7 @@ public class ApiController {
      * {
      * "biz" : "xx",
      * "env" : "xx",
-     * "service01",
+     * "service01"
      * }
      *
      * @param data
@@ -188,16 +187,16 @@ public class ApiController {
     @RegistryClient
     public Response<List<String>> discovery(@RequestBody(required = false) String data) {
         // parse data
-        RegistryNode registryData = null;
+        RegistryNode registryNode = null;
         try {
-            registryData = JsonUtils.fromJson(data, RegistryNode.class);
+            registryNode = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
             Cat.logError("method:discovery,data:" + data, e);
         }
-        if (null == registryData) {
+        if (null == registryNode) {
             return null;
         }
-        final Response<List<String>> returnT = registryService.discovery(registryData.getBiz(), registryData.getEnv(), registryData.getKey());
+        final Response<List<String>> returnT = registryService.discovery(registryNode.getClientAppkey(), registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
         return returnT;
     }
 

@@ -2,7 +2,7 @@ package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.model.Response;
-import com.ruijing.registry.admin.service.RegistryService;
+import com.ruijing.registry.admin.service.ManagerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +21,10 @@ import java.util.Map;
  **/
 @Controller
 @RequestMapping("/registry")
-public class RegistryController {
+public class ManagerController {
 
     @Resource
-    private RegistryService registryService;
+    private ManagerService managerService;
 
     @RequestMapping("")
     public String index(Model model) {
@@ -34,24 +34,24 @@ public class RegistryController {
     @RequestMapping("/pageList")
     @ResponseBody
     public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start, @RequestParam(required = false, defaultValue = "10") int length, String biz, String env, String key) {
-        return registryService.pageList(start, length, biz, env, key);
+        return managerService.pageList(start, length, biz, env, key);
     }
 
     @RequestMapping("/delete")
     @ResponseBody
     public Response<String> delete(int id) {
-        return registryService.delete(id);
+        return managerService.delete(id);
     }
 
     @RequestMapping("/update")
     @ResponseBody
     public Response<String> update(RegistryDO registryDO) {
-        return registryService.update(registryDO);
+        return managerService.update(registryDO);
     }
 
     @RequestMapping("/add")
     @ResponseBody
     public Response<String> add(RegistryDO registryDO) {
-        return registryService.add(registryDO);
+        return managerService.add(registryDO);
     }
 }

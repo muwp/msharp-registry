@@ -4,8 +4,10 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.fundamental.common.collections.New;
+import com.ruijing.registry.admin.cache.ClientNodeCache;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
+import com.ruijing.registry.admin.data.model.ClientNodeDO;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.model.Response;
@@ -15,17 +17,14 @@ import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
 import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * RegistryServiceImpl
@@ -40,13 +39,13 @@ public class RegistryServiceImpl implements RegistryService {
     private static final Response<List<String>> EMPTY_RETURN_LIST = new Response<>(Collections.emptyList());
 
     @Resource
-    private RegistryMapper registryMapper;
-
-    @Resource
     private RegistryCache registryCache;
 
     @Resource
     private RegistryNodeCache registryNodeCache;
+
+    @Resource
+    private ClientNodeCache clientNodeCache;
 
     @Autowired
     private RegistryManager registryManager;
@@ -55,150 +54,8 @@ public class RegistryServiceImpl implements RegistryService {
     private RegistryDeferredCacheManager deferredResultCache;
 
     @Override
-    public Map<String, Object> pageList(int start, int length, String biz, String env, String key) {
-        // page list
-        final List<RegistryDO> list = registryMapper.pageList(start, length, biz, env, key);
-        int len = 0;
-        if (CollectionUtils.isNotEmpty(list)) {
-            len = registryMapper.pageListCount(start, length, biz, env, key);
-            for (int i = 0, size = list.size(); i < size; i++) {
-                final RegistryDO registryDO = list.get(i);
-                if (registryDO.getStatus() == RegistryStatusEnum.LOCKED.getCode() || registryDO.getStatus() == RegistryStatusEnum.FORBID.getCode()) {
-                    //
-                } else {
-                    final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
-                    if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                        List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList());
-                        registryDO.setData(JsonUtils.toJson(result));
-                    } else {
-                        registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
-                        registryDO.setStatus(RegistryStatusEnum.OFFLINE.getCode());
-                    }
-                }
-            }
-        }
-
-        // package result
-        final Map<String, Object> result = New.mapWithCapacity(3);
-
-        // 总记录数
-        result.put("recordsTotal", len);
-        // 过滤后的总记录数
-        result.put("recordsFiltered", len);
-        // 分页列表
-        result.put("data", list);
-
-        return result;
-    }
-
-    @Override
-    public Response<String> delete(long id) {
-        RegistryDO registryDO = registryCache.get(id);
-        if (null == registryDO) {
-            return Response.SUCCESS;
-        }
-
-        registryCache.remove(registryDO.getId());
-
-        final List<RegistryNodeDO> list = registryNodeCache.get(registryDO.getId());
-        registryManager.removeRegistryNodeList(list);
-        return Response.SUCCESS;
-    }
-
-    @Override
-    public Response<String> update(RegistryDO registryDO) {
-
-        // valid
-        if (StringUtils.isBlank(registryDO.getBiz())) {
-            return new Response<>(Response.FAIL_CODE, "业务线格式非空");
-        }
-
-        if (StringUtils.isBlank(registryDO.getEnv())) {
-            return new Response<>(Response.FAIL_CODE, "环境格式非空");
-        }
-
-        if (StringUtils.isBlank(registryDO.getKey())) {
-            return new Response<>(Response.FAIL_CODE, "注册Key非空");
-        }
-
-        if (StringUtils.isBlank(registryDO.getData())) {
-            registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
-        }
-
-        final List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
-
-        if (CollectionUtils.isEmpty(valueList)) {
-            return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
-        }
-
-        // valid exist
-        final RegistryDO exist = this.registryCache.get(registryDO.getId());
-        if (exist == null) {
-            return new Response<>(Response.FAIL_CODE, "ID参数非法");
-        }
-
-        registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-        this.registryCache.refresh(registryDO);
-
-        final List<RegistryNodeDO> registryNodeList = New.listWithCapacity(valueList.size());
-        for (int i = 0, size = valueList.size(); i < size; i++) {
-            final RegistryNodeDO registryNode = new RegistryNodeDO();
-            registryNode.setValue(valueList.get(i));
-            registryNode.setEnv(registryDO.getEnv());
-            registryNode.setKey(registryDO.getKey());
-            registryNode.setBiz(registryDO.getBiz());
-            registryNodeList.add(registryNode);
-        }
-
-        registryManager.addRegistryNodeList(registryNodeList);
-
-        return Response.SUCCESS;
-    }
-
-    @Override
-    public Response<String> add(RegistryDO registryDO) {
-
-        // valid
-        if (StringUtils.isBlank(registryDO.getBiz())) {
-            return new Response<>(Response.FAIL_CODE, "业务线格式非空");
-        }
-
-        if (StringUtils.isBlank(registryDO.getKey())) {
-            return new Response<>(Response.FAIL_CODE, "注册Key非空");
-        }
-
-        if (StringUtils.isBlank(registryDO.getEnv())) {
-            return new Response<>(Response.FAIL_CODE, "环境格式非空");
-        }
-
-        if (StringUtils.isBlank(registryDO.getData())) {
-            registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
-        }
-
-        List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
-        if (valueList == null) {
-            return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
-        }
-
-        // valid exist
-        final RegistryDO exist = registryCache.get(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()));
-
-        if (exist != null) {
-            return new Response<>(Response.FAIL_CODE, "注册Key请勿重复");
-        }
-
-        final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(valueList.size());
-        for (int i = 0, size = valueList.size(); i < size; i++) {
-            final RegistryNodeDO registryNode = new RegistryNodeDO();
-            registryNode.setBiz(registryDO.getBiz());
-            registryNode.setEnv(registryDO.getEnv());
-            registryNode.setKey(registryDO.getKey());
-            registryNode.setValue(valueList.get(i));
-            registryNode.setUpdateTime(new Date());
-            registryNodeDOList.add(registryNode);
-        }
-
-        this.registryManager.addRegistryNodeList(registryNodeDOList);
+    public Response<String> registry(RegistryNodeDO registryNode) {
+        this.registryManager.addRegistryNode(registryNode);
         return Response.SUCCESS;
     }
 
@@ -210,23 +67,16 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Override
     public Response<String> remove(List<RegistryNodeDO> registryNodeList) {
-
         if (CollectionUtils.isEmpty(registryNodeList)) {
             return new Response<>(Response.FAIL_CODE, "Registry DataList Invalid");
         }
-
-        // fill + add queue
         registryManager.removeRegistryNodeList(registryNodeList);
-
         return Response.SUCCESS;
     }
 
     @Override
     public Response<String> remove(final RegistryNodeDO registryNode) {
-
-        // fill + add queue
         registryManager.removeRegistryNode(registryNode);
-
         return Response.SUCCESS;
     }
 
@@ -235,23 +85,10 @@ public class RegistryServiceImpl implements RegistryService {
         if (CollectionUtils.isEmpty(keys)) {
             return new Response<>(Collections.emptyMap());
         }
-
-        if (StringUtils.isBlank(biz)) {
-            return new Response<>(Response.FAIL_CODE, "biz empty");
-        }
-
-        if (StringUtils.isBlank(env)) {
-            return new Response<>(Response.FAIL_CODE, "env empty");
-        }
-
-        if (CollectionUtils.isEmpty(keys)) {
-            return new Response<>(Response.FAIL_CODE, "keys Invalid.");
-        }
-
         final Map<String, List<String>> result = New.mapWithCapacity(keys.size());
         for (int i = 0, size = keys.size(); i < size; i++) {
             final String key = keys.get(i);
-            final Response<List<String>> returnT = this.discovery(biz, env, key);
+            final Response<List<String>> returnT = this.discovery(StringUtils.EMPTY, biz, env, key);
             if (returnT.getCode() == Response.SUCCESS_CODE) {
                 result.put(key, returnT.getData());
             }
@@ -260,23 +97,25 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<List<String>> discovery(String biz, String env, String key) {
-
-        if (StringUtils.isBlank(key)) {
-            return new Response<>(Response.FAIL_CODE, "env empty");
+    public Response<List<String>> discovery(String clientAppkey, String biz, String env, String key) {
+        Response<String> response = valid(biz, env, key);
+        if (null != response) {
+            return EMPTY_RETURN_LIST;
         }
 
-        if (StringUtils.isBlank(env)) {
-            return new Response<>(Response.FAIL_CODE, "env empty");
-        }
-
-        if (StringUtils.isBlank(biz)) {
-            return new Response<>(Response.FAIL_CODE, "biz empty");
+        if (StringUtils.isNotBlank(clientAppkey)) {
+            final ClientNodeDO clientNode = new ClientNodeDO();
+            clientNode.setClientAppkey(clientAppkey);
+            clientNode.setEnv(env);
+            clientNode.setServiceName(key);
+            clientNode.setUpdateTime(new Date());
+            this.clientNodeCache.asyncRefreshNode(clientNode);
         }
 
         final RegistryDO registryDO = registryCache.get(biz, env, key);
 
         if (null == registryDO) {
+            Cat.logEvent("discovery", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
             return EMPTY_RETURN_LIST;
         }
 
@@ -287,11 +126,16 @@ public class RegistryServiceImpl implements RegistryService {
         final List<RegistryNodeDO> registryNodeList = this.registryNodeCache.get(registryDO.getId());
 
         if (CollectionUtils.isEmpty(registryNodeList)) {
-            Cat.logEvent("discovery", JsonObjectBuilder.custom().put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
+            Cat.logEvent("discovery", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
             return EMPTY_RETURN_LIST;
         }
 
-        return new Response<>(registryNodeList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList()));
+        final List<String> list = new ArrayList<>(registryNodeList.size());
+        for (int i = 0, size = list.size(); i < size; i++) {
+            final RegistryNodeDO nodeDO = registryNodeList.get(i);
+            list.add(nodeDO.getValue());
+        }
+        return new Response<>(list);
     }
 
     @Override
@@ -337,5 +181,21 @@ public class RegistryServiceImpl implements RegistryService {
                 break;
             }
         }
+    }
+
+    private Response<String> valid(String biz, String env, String key) {
+        // valid
+        if (StringUtils.isBlank(biz)) {
+            return new Response<>(Response.FAIL_CODE, "业务线格式非空");
+        }
+
+        if (StringUtils.isBlank(key)) {
+            return new Response<>(Response.FAIL_CODE, "注册Key非空");
+        }
+
+        if (StringUtils.isBlank(env)) {
+            return new Response<>(Response.FAIL_CODE, "环境格式非空");
+        }
+        return null;
     }
 }

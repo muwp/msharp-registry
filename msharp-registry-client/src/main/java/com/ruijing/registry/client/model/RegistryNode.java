@@ -14,6 +14,11 @@ public class RegistryNode implements Serializable {
     public static final long serialVersionUID = 42L;
 
     /**
+     * 客户端服务appkey
+     */
+    private String clientAppkey;
+
+    /**
      * 业务标识
      */
     private String biz;
@@ -65,9 +70,18 @@ public class RegistryNode implements Serializable {
         this.value = value;
     }
 
+    public String getClientAppkey() {
+        return clientAppkey;
+    }
+
+    public void setClientAppkey(String clientAppkey) {
+        this.clientAppkey = clientAppkey;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNode{");
+        sb.append("clientAppkey='").append(clientAppkey).append('\'');
         sb.append(", biz='").append(biz).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", key='").append(key).append('\'');
