@@ -8,6 +8,7 @@ import com.ruijing.registry.client.model.RegistryNode;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.client.model.RegistryNodeQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -88,22 +89,22 @@ public class ApiController {
     @RegistryClient
     public Response<String> batchRegistry(@RequestBody(required = false) String data) {
         // parse data
-        List<RegistryNode> registryDataList = null;
+        List<RegistryNode> registryNodeList = null;
         try {
-            registryDataList = JsonUtils.parseList(data, RegistryNode.class);
+            registryNodeList = JsonUtils.parseList(data, RegistryNode.class);
         } catch (Exception e) {
             Cat.logError("method:batchRegistry,data:" + data, e);
         }
-        if (CollectionUtils.isEmpty(registryDataList)) {
+        if (CollectionUtils.isEmpty(registryNodeList)) {
             return Response.FAIL;
         }
-        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryDataList.size());
-        for (final RegistryNode registryData : registryDataList) {
+        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
+        for (final RegistryNode node : registryNodeList) {
             final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-            registryNodeDO.setKey(registryData.getKey());
-            registryNodeDO.setValue(registryData.getValue());
-            registryNodeDO.setBiz(registryData.getBiz());
-            registryNodeDO.setEnv(registryData.getEnv());
+            registryNodeDO.setKey(node.getKey());
+            registryNodeDO.setValue(node.getValue());
+            registryNodeDO.setBiz(node.getBiz());
+            registryNodeDO.setEnv(node.getEnv());
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);
@@ -187,16 +188,16 @@ public class ApiController {
     @RegistryClient
     public Response<List<String>> discovery(@RequestBody(required = false) String data) {
         // parse data
-        RegistryNode registryNode = null;
+        RegistryNodeQuery query = null;
         try {
-            registryNode = JsonUtils.fromJson(data, RegistryNode.class);
+            query = JsonUtils.fromJson(data, RegistryNodeQuery.class);
         } catch (Exception e) {
             Cat.logError("method:discovery,data:" + data, e);
         }
-        if (null == registryNode) {
+        if (null == query) {
             return null;
         }
-        final Response<List<String>> returnT = registryService.discovery(registryNode.getClientAppkey(), registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
+        final Response<List<String>> returnT = registryService.discovery(query);
         return returnT;
     }
 

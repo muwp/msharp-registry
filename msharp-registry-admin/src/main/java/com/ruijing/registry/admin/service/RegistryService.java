@@ -2,6 +2,7 @@ package com.ruijing.registry.admin.service;
 
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.client.model.RegistryNodeQuery;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
@@ -24,9 +25,9 @@ public interface RegistryService {
 
     Response<String> remove(RegistryNodeDO registryNode);
 
-    Response<List<String>> discovery(String clientAppey, String biz, String env, String key);
+    Response<List<String>> discovery(RegistryNodeQuery query);
 
-    Response<Map<String, List<String>>> discovery(String biz, String env, List<String> keys);
+    Response<Map<String, List<String>>> discovery(List<RegistryNodeQuery> queries);
 
     DeferredResult<Response<String>> monitor(String biz, String env, List<String> keys);
 }

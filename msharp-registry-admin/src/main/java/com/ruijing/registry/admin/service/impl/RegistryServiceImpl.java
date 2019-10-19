@@ -17,6 +17,7 @@ import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
 import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.client.model.RegistryNodeQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,23 +82,27 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<Map<String, List<String>>> discovery(String biz, String env, List<String> keys) {
-        if (CollectionUtils.isEmpty(keys)) {
+    public Response<Map<String, List<String>>> discovery(List<RegistryNodeQuery> queries) {
+        if (CollectionUtils.isEmpty(queries)) {
             return new Response<>(Collections.emptyMap());
         }
-        final Map<String, List<String>> result = New.mapWithCapacity(keys.size());
-        for (int i = 0, size = keys.size(); i < size; i++) {
-            final String key = keys.get(i);
-            final Response<List<String>> returnT = this.discovery(StringUtils.EMPTY, biz, env, key);
+        final Map<String, List<String>> result = New.mapWithCapacity(queries.size());
+        for (int i = 0, size = queries.size(); i < size; i++) {
+            final RegistryNodeQuery query = queries.get(i);
+            final Response<List<String>> returnT = this.discovery(query);
             if (returnT.getCode() == Response.SUCCESS_CODE) {
-                result.put(key, returnT.getData());
+                result.put(query.getKey(), returnT.getData());
             }
         }
         return new Response<>(result);
     }
 
     @Override
-    public Response<List<String>> discovery(String clientAppkey, String biz, String env, String key) {
+    public Response<List<String>> discovery(RegistryNodeQuery query) {
+        String clientAppkey = query.getClientAppkey();
+        String biz = query.getBiz();
+        String env = query.getEnv();
+        String key = query.getKey();
         Response<String> response = valid(biz, env, key);
         if (null != response) {
             return EMPTY_RETURN_LIST;
@@ -131,7 +136,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         final List<String> list = new ArrayList<>(registryNodeList.size());
-        for (int i = 0, size = list.size(); i < size; i++) {
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
             list.add(nodeDO.getValue());
         }
