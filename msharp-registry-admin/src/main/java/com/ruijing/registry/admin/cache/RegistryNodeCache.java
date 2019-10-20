@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, InitializingBean {
 
-    private static final int DEFAULT_BATCH_UPDATE_SIZE = 80;
+    private static final int DEFAULT_BATCH_UPDATE_SIZE = 50;
 
     @Resource
     private RegistryNodeMapper registryNodeMapper;
