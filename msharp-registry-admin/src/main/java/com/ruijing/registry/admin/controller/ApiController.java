@@ -69,7 +69,7 @@ public class ApiController {
         try {
             node = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
-            Cat.logError("method:registry,data:" + data, e);
+            Cat.logError("apiController.registry,data:" + data, e);
         }
 
         if (null == node) {
@@ -93,7 +93,7 @@ public class ApiController {
         try {
             registryNodeList = JsonUtils.parseList(data, RegistryNode.class);
         } catch (Exception e) {
-            Cat.logError("method:batchRegistry,data:" + data, e);
+            Cat.logError("apiController.batchRegistry,data:" + data, e);
         }
         if (CollectionUtils.isEmpty(registryNodeList)) {
             return Response.FAIL;
@@ -145,7 +145,7 @@ public class ApiController {
         try {
             registryData = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
-            Cat.logError("method:remove,data:" + data, e);
+            Cat.logError("apiController.remove,data:" + data, e);
         }
         if (null == registryData) {
             return Response.FAIL;
@@ -174,9 +174,9 @@ public class ApiController {
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "biz" : "xx",
-     * "env" : "xx",
-     * "service01"
+     * "biz" : "pearl-service",
+     * "env" : "test",
+     * "key":"serviceName"
      * }
      *
      * @param data
@@ -192,7 +192,7 @@ public class ApiController {
         try {
             query = JsonUtils.fromJson(data, RegistryNodeQuery.class);
         } catch (Exception e) {
-            Cat.logError("method:discovery,data:" + data, e);
+            Cat.logError("apiController.discovery,data:" + data, e);
         }
         if (null == query) {
             return null;
@@ -235,7 +235,7 @@ public class ApiController {
         try {
             registryNode = JsonUtils.fromJson(data, RegistryNode.class);
         } catch (Exception e) {
-            Cat.logError("method:monitor,data:" + data, e);
+            Cat.logError("apiController.monitor,data:" + data, e);
         }
 
         if (null == registryNode) {

@@ -114,13 +114,13 @@ public class RegistryServiceImpl implements RegistryService {
             clientNode.setEnv(env);
             clientNode.setServiceName(key);
             clientNode.setUpdateTime(new Date());
-            this.clientNodeCache.asyncRefreshNode(clientNode);
+            this.clientNodeCache.refreshNode(clientNode);
         }
 
         final RegistryDO registryDO = registryCache.get(biz, env, key);
 
         if (null == registryDO) {
-            Cat.logEvent("discovery", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
+            Cat.logEvent("discovery[no_registry]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
             return EMPTY_RETURN_LIST;
         }
 
@@ -131,7 +131,7 @@ public class RegistryServiceImpl implements RegistryService {
         final List<RegistryNodeDO> registryNodeList = this.registryNodeCache.get(registryDO.getId());
 
         if (CollectionUtils.isEmpty(registryNodeList)) {
-            Cat.logEvent("discovery", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
+            Cat.logEvent("discovery[no_registry_node]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
             return EMPTY_RETURN_LIST;
         }
 
