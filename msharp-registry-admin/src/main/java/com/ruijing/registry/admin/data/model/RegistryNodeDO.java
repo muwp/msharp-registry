@@ -43,6 +43,11 @@ public class RegistryNodeDO {
     private String value;
 
     /**
+     * 状态值
+     */
+    private Integer status;
+
+    /**
      * 更新时间
      */
     private Date updateTime;
@@ -95,6 +100,14 @@ public class RegistryNodeDO {
         this.value = value;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Date getUpdateTime() {
         return updateTime;
     }
@@ -133,6 +146,7 @@ public class RegistryNodeDO {
         sb.append(", env='").append(env).append('\'');
         sb.append(", key='").append(key).append('\'');
         sb.append(", value='").append(value).append('\'');
+        sb.append(", status=").append(status);
         sb.append(", updateTime=").append(updateTime);
         sb.append('}');
         return sb.toString();

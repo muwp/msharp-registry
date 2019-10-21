@@ -25,12 +25,16 @@ CREATE TABLE `xxl_registry_data`
   `env`         varchar(255) NOT NULL COMMENT '环境标识',
   `key`         varchar(255) NOT NULL COMMENT '注册Key',
   `value`       varchar(255) NOT NULL COMMENT '注册Value',
+  `status`      int(11)      NOT NULL DEFAULT 1 COMMENT '状态:0-删除 1-正常',
   `updateTime`  datetime     NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_biz_env_key_value` (`biz`, `env`, `key`, `value`),
   key `idx_registry_id` (`registry_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+alter table xxl_registry_data
+  add column `status` int(11) NOT NULL DEFAULT 1 COMMENT '状态:0-删除 1-正常';
 
 # 消息队列
 CREATE TABLE `message_queue`

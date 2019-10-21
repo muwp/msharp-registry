@@ -7,6 +7,7 @@ import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
+import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -129,6 +130,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
 
     @Override
     public int persist(final List<RegistryNodeDO> registryNodeList) {
+        //persist
         int updateSize = 0;
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO registryNode = registryNodeList.get(i);
@@ -137,7 +139,8 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         return updateSize;
     }
 
-    private int addNode(RegistryNodeDO registryNode) {
+    private int addNode(final RegistryNodeDO registryNode) {
+        //update
         int updateSize = 0;
         Transaction newTransaction = Cat.newTransaction("registryManager", "registryNodeMapper.add");
         try {
@@ -154,12 +157,12 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         return updateSize;
     }
 
-    private int deleteNode(String biz, String env, String key, String value) {
+    private int deleteNode(final String biz, final String env, final String key, final String value) {
         // delete
         int deletedSize = 0;
-        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.deleteDataValue");
+        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.removeDataValue");
         try {
-            deletedSize = registryNodeMapper.deleteDataValue(biz, env, key, value);
+            deletedSize = registryNodeMapper.removeDataValue(biz, env, key, value);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
@@ -174,7 +177,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         int deletedSize = 0;
         final Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.delete");
         try {
-            deletedSize = this.registryNodeMapper.delete(id);
+            deletedSize = this.registryNodeMapper.remove(id);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
@@ -242,6 +245,9 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         final Map<Pair<Long, Triple<String, String, String>>, List<RegistryNodeDO>> registryNodeCache = New.mapWithCapacity(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO registryNode = registryNodeList.get(i);
+            if (registryNode.getStatus() == null || registryNode.getStatus() == RegistryNodeStatusEnum.DELETED.getCode()) {
+                continue;
+            }
             final Pair<Long, Triple<String, String, String>> pair = Pair.of(registryNode.getRegistryId(), Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey()));
             List<RegistryNodeDO> registryList = registryNodeCache.get(pair);
             if (null == registryList) {
@@ -254,11 +260,31 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     }
 
     private List<RegistryNodeDO> syncGet(final Triple<String, String, String> key) {
-        return registryNodeMapper.findData(key.getLeft(), key.getMiddle(), key.getRight());
+        final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findData(key.getLeft(), key.getMiddle(), key.getRight());
+        if (CollectionUtils.isEmpty(registryNodeList)) {
+            return Collections.emptyList();
+        }
+        return filter(registryNodeList);
     }
 
     private List<RegistryNodeDO> syncGet(final Long registryId) {
-        return registryNodeMapper.findByRegistryId(registryId);
+        final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findByRegistryId(registryId);
+        if (CollectionUtils.isEmpty(registryNodeList)) {
+            return Collections.emptyList();
+        }
+        return filter(registryNodeList);
+    }
+
+    private List<RegistryNodeDO> filter(List<RegistryNodeDO> registryNodeList) {
+        final List<RegistryNodeDO> nodeDOList = New.listWithCapacity(registryNodeList.size());
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+            final RegistryNodeDO node = registryNodeList.get(i);
+            if (node.getStatus() == null || node.getStatus() == RegistryNodeStatusEnum.DELETED.getCode()) {
+                continue;
+            }
+            nodeDOList.add(node);
+        }
+        return nodeDOList;
     }
 
     @Override

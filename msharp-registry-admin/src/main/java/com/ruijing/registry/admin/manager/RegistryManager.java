@@ -100,7 +100,7 @@ public class RegistryManager implements InitializingBean {
                     node.setValue(registryNode.getValue());
                 }
 
-                final int updateSize = registryNodeCache.refresh(Arrays.asList(registryNode));
+                final int updateSize = registryNodeCache.refresh(Arrays.asList(node));
 
                 if (updateSize == 0) {
                     final RegistryDO registryDO = registryCache.get(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());

@@ -68,7 +68,7 @@
 <#macro commonHeader>
 	<header class="main-header">
         <a href="${request.contextPath}/" class="logo">
-            <span class="logo-mini"><b>XXL</b></span>
+            <span class="logo-mini"><b>MSHARP</b></span>
 			<span class="logo-lg"><b>锐竞服务注册中心</b></span>
 		</a>
         <nav class="navbar navbar-static-top" role="navigation">

@@ -5,6 +5,7 @@ import com.ruijing.registry.admin.data.query.RegistryNodeQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,7 +22,11 @@ public interface RegistryNodeMapper {
 
     List<RegistryNodeDO> queryForList(RegistryNodeQuery query);
 
+   // int insertSelective(RegistryNodeDO registryNode);
+
     int add(RegistryNodeDO registryNode);
+
+    Date getSystemDateTime();
 
     List<RegistryNodeDO> findData(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
 
@@ -35,7 +40,11 @@ public interface RegistryNodeMapper {
 
     int deleteDataValue(@Param("biz") String biz, @Param("env") String env, @Param("key") String key, @Param("value") String value);
 
+    int removeDataValue(@Param("biz") String biz, @Param("env") String env, @Param("key") String key, @Param("value") String value);
+
     int delete(Long id);
+
+    int remove(Long id);
 
     int count();
 }

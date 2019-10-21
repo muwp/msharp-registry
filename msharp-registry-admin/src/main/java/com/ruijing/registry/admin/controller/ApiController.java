@@ -4,6 +4,7 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
+import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.client.model.RegistryNode;
 import com.ruijing.registry.admin.model.Response;
 import com.ruijing.registry.admin.service.RegistryService;
@@ -54,9 +55,6 @@ public class ApiController {
      * "key" : "service01",
      * "value" : "address01"
      * }
-     *
-     * @param data
-     * @return
      */
     @RequestMapping("/registry")
     @ResponseBody
@@ -80,6 +78,7 @@ public class ApiController {
         registryNodeDO.setEnv(node.getEnv());
         registryNodeDO.setKey(node.getKey());
         registryNodeDO.setValue(node.getValue());
+        registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
         return registryService.registry(registryNodeDO);
     }
 
@@ -105,6 +104,7 @@ public class ApiController {
             registryNodeDO.setValue(node.getValue());
             registryNodeDO.setBiz(node.getBiz());
             registryNodeDO.setEnv(node.getEnv());
+            registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);
@@ -131,9 +131,6 @@ public class ApiController {
      * "key" : "service01",
      * "value" : "address01"
      * }
-     *
-     * @param data
-     * @return
      */
     @RequestMapping("/remove")
     @ResponseBody
@@ -178,9 +175,6 @@ public class ApiController {
      * "env" : "test",
      * "key":"serviceName"
      * }
-     *
-     * @param data
-     * @return
      */
     @RequestMapping("/discovery")
     @ResponseBody
@@ -221,9 +215,6 @@ public class ApiController {
      * "env" : "xx",
      * "service02"
      * }
-     *
-     * @param data
-     * @return
      */
     @RequestMapping("/monitor")
     @ResponseBody
