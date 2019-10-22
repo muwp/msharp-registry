@@ -4,27 +4,27 @@ import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.model.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.annotation.Resource;
-import java.util.*;
+import java.util.List;
 
 /**
- * ApiController
+ * SimpleApiController
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
 @Controller
-@RequestMapping("/api")
-public class ApiController {
+@RequestMapping("/simple/api")
+public class SimpleApiController {
 
-    @Resource
+    @Autowired
     private ApiManager apiManager;
 
     /**
