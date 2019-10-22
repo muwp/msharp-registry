@@ -18,14 +18,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * RegistryNodeCleanManager
+ * RegistryNodeHealthCheckManager
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
 @Service
-public class RegistryNodeCleanManager implements InitializingBean {
+public class RegistryNodeHealthCheckManager implements InitializingBean {
 
     private static final int DEFAULT_BATCH_UPDATE_SIZE = 50;
 
@@ -41,21 +41,22 @@ public class RegistryNodeCleanManager implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.cleanExecutor.scheduleWithFixedDelay(this::cleanOverdueNode, 30, 10, TimeUnit.SECONDS);
+        this.cleanExecutor.scheduleWithFixedDelay(this::healthCheck, 30, 10, TimeUnit.SECONDS);
     }
 
-    private void cleanOverdueNode() {
+    private void healthCheck() {
         Transaction transaction = Cat.newTransaction("RegistryNodeCleanManager", "cleanOverdueNode");
         try {
             try {
                 final Date nowDate = this.registryNodeMapper.getSystemDateTime();
                 long time = nowDate.getTime();
-                int index = 1;
+                int index = 0;
                 while (true) {
-                    long fromIndex = (index - 1) * DEFAULT_BATCH_UPDATE_SIZE;
+                    long fromIndex = index * DEFAULT_BATCH_UPDATE_SIZE;
                     final RegistryNodeQuery query = new RegistryNodeQuery();
                     query.setOffset(fromIndex);
                     query.setPageSize(DEFAULT_BATCH_UPDATE_SIZE);
+                    index++;
                     final List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.queryForList(query);
                     if (CollectionUtils.isEmpty(registryNodeDOList)) {
                         break;
@@ -77,10 +78,8 @@ public class RegistryNodeCleanManager implements InitializingBean {
                     }
                 }
             } catch (Exception ex) {
-                Cat.logError("RegistryNodeCleanManager", "cleanOverdueNode", null, ex);
+                Cat.logError("RegistryNodeHealthCheckManager", "cleanOverdueNode", null, ex);
             }
-
-            // registryNodeMapper.cleanData(DEFAULT_TIME_OUT);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
