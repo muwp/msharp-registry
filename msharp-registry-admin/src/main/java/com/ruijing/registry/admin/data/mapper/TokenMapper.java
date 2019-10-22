@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.data.mapper;
 
 import com.ruijing.registry.admin.data.model.TokenDO;
+import com.ruijing.registry.admin.data.query.TokenQuery;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface TokenMapper {
     List<TokenDO> listBizToken();
 
     List<TokenDO> get(String appkey);
+
+    List<TokenDO> queryForList(TokenQuery query);
 }

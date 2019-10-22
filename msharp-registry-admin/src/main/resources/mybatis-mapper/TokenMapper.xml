@@ -93,6 +93,20 @@
         where client_appkey = #{clientAppkey,jdbcType=VARCHAR} and `status`=1
     </select>
 
+    <select id="queryForList" parameterType="com.ruijing.registry.admin.data.query.TokenQuery" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM biz_token
+        <where>
+            <if test="clientAppkey !=null">
+                client_appkey=#{clientAppkey}
+            </if>
+        </where>
+        <if test="offset!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.ruijing.registry.admin.data.model.TokenDO">
         update biz_token
         <set>

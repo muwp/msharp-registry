@@ -7,11 +7,13 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.registry.admin.data.mapper.TokenMapper;
 import com.ruijing.registry.admin.data.model.TokenDO;
+import com.ruijing.registry.admin.data.query.TokenQuery;
+import com.ruijing.registry.admin.enums.TokenStatusEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -27,7 +29,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TokenCache implements InitializingBean {
 
-    @Autowired
+    private static final int DEFAULT_BATCH_UPDATE_SIZE = 80;
+
+    @Resource
     private TokenMapper tokenMapper;
 
     private final Cache<String, TokenDO> tokenMap = CacheBuilder.newBuilder().expireAfterWrite(80, TimeUnit.SECONDS).build();
@@ -74,21 +78,36 @@ public class TokenCache implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::updateToken, 1, 60, TimeUnit.SECONDS);
+        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::scheduledUpdateToken, 1, 30, TimeUnit.SECONDS);
     }
 
-    public void updateToken() {
+    public void scheduledUpdateToken() {
         try {
-            final List<TokenDO> tokenDOList = tokenMapper.listBizToken();
-            if (CollectionUtils.isNotEmpty(tokenDOList)) {
-                for (final TokenDO tokenDO : tokenDOList) {
-                    if (tokenDO.getStatus() != null && tokenDO.getStatus() == 1) {
-                        tokenMap.put(tokenDO.getClientAppkey(), tokenDO);
+            int index = 0;
+            boolean stop = false;
+            while (!stop) {
+                TokenQuery query = new TokenQuery();
+                query.setPageSize(DEFAULT_BATCH_UPDATE_SIZE);
+                query.setOffset(index++ * DEFAULT_BATCH_UPDATE_SIZE * 1L);
+                final List<TokenDO> tokenList = tokenMapper.queryForList(query);
+                if (CollectionUtils.isEmpty(tokenList)) {
+                    break;
+                }
+
+                for (int i = 0, size = tokenList.size(); i < size; i++) {
+                    final TokenDO tokenDO = tokenList.get(i);
+                    if (tokenDO.getStatus() == null || tokenDO.getStatus() == TokenStatusEnum.DELETED.getCode()) {
+                        continue;
                     }
+                    this.tokenMap.put(tokenDO.getClientAppkey(), tokenDO);
+                }
+
+                if (tokenList.size() < DEFAULT_BATCH_UPDATE_SIZE) {
+                    stop = true;
                 }
             }
         } catch (Exception ex) {
-            Cat.logError("TokenCache", "updateToken", null, ex);
+            Cat.logError("TokenCache", "TokenCache", null, ex);
         }
     }
 }

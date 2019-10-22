@@ -1,13 +1,13 @@
 package com.ruijing.registry.admin.enums;
 
 /**
- * RegistryNodeStatusEnum
+ * TokenStatusEnum
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-public enum RegistryNodeStatusEnum {
+public enum TokenStatusEnum {
 
     /**
      * 0-删除
@@ -17,18 +17,13 @@ public enum RegistryNodeStatusEnum {
     /**
      * 1-正常
      */
-    NORMAL(1, "normal"),
-
-    /**
-     * 2-黄色预警【不键康状态】
-     */
-    YELLOW(2, "yellow");
+    NORMAL(1, "normal");
 
     private final int code;
 
     private final String name;
 
-    RegistryNodeStatusEnum(int code, String name) {
+    TokenStatusEnum(int code, String name) {
         this.code = code;
         this.name = name;
     }
@@ -43,7 +38,7 @@ public enum RegistryNodeStatusEnum {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("RegistryNodeStatusEnum{");
+        final StringBuilder sb = new StringBuilder("RegistryStatusEnum{");
         sb.append("code=").append(code);
         sb.append(", name='").append(name).append('\'');
         sb.append('}');

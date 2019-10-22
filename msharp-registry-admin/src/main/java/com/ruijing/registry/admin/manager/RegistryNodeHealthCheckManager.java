@@ -27,9 +27,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RegistryNodeHealthCheckManager implements InitializingBean {
 
-    private static final int DEFAULT_BATCH_UPDATE_SIZE = 50;
+    private static final int DEFAULT_BATCH_UPDATE_SIZE = 80;
 
-    private static final int DEFAULT_TIME_OUT = 60 * 1000;
+    private static final int YELLOW_TIME_OUT = 60 * 1000;
+
+    private static final int DELETED_TIME_OUT = 90 * 1000;
 
     @Resource
     private RegistryNodeMapper registryNodeMapper;
@@ -41,47 +43,44 @@ public class RegistryNodeHealthCheckManager implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.cleanExecutor.scheduleWithFixedDelay(this::healthCheck, 30, 10, TimeUnit.SECONDS);
+        this.cleanExecutor.scheduleWithFixedDelay(this::scheduleHealthCheck, 30, 12, TimeUnit.SECONDS);
     }
 
-    private void healthCheck() {
+    private void scheduleHealthCheck() {
         Transaction transaction = Cat.newTransaction("RegistryNodeCleanManager", "cleanOverdueNode");
         try {
-            try {
-                final Date nowDate = this.registryNodeMapper.getSystemDateTime();
-                long time = nowDate.getTime();
-                int index = 0;
-                while (true) {
-                    long fromIndex = index * DEFAULT_BATCH_UPDATE_SIZE;
-                    final RegistryNodeQuery query = new RegistryNodeQuery();
-                    query.setOffset(fromIndex);
-                    query.setPageSize(DEFAULT_BATCH_UPDATE_SIZE);
-                    index++;
-                    final List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.queryForList(query);
-                    if (CollectionUtils.isEmpty(registryNodeDOList)) {
-                        break;
-                    }
+            final Date nowDate = this.registryNodeMapper.getSystemDateTime();
+            long time = nowDate.getTime();
+            int index = 0;
+            while (true) {
+                long fromIndex = index * DEFAULT_BATCH_UPDATE_SIZE;
+                final RegistryNodeQuery query = new RegistryNodeQuery();
+                query.setOffset(fromIndex);
+                query.setPageSize(DEFAULT_BATCH_UPDATE_SIZE);
+                index++;
+                final List<RegistryNodeDO> registryNodeDOList = registryNodeMapper.queryForList(query);
+                if (CollectionUtils.isEmpty(registryNodeDOList)) {
+                    break;
+                }
 
-                    for (int i = 0, size = registryNodeDOList.size(); i < size; i++) {
-                        final RegistryNodeDO registryNode = registryNodeDOList.get(i);
-                        if (registryNode.getStatus() == null || registryNode.getStatus() == RegistryNodeStatusEnum.DELETED.getCode()) {
-                            continue;
-                        }
-                        final long interval = time - registryNode.getUpdateTime().getTime();
-                        if (interval > DEFAULT_TIME_OUT) {
-                            registryNodeMapper.remove(registryNode.getId());
-                        }
+                for (int i = 0, size = registryNodeDOList.size(); i < size; i++) {
+                    final RegistryNodeDO registryNode = registryNodeDOList.get(i);
+                    if (registryNode.getStatus() == null || registryNode.getStatus() == RegistryNodeStatusEnum.DELETED.getCode()) {
+                        continue;
                     }
-
-                    if (registryNodeDOList.size() < DEFAULT_BATCH_UPDATE_SIZE) {
-                        break;
+                    final long interval = time - registryNode.getUpdateTime().getTime();
+                    if (interval > YELLOW_TIME_OUT) {
+                        registryNodeMapper.remove(registryNode.getId());
                     }
                 }
-            } catch (Exception ex) {
-                Cat.logError("RegistryNodeHealthCheckManager", "cleanOverdueNode", null, ex);
+
+                if (registryNodeDOList.size() < DEFAULT_BATCH_UPDATE_SIZE) {
+                    break;
+                }
             }
             transaction.setSuccessStatus();
         } catch (Exception ex) {
+            Cat.logError("RegistryNodeHealthCheckManager", "scheduleHealthCheck", null, ex);
             transaction.setStatus(ex);
         } finally {
             transaction.complete();

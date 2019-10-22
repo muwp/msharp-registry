@@ -1,5 +1,8 @@
 package com.ruijing.registry.admin.filter;
 
+import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
+import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.cache.TokenCache;
 import com.ruijing.registry.admin.model.Response;
@@ -54,6 +57,7 @@ public class TokenInterceptorAdapter extends HandlerInterceptorAdapter {
             return super.preHandle(request, response, handler);
         }
 
+        Cat.logEvent("token[no_security]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("clientAccessToken", accessToken).put("serviceAccessToken", serverToken).build().toString(), Transaction.ERROR, "");
         response.getOutputStream().print(JsonUtils.toJson(Response.FORBIDDEN));
         response.getOutputStream().flush();
         return false;
