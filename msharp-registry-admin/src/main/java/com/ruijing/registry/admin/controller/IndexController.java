@@ -3,7 +3,7 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.filter.PermissionInterceptorAdapter;
-import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;

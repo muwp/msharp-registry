@@ -5,7 +5,7 @@ import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.cache.TokenCache;
-import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

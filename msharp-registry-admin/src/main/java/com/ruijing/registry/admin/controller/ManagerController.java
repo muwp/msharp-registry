@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.ManagerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

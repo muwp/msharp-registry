@@ -3,7 +3,7 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
-import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.admin.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;

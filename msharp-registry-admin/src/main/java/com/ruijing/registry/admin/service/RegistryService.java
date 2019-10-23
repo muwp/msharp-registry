@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.service;
 
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.client.model.RegistryNodeQuery;
 import org.springframework.web.context.request.async.DeferredResult;
 

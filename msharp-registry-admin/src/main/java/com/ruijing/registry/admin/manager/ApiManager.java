@@ -1,9 +1,12 @@
 package com.ruijing.registry.admin.manager;
 
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
+import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
-import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.admin.request.Request;
+import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.client.model.RegistryNode;
@@ -75,6 +78,22 @@ public class ApiManager {
         return registryService.registry(registryNodeDOList);
     }
 
+    public Response<String> renew(Request request) {
+        // parse data
+        final List<RegistryNode> registryNodeList = request.getRegistryNodeList();
+        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
+        for (final RegistryNode node : registryNodeList) {
+            final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
+            registryNodeDO.setKey(node.getKey());
+            registryNodeDO.setBiz(node.getBiz());
+            registryNodeDO.setValue(node.getValue());
+            registryNodeDO.setEnv(node.getEnv());
+            registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
+            registryNodeDOList.add(registryNodeDO);
+        }
+        return registryService.registry(registryNodeDOList);
+    }
+
     public Response<String> remove(String data) {
         // parse data
         RegistryNode registryData = null;
@@ -123,6 +142,7 @@ public class ApiManager {
             result.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
             return result;
         }
+        Cat.logEvent("monitor", JsonObjectBuilder.custom().put("clientAppkey", registryNode.getClientAppkey()).put("biz", registryNode.getBiz()).put("env", registryNode.getEnv()).put("key", registryNode.getKey()).build().toString(), Transaction.ERROR, "");
         return registryService.monitor(registryNode.getBiz(), registryNode.getEnv(), Arrays.asList(registryNode.getKey()));
     }
 }

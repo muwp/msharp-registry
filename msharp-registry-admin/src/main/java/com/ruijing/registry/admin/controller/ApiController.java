@@ -1,10 +1,15 @@
 package com.ruijing.registry.admin.controller;
 
+import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
-import com.ruijing.registry.admin.model.Response;
+import com.ruijing.registry.admin.request.Request;
+import com.ruijing.registry.admin.response.Response;
+import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.client.model.RegistryNode;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -65,6 +70,23 @@ public class ApiController {
         return apiManager.batchRegistry(data);
     }
 
+    @RequestMapping("/renew")
+    @ResponseBody
+    @PermissionLimit(limit = false)
+    @RegistryClient
+    public Response<String> renew(@RequestBody(required = false) String data) {
+        Request request = null;
+        try {
+            request = JsonUtils.fromJson(data, Request.class);
+        } catch (Exception e) {
+            Cat.logError("apiController.renew,data:" + data, e);
+        }
+        if (null == request || CollectionUtils.isEmpty(request.getRegistryNodeList())) {
+            return Response.FAIL;
+        }
+        return apiManager.renew(request);
+    }
+
     /**
      * 服务摘除 API
      * <p>
@@ -76,9 +98,9 @@ public class ApiController {
      * 请求参数说明：
      * 2、biz：业务标识
      * 2、env：环境标识
-     * 3、registryDataList：服务注册信息
+     * 3、registryNodeList：服务注册信息
      * <p>
-     * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
+     * 请求数据格式如下，放置在 RequestBody中，JSON格式：
      * <p>
      * {
      * "biz" : "xx",

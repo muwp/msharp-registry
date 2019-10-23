@@ -38,6 +38,11 @@ public class RegistryNode implements Serializable {
      */
     private String value;
 
+    /**
+     * 元数据
+     */
+    private String metaData;
+
     public String getBiz() {
         return biz;
     }
@@ -78,6 +83,14 @@ public class RegistryNode implements Serializable {
         this.clientAppkey = clientAppkey;
     }
 
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNode{");
@@ -86,6 +99,7 @@ public class RegistryNode implements Serializable {
         sb.append(", env='").append(env).append('\'');
         sb.append(", key='").append(key).append('\'');
         sb.append(", value='").append(value).append('\'');
+        sb.append(", metaData='").append(metaData).append('\'');
         sb.append('}');
         return sb.toString();
     }

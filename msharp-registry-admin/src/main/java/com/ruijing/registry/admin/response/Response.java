@@ -1,4 +1,4 @@
-package com.ruijing.registry.admin.model;
+package com.ruijing.registry.admin.response;
 
 import java.io.Serializable;
 
@@ -31,8 +31,13 @@ public class Response<T> implements Serializable {
 
     private T data;
 
-    public Response() {
+    /**
+     * 版本号
+     * 默认为 0
+     */
+    private int version;
 
+    public Response() {
     }
 
     public Response(int code, String msg) {
@@ -69,8 +74,22 @@ public class Response<T> implements Serializable {
         this.data = data;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
-        return "Response [code=" + code + ", msg=" + msg + ", data=" + data + "]";
+        final StringBuilder sb = new StringBuilder("Response{");
+        sb.append("code=").append(code);
+        sb.append(", msg='").append(msg).append('\'');
+        sb.append(", data=").append(data);
+        sb.append(", version=").append(version);
+        sb.append('}');
+        return sb.toString();
     }
 }
