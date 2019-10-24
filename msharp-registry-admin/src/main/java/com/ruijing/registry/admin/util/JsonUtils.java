@@ -42,6 +42,10 @@ public final class JsonUtils {
         return defaultMapper.fromJson(json, clazz);
     }
 
+    public static <T> T fromRequest(String json, Class<T> clazz) {
+        return defaultMapper.fromJson(json, clazz);
+    }
+
     public static <T> T fromJson(String json, JavaType clazz) {
         return defaultMapper.fromJson(json, clazz);
     }

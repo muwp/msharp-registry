@@ -93,11 +93,13 @@ public class RegistryManager implements InitializingBean {
                 final RegistryNodeDO node = new RegistryNodeDO();
                 if (null != nodeId) {
                     node.setId(nodeId);
+                    node.setMeta(registryNode.getMeta());
                 } else {
                     node.setBiz(registryNode.getBiz());
                     node.setEnv(registryNode.getEnv());
                     node.setKey(registryNode.getKey());
                     node.setValue(registryNode.getValue());
+                    node.setMeta(registryNode.getMeta());
                 }
 
                 final int updateSize = registryNodeCache.refresh(Arrays.asList(node));

@@ -1,8 +1,5 @@
 package com.ruijing.registry.admin.request;
 
-
-import com.ruijing.registry.client.model.RegistryNode;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,20 +10,20 @@ import java.util.List;
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-public class Request implements Serializable {
+public class Request<T> implements Serializable {
 
     public static final long serialVersionUID = 42L;
 
-    private List<RegistryNode> registryNodeList;
+    private List<T> list;
 
     private int version;
 
-    public List<RegistryNode> getRegistryNodeList() {
-        return registryNodeList;
+    public List<T> getList() {
+        return list;
     }
 
-    public void setRegistryNodeList(List<RegistryNode> registryNodeList) {
-        this.registryNodeList = registryNodeList;
+    public void setList(List<T> list) {
+        this.list = list;
     }
 
     public int getVersion() {
@@ -40,7 +37,7 @@ public class Request implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Request{");
-        sb.append("registryNodeList=").append(registryNodeList);
+        sb.append("list=").append(list);
         sb.append(", version=").append(version);
         sb.append('}');
         return sb.toString();

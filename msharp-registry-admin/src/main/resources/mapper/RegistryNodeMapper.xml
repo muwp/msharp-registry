@@ -10,6 +10,7 @@
         <result column="env" property="env"/>
         <result column="key" property="key"/>
         <result column="value" property="value"/>
+        <result column="meta" property="meta"/>
         <result column="status" property="status"/>
         <result column="updateTime" property="updateTime"/>
     </resultMap>
@@ -21,6 +22,7 @@
         `env`,
         `key`,
         `value`,
+        `meta`,
         `status`,
         `updateTime`
     </sql>
@@ -29,7 +31,8 @@
         UPDATE xxl_registry_data
         SET
         `updateTime` = now(),
-        `status` = 1
+        `status` = 1,
+        `meta`=#{meta}
         <where>
             <if test="biz!=null">
                 biz=#{biz}
@@ -98,6 +101,9 @@
             <if test="value != null">
                 `value`,
             </if>
+            <if test="meta != null">
+                `meta`,
+            </if>
             <if test="status != null">
                 `status`,
             </if>
@@ -124,6 +130,9 @@
             <if test="value != null">
                 #{value,jdbcType=VARCHAR},
             </if>
+            <if test="meta != null">
+                #{meta,jdbcType=VARCHAR},
+            </if>
             <if test="status != null">
                 #{status,jdbcType=INTEGER},
             </if>
@@ -140,6 +149,7 @@
                                        `env`,
                                        `key`,
                                        `value`,
+                                       `meta`,
                                        `status`,
                                        `updateTime`)
         VALUES
@@ -148,6 +158,7 @@
          #{env},
          #{key},
          #{value},
+         #{meta},
          #{status},
          now())
     </insert>
@@ -207,7 +218,7 @@
 
     <delete id="removeDataValue" parameterType="java.util.HashMap">
         update xxl_registry_data
-        set `status`=0
+        set `status` = 0
         WHERE `biz` = #{biz}
           and `env` = #{env}
           and `key` = #{key}

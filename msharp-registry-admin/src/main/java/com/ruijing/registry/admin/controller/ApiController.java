@@ -1,15 +1,14 @@
 package com.ruijing.registry.admin.controller;
 
-import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
-import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.client.model.RegistryNode;
+import com.ruijing.registry.admin.util.RequestUtil;
+import com.ruijing.registry.client.model.client.RegistryNodeQuery;
+import com.ruijing.registry.client.model.server.RegistryNode;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -75,13 +74,8 @@ public class ApiController {
     @PermissionLimit(limit = false)
     @RegistryClient
     public Response<String> renew(@RequestBody(required = false) String data) {
-        Request request = null;
-        try {
-            request = JsonUtils.fromJson(data, Request.class);
-        } catch (Exception e) {
-            Cat.logError("apiController.renew,data:" + data, e);
-        }
-        if (null == request || CollectionUtils.isEmpty(request.getRegistryNodeList())) {
+        final Request<RegistryNode> request = RequestUtil.getServerRequest(data);
+        if (null == request) {
             return Response.FAIL;
         }
         return apiManager.renew(request);
@@ -144,6 +138,18 @@ public class ApiController {
     @RegistryClient
     public Response<List<String>> discovery(@RequestBody(required = false) String data) {
         return apiManager.discovery(data);
+    }
+
+    @RequestMapping("/find")
+    @ResponseBody
+    @PermissionLimit(limit = false)
+    @RegistryClient
+    public Response<Map<String, List<String>>> find(@RequestBody(required = false) String data) {
+        final Request<RegistryNodeQuery> request = RequestUtil.getClientRequest(data);
+        if (null == request) {
+            return Response.FAIL_;
+        }
+        return apiManager.discovery(request);
     }
 
     /**

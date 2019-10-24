@@ -22,8 +22,6 @@ public interface RegistryNodeMapper {
 
     List<RegistryNodeDO> queryForList(RegistryNodeQuery query);
 
-   // int insertSelective(RegistryNodeDO registryNode);
-
     int add(RegistryNodeDO registryNode);
 
     Date getSystemDateTime();

@@ -6,11 +6,12 @@ import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.request.Request;
+import com.ruijing.registry.client.model.client.RegistryNodeQuery;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.client.model.RegistryNode;
-import com.ruijing.registry.client.model.RegistryNodeQuery;
+import com.ruijing.registry.client.model.server.RegistryNode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -19,6 +20,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ApiManager
@@ -50,11 +52,12 @@ public class ApiManager {
         registryNodeDO.setEnv(node.getEnv());
         registryNodeDO.setKey(node.getKey());
         registryNodeDO.setValue(node.getValue());
+        registryNodeDO.setMeta(StringUtils.EMPTY);
         registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
         return registryService.registry(registryNodeDO);
     }
 
-    public Response<String> batchRegistry(String data) {
+    public Response<String> batchRegistry(final String data) {
         // parse data
         List<RegistryNode> registryNodeList = null;
         try {
@@ -72,15 +75,16 @@ public class ApiManager {
             registryNodeDO.setValue(node.getValue());
             registryNodeDO.setBiz(node.getBiz());
             registryNodeDO.setEnv(node.getEnv());
+            registryNodeDO.setMeta(StringUtils.EMPTY);
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);
     }
 
-    public Response<String> renew(Request request) {
+    public Response<String> renew(final Request<RegistryNode> request) {
         // parse data
-        final List<RegistryNode> registryNodeList = request.getRegistryNodeList();
+        final List<RegistryNode> registryNodeList = request.getList();
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (final RegistryNode node : registryNodeList) {
             final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
@@ -88,6 +92,7 @@ public class ApiManager {
             registryNodeDO.setBiz(node.getBiz());
             registryNodeDO.setValue(node.getValue());
             registryNodeDO.setEnv(node.getEnv());
+            registryNodeDO.setMeta(node.getMeta());
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDOList.add(registryNodeDO);
         }
@@ -125,6 +130,11 @@ public class ApiManager {
             return null;
         }
         final Response<List<String>> returnT = registryService.discovery(query);
+        return returnT;
+    }
+
+    public Response<Map<String, List<String>>> discovery(Request<RegistryNodeQuery> request) {
+        final Response<Map<String, List<String>>> returnT = registryService.discovery(request);
         return returnT;
     }
 

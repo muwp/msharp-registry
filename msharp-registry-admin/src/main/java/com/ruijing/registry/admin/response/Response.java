@@ -1,6 +1,8 @@
 package com.ruijing.registry.admin.response;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Response
@@ -24,6 +26,10 @@ public class Response<T> implements Serializable {
     public static final Response<String> FAIL = new Response<>(FAIL_CODE, null);
 
     public static final Response<String> FORBIDDEN = new Response<>(FORBIDDEN_CODE, null);
+
+    public static final Response<Map<String, List<String>>> FAIL_ = new Response<>(FAIL_CODE, null);
+
+    public static final Response<Map<String, List<String>>> FORBIDDEN_ = new Response<>(FORBIDDEN_CODE, null);
 
     private int code;
 

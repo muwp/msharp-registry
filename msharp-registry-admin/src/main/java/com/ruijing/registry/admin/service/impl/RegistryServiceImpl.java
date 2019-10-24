@@ -10,6 +10,7 @@ import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.ClientNodeDO;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
+import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.KeyUtil;
@@ -17,7 +18,7 @@ import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
 import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.client.model.RegistryNodeQuery;
+import com.ruijing.registry.client.model.client.RegistryNodeQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,11 @@ public class RegistryServiceImpl implements RegistryService {
             }
         }
         return new Response<>(result);
+    }
+
+    @Override
+    public Response<Map<String, List<String>>> discovery(Request<RegistryNodeQuery> request) {
+        return discovery(request.getList());
     }
 
     @Override

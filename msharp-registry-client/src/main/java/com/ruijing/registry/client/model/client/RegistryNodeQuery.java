@@ -1,15 +1,15 @@
-package com.ruijing.registry.client.model;
+package com.ruijing.registry.client.model.client;
 
 import java.io.Serializable;
 
 /**
- * RegistryNodeDO
+ * RegistryNodeQuery
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-public class RegistryNode implements Serializable {
+public class RegistryNodeQuery implements Serializable {
 
     public static final long serialVersionUID = 42L;
 
@@ -32,16 +32,6 @@ public class RegistryNode implements Serializable {
      * 注册Key
      */
     private String key;
-
-    /**
-     * 注册Value
-     */
-    private String value;
-
-    /**
-     * 元数据
-     */
-    private String metaData;
 
     public String getBiz() {
         return biz;
@@ -67,14 +57,6 @@ public class RegistryNode implements Serializable {
         this.key = key;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public String getClientAppkey() {
         return clientAppkey;
     }
@@ -83,23 +65,13 @@ public class RegistryNode implements Serializable {
         this.clientAppkey = clientAppkey;
     }
 
-    public String getMetaData() {
-        return metaData;
-    }
-
-    public void setMetaData(String metaData) {
-        this.metaData = metaData;
-    }
-
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("RegistryNode{");
+        final StringBuilder sb = new StringBuilder("RegistryNodeQuery{");
         sb.append("clientAppkey='").append(clientAppkey).append('\'');
         sb.append(", biz='").append(biz).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", key='").append(key).append('\'');
-        sb.append(", value='").append(value).append('\'');
-        sb.append(", metaData='").append(metaData).append('\'');
         sb.append('}');
         return sb.toString();
     }

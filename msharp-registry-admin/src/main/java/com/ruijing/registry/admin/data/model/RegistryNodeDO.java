@@ -43,6 +43,11 @@ public class RegistryNodeDO {
     private String value;
 
     /**
+     * 单结点元数据
+     */
+    private String meta;
+
+    /**
      * 状态值
      */
     private Integer status;
@@ -116,11 +121,20 @@ public class RegistryNodeDO {
         this.updateTime = updateTime;
     }
 
+    public String getMeta() {
+        return meta;
+    }
+
+    public void setMeta(String meta) {
+        this.meta = meta;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -144,6 +158,7 @@ public class RegistryNodeDO {
         sb.append(", registryId=").append(registryId);
         sb.append(", biz='").append(biz).append('\'');
         sb.append(", env='").append(env).append('\'');
+        sb.append(", meta='").append(meta).append('\'');
         sb.append(", key='").append(key).append('\'');
         sb.append(", value='").append(value).append('\'');
         sb.append(", status=").append(status);
