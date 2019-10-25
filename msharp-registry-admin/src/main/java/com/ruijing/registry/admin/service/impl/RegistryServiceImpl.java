@@ -19,6 +19,7 @@ import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.client.model.client.RegistryNodeQuery;
+import com.ruijing.registry.common.http.Separator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +101,16 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Override
     public Response<Map<String, List<String>>> discovery(Request<RegistryNodeQuery> request) {
-        return discovery(request.getList());
+        final List<RegistryNodeQuery> queries = request.getList();
+        final Map<String, List<String>> result = New.mapWithCapacity(queries.size());
+        for (int i = 0, size = queries.size(); i < size; i++) {
+            RegistryNodeQuery query = queries.get(i);
+            Response<List<String>> returnT = this.discovery(query);
+            if (returnT.getCode() == Response.SUCCESS_CODE) {
+                result.put(query.getBiz() + Separator.DOT + query.getEnv() + Separator.DOT + query.getKey(), returnT.getData());
+            }
+        }
+        return new Response<>(result);
     }
 
     @Override

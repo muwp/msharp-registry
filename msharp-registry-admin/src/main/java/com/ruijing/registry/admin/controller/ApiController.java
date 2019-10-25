@@ -4,12 +4,9 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
-import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.admin.util.RequestUtil;
 import com.ruijing.registry.client.model.client.RegistryNodeQuery;
-import com.ruijing.registry.client.model.server.RegistryNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,18 +66,6 @@ public class ApiController {
     @RegistryClient
     public Response<String> batchRegistry(@RequestBody(required = false) String data) {
         return apiManager.batchRegistry(data);
-    }
-
-    @RequestMapping("/renew")
-    @ResponseBody
-    @PermissionLimit(limit = false)
-    @RegistryClient
-    public Response<String> renew(@RequestBody(required = false) String data) {
-        final Request<RegistryNode> request = RequestUtil.getServerRequest(data);
-        if (null == request) {
-            return Response.FAIL;
-        }
-        return apiManager.renew(request);
     }
 
     /**
@@ -151,24 +136,6 @@ public class ApiController {
             return null;
         }
         return apiManager.discovery(query);
-    }
-
-    @RequestMapping("/find")
-    @ResponseBody
-    @PermissionLimit(limit = false)
-    @RegistryClient
-    public String find(@RequestBody(required = false) String data) {
-        final Request<RegistryNodeQuery> request = RequestUtil.getClientRequest(data);
-        if (null == request) {
-            return JsonUtils.toJson(Response.FAIL_);
-        }
-        Object result;
-        if (request.getList().size() == 1) {
-            result = apiManager.discovery(request.getList().get(0));
-        } else {
-            result = apiManager.discovery(request);
-        }
-        return JsonUtils.toJson(result);
     }
 
     /**
