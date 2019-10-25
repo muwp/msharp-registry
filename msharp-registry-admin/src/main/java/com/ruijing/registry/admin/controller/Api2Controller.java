@@ -5,6 +5,7 @@ import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
+import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.util.RequestUtil;
 import com.ruijing.registry.client.model.client.RegistryNodeQuery;
@@ -29,6 +30,9 @@ public class Api2Controller {
 
     @Resource
     private ApiManager apiManager;
+
+    @Resource
+    private RegistryService registryService;
 
     /**
      * 服务注册 & 续约 API
@@ -96,9 +100,9 @@ public class Api2Controller {
         }
         Object result;
         if (request.getMode() == 0 && request.getList().size() == 1) {
-            result = apiManager.discovery(request.getList().get(0));
+            result = registryService.discovery(request.getList().get(0));
         } else {
-            result = apiManager.discovery(request);
+            result = registryService.discovery(request);
         }
         return JsonUtils.toJson(result);
     }
