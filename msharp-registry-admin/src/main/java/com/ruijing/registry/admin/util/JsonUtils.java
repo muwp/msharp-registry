@@ -35,6 +35,9 @@ public final class JsonUtils {
     }
 
     public static String toJson(Object obj) {
+        if (null == obj) {
+            return null;
+        }
         return defaultMapper.toJson(obj);
     }
 

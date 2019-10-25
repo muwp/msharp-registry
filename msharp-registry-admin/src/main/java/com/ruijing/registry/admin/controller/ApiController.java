@@ -168,8 +168,7 @@ public class ApiController {
         } else {
             result = apiManager.discovery(request);
         }
-        return null == result ? null : JsonUtils.toJson(result);
-
+        return JsonUtils.toJson(result);
     }
 
     /**
