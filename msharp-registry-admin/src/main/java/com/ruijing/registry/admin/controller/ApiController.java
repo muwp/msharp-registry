@@ -1,10 +1,12 @@
 package com.ruijing.registry.admin.controller;
 
+import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
+import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.util.RequestUtil;
 import com.ruijing.registry.client.model.client.RegistryNodeQuery;
 import com.ruijing.registry.client.model.server.RegistryNode;
@@ -42,7 +44,7 @@ public class ApiController {
      * 请求参数说明：
      * 2、biz：业务标识
      * 2、env：环境标识
-     * 3、registryDataList：服务注册信息
+     * 3、registryNodeList:服务注册信息
      * <p>
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
@@ -137,19 +139,37 @@ public class ApiController {
     @PermissionLimit(limit = false)
     @RegistryClient
     public Response<List<String>> discovery(@RequestBody(required = false) String data) {
-        return apiManager.discovery(data);
+        // parse data
+        RegistryNodeQuery query = null;
+        try {
+            query = JsonUtils.fromJson(data, RegistryNodeQuery.class);
+        } catch (Exception e) {
+            Cat.logError("apiController.discovery,data:" + data, e);
+        }
+
+        if (null == query) {
+            return null;
+        }
+        return apiManager.discovery(query);
     }
 
     @RequestMapping("/find")
     @ResponseBody
     @PermissionLimit(limit = false)
     @RegistryClient
-    public Response<Map<String, List<String>>> find(@RequestBody(required = false) String data) {
+    public String find(@RequestBody(required = false) String data) {
         final Request<RegistryNodeQuery> request = RequestUtil.getClientRequest(data);
         if (null == request) {
-            return Response.FAIL_;
+            return JsonUtils.toJson(Response.FAIL_);
         }
-        return apiManager.discovery(request);
+        Object result;
+        if (request.getList().size() == 1) {
+            result = apiManager.discovery(request.getList().get(0));
+        } else {
+            result = apiManager.discovery(request);
+        }
+        return null == result ? null : JsonUtils.toJson(result);
+
     }
 
     /**

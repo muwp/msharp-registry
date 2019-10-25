@@ -35,7 +35,7 @@ public class ApiManager {
     @Resource
     private RegistryService registryService;
 
-    public Response<String> registry(String data) {
+    public Response<String> registry(final String data) {
         // parse data
         RegistryNode node = null;
         try {
@@ -118,17 +118,7 @@ public class ApiManager {
         return registryService.remove(registryNode);
     }
 
-    public Response<List<String>> discovery(String data) {
-        // parse data
-        RegistryNodeQuery query = null;
-        try {
-            query = JsonUtils.fromJson(data, RegistryNodeQuery.class);
-        } catch (Exception e) {
-            Cat.logError("apiController.discovery,data:" + data, e);
-        }
-        if (null == query) {
-            return null;
-        }
+    public Response<List<String>> discovery(RegistryNodeQuery query) {
         final Response<List<String>> returnT = registryService.discovery(query);
         return returnT;
     }

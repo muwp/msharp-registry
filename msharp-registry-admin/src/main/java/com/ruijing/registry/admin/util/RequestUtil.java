@@ -20,14 +20,20 @@ import java.util.Map;
 public class RequestUtil {
 
     public static Request<RegistryNodeQuery> getClientRequest(String json) {
-        Request request = getRequest(json);
+        final Request request = getRequest(json);
         if (request == null || CollectionUtils.isEmpty(request.getList())) {
             return request;
         }
+
         final List<Map<String, String>> mapList = request.getList();
         final List<RegistryNodeQuery> queryList = new ArrayList<>(mapList.size());
         for (int i = 0, size = mapList.size(); i < size; i++) {
             final RegistryNodeQuery query = new RegistryNodeQuery();
+            final Map<String, String> map = mapList.get(i);
+            query.setBiz(map.get("biz"));
+            query.setClientAppkey(map.get("clientAppkey"));
+            query.setEnv(map.get("env"));
+            query.setKey(map.get("key"));
             queryList.add(query);
         }
         request.setList(queryList);

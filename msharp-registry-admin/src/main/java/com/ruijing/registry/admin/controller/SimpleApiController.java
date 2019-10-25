@@ -1,9 +1,12 @@
 package com.ruijing.registry.admin.controller;
 
+import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.response.Response;
+import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.client.model.client.RegistryNodeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -121,7 +124,18 @@ public class SimpleApiController {
     @PermissionLimit(limit = false)
     @RegistryClient
     public Response<List<String>> discovery(@RequestBody(required = false) String data) {
-        return apiManager.discovery(data);
+        // parse data
+        RegistryNodeQuery query = null;
+        try {
+            query = JsonUtils.fromJson(data, RegistryNodeQuery.class);
+        } catch (Exception e) {
+            Cat.logError("SimpleController.discovery,data:" + data, e);
+        }
+
+        if (null == query) {
+            return null;
+        }
+        return apiManager.discovery(query);
     }
 
     /**

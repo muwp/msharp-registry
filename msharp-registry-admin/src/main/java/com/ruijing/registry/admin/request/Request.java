@@ -16,7 +16,16 @@ public class Request<T> implements Serializable {
 
     private List<T> list;
 
+    /**
+     * version
+     */
     private int version;
+
+    /**
+     * 返回数据的模式
+     * 0
+     */
+    private int mode;
 
     public List<T> getList() {
         return list;
@@ -32,6 +41,14 @@ public class Request<T> implements Serializable {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 
     @Override
