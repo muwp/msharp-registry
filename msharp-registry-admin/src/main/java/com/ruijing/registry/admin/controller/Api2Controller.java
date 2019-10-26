@@ -106,4 +106,16 @@ public class Api2Controller {
         }
         return JsonUtils.toJson(result);
     }
+
+    @RequestMapping("/offline")
+    @ResponseBody
+    @PermissionLimit(limit = false)
+    @RegistryClient
+    public Response<String> remove(@RequestBody(required = false) String data) {
+        final Request<RegistryNode> request = RequestUtil.getServerRequest(data);
+        if (null == request) {
+            return Response.FAIL;
+        }
+        return apiManager.remove(request);
+    }
 }

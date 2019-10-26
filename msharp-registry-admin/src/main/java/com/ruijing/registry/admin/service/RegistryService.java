@@ -28,8 +28,6 @@ public interface RegistryService {
 
     Response<List<String>> discovery(RegistryNodeQuery query);
 
-    Response<Map<String, List<String>>> discovery(List<RegistryNodeQuery> queries);
-
     Response<Map<String, List<String>>> discovery(Request<RegistryNodeQuery> request);
 
     DeferredResult<Response<String>> monitor(String biz, String env, List<String> keys);

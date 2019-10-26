@@ -20,7 +20,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ApiManager
@@ -99,6 +98,21 @@ public class ApiManager {
         return registryService.registry(registryNodeDOList);
     }
 
+    public Response<String> remove(final Request<RegistryNode> request) {
+        final List<RegistryNode> nodeList = request.getList();
+        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(nodeList.size());
+        for (int i = 0, size = nodeList.size(); i < size; i++) {
+            final RegistryNode node = nodeList.get(i);
+            final RegistryNodeDO registryNode = new RegistryNodeDO();
+            registryNode.setBiz(node.getBiz());
+            registryNode.setKey(node.getKey());
+            registryNode.setEnv(node.getEnv());
+            registryNode.setValue(node.getValue());
+            registryNodeDOList.add(registryNode);
+        }
+        return registryService.remove(registryNodeDOList);
+    }
+
     public Response<String> remove(String data) {
         // parse data
         RegistryNode registryData = null;
@@ -120,11 +134,6 @@ public class ApiManager {
 
     public Response<List<String>> discovery(RegistryNodeQuery query) {
         final Response<List<String>> returnT = registryService.discovery(query);
-        return returnT;
-    }
-
-    public Response<Map<String, List<String>>> discovery(Request<RegistryNodeQuery> request) {
-        final Response<Map<String, List<String>>> returnT = registryService.discovery(request);
         return returnT;
     }
 

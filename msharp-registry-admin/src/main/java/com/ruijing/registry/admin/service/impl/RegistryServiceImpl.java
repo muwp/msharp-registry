@@ -84,31 +84,13 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<Map<String, List<String>>> discovery(List<RegistryNodeQuery> queries) {
-        if (CollectionUtils.isEmpty(queries)) {
-            return new Response<>(Collections.emptyMap());
-        }
-        final Map<String, List<String>> result = New.mapWithCapacity(queries.size());
-        for (int i = 0, size = queries.size(); i < size; i++) {
-            final RegistryNodeQuery query = queries.get(i);
-            final Response<List<String>> returnT = this.discovery(query);
-            if (returnT.getCode() == Response.SUCCESS_CODE) {
-                result.put(query.getKey(), returnT.getData());
-            }
-        }
-        return new Response<>(result);
-    }
-
-    @Override
-    public Response<Map<String, List<String>>> discovery(Request<RegistryNodeQuery> request) {
+    public Response<Map<String, List<String>>> discovery(final Request<RegistryNodeQuery> request) {
         final List<RegistryNodeQuery> queries = request.getList();
         final Map<String, List<String>> result = New.mapWithCapacity(queries.size());
         for (int i = 0, size = queries.size(); i < size; i++) {
             RegistryNodeQuery query = queries.get(i);
             Response<List<String>> returnT = this.discovery(query);
-            if (returnT.getCode() == Response.SUCCESS_CODE) {
-                result.put(query.getBiz() + Separator.DOT + query.getEnv() + Separator.DOT + query.getKey(), returnT.getData());
-            }
+            result.put(query.getBiz() + Separator.LOW_MINUS + query.getEnv() + Separator.LOW_MINUS + query.getKey(), returnT.getData());
         }
         return new Response<>(result);
     }
