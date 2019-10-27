@@ -1,13 +1,5 @@
 ## 《分布式服务注册中心MSHARP-REGISTRY》
 
-[![Build Status](https://travis-ci.org/xuxueli/xxl-registry.svg?branch=master)](https://travis-ci.org/xuxueli/xxl-registry)
-[![Docker Status](https://img.shields.io/badge/docker-passing-brightgreen.svg)](https://hub.docker.com/r/xuxueli/xxl-registry-admin/)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-registry/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.xuxueli/xxl-registry/)
-[![GitHub release](https://img.shields.io/github/release/xuxueli/xxl-registry.svg)](https://github.com/xuxueli/xxl-registry/releases)
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
-[![donate](https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square)](http://www.xuxueli.com/page/donate.html)
-
-
 ## 一、简介
 
 ### 1.1 概述
