@@ -28,7 +28,7 @@
     </sql>
 
     <update id="refresh" parameterType="com.ruijing.registry.admin.data.model.RegistryNodeDO">
-        UPDATE xxl_registry_data
+        UPDATE registry_node
         SET
         `updateTime` = now(),
         `status` = 1,
@@ -56,7 +56,7 @@
             resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry_data
+        FROM registry_node
         <where>
             <if test="biz!=null">
                 biz=#{biz}
@@ -81,7 +81,7 @@
 
     <insert id="insertSelective" parameterType="com.ruijing.registry.admin.data.model.RegistryNodeDO" keyProperty="id"
             useGeneratedKeys="true">
-        insert into client_node
+        insert into registry_node
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -144,7 +144,7 @@
 
     <insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryNodeDO" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO xxl_registry_data (`registry_id`,
+        INSERT INTO registry_node (`registry_id`,
                                        `biz`,
                                        `env`,
                                        `key`,
@@ -166,14 +166,14 @@
     <select id="findByRegistryId" parameterType="long" resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry_data
+        FROM registry_node
         where registry_id = #{registryId}
     </select>
 
     <select id="findByRegistryIdList" parameterType="list" resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry_data
+        FROM registry_node
         where registry_id in
         <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
             #{item}
@@ -183,7 +183,7 @@
     <select id="findData" parameterType="java.util.HashMap" resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry_data
+        FROM registry_node
         where biz = #{biz}
         and env = #{env}
         and `key` = #{key}
@@ -195,13 +195,13 @@
 
     <delete id="cleanData" parameterType="java.util.HashMap">
         DELETE
-        FROM xxl_registry_data
+        FROM registry_node
         WHERE NOW() <![CDATA[ > ]]> DATE_ADD(updateTime, Interval #{timeout} SECOND)
     </delete>
 
     <delete id="deleteData" parameterType="java.util.HashMap">
         DELETE
-        FROM xxl_registry_data
+        FROM registry_node
         WHERE `biz` = #{biz}
           and `env` = #{env}
           and `key` = #{key}
@@ -209,7 +209,7 @@
 
     <delete id="deleteDataValue" parameterType="java.util.HashMap">
         DELETE
-        FROM xxl_registry_data
+        FROM registry_node
         WHERE `biz` = #{biz}
           and `env` = #{env}
           and `key` = #{key}
@@ -217,7 +217,7 @@
     </delete>
 
     <delete id="removeDataValue" parameterType="java.util.HashMap">
-        update xxl_registry_data
+        update registry_node
         set `status` = 0
         WHERE `biz` = #{biz}
           and `env` = #{env}
@@ -227,18 +227,18 @@
 
     <delete id="delete" parameterType="long">
         DELETE
-        FROM xxl_registry_data
+        FROM registry_node
         WHERE `id` = #{id}
     </delete>
 
     <delete id="remove" parameterType="long">
-        update xxl_registry_data
+        update registry_node
         set status=0
         WHERE `id` = #{id}
     </delete>
 
     <select id="count" resultType="java.lang.Integer">
         SELECT count(1)
-        FROM xxl_registry_data
+        FROM registry_node
     </select>
 </mapper>

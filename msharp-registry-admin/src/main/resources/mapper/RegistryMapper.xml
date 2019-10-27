@@ -27,7 +27,7 @@
             resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry
+        FROM registry_service
         <where>
             <if test="biz!=null">
                 biz=#{biz}
@@ -50,7 +50,7 @@
     <select id="pageList" parameterType="java.util.HashMap" resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry
+        FROM registry_service
         <trim prefix="WHERE" prefixOverrides="AND | OR">
             <if test="biz != null and biz != ''">
                 AND biz = #{biz}
@@ -67,7 +67,7 @@
 
     <select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
         SELECT count(1)
-        FROM xxl_registry
+        FROM registry_service
         <trim prefix="WHERE" prefixOverrides="AND | OR">
             <if test="biz != null and biz != ''">
                 AND biz = #{biz}
@@ -84,7 +84,7 @@
     <select id="load" parameterType="java.util.HashMap" resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry
+        FROM registry_service
         WHERE `biz` = #{biz}
         and `env` = #{env}
         and `key` = #{key}
@@ -93,13 +93,13 @@
     <select id="loadById" parameterType="java.util.HashMap" resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_registry
+        FROM registry_service
         WHERE id = #{id}
     </select>
 
     <insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryDO" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO xxl_registry (`biz`,
+        INSERT INTO registry_service (`biz`,
                                   `env`,
                                   `key`,
                                   `data`,
@@ -115,7 +115,7 @@
     </insert>
 
     <update id="update" parameterType="com.ruijing.registry.admin.data.model.RegistryDO">
-        UPDATE xxl_registry
+        UPDATE registry_service
         SET
             `data`    = #{data},
             `version` = #{version},
@@ -125,7 +125,7 @@
 
     <delete id="delete" parameterType="long">
         delete
-        from xxl_registry
+        from registry_service
         WHERE `id` = #{id}
     </delete>
 </mapper>

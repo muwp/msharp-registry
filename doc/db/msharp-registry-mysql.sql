@@ -1,10 +1,10 @@
-CREATE database if NOT EXISTS `xxl-registry` default character set utf8 collate utf8_general_ci;
-use `xxl-registry`;
+CREATE database if NOT EXISTS `msharp-registry` default character set utf8 collate utf8_general_ci;
+use `msharp-registry`;
 
-## 注册信息
-CREATE TABLE `xxl_registry`
+## 注册服务信息
+CREATE TABLE `registry_service`
 (
-  `id`      int(11)      NOT NULL AUTO_INCREMENT,
+  `id`      bigint(22)   NOT NULL AUTO_INCREMENT,
   `biz`     varchar(255) NOT NULL COMMENT '业务标识',
   `env`     varchar(255) NOT NULL COMMENT '环境标识',
   `key`     varchar(255) NOT NULL COMMENT '注册Key',
@@ -16,10 +16,11 @@ CREATE TABLE `xxl_registry`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-## 注册表详细信息
-CREATE TABLE `xxl_registry_data`
+
+## 注册结点表详细信息
+CREATE TABLE `registry_node`
 (
-  `id`          int(11)       NOT NULL AUTO_INCREMENT,
+  `id`          bigint(22)    NOT NULL AUTO_INCREMENT,
   `registry_id` BIGINT(20)    NOT NULL COMMENT 'registry id',
   `biz`         varchar(255)  NOT NULL COMMENT '业务标识',
   `env`         varchar(255)  NOT NULL COMMENT '环境标识',
@@ -33,9 +34,6 @@ CREATE TABLE `xxl_registry_data`
   key `idx_registry_id` (`registry_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
-
-alter table xxl_registry_data
-  add column `status` int(11) NOT NULL DEFAULT 1 COMMENT '状态:0-删除 1-正常';
 
 # 消息队列
 CREATE TABLE `message_queue`
@@ -81,7 +79,7 @@ CREATE TABLE `client_node`
     ON UPDATE CURRENT_TIMESTAMP
     COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_service_name_env_client_APPKEY` (`service_name`, `client_appkey`, `env`),
+  UNIQUE KEY `uq_service_name_env_client_appkey` (`service_name`, `client_appkey`, `env`),
   key `update_time` (`update_time`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
