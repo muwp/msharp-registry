@@ -2,7 +2,7 @@
 <configuration debug="false" scan="true" scanPeriod="1 seconds">
 
     <contextName>logback</contextName>
-    <property name="log.path" value="/data/applogs/xxl-registry/xxl-registry-admin.log"/>
+    <property name="log.path" value="/data/applogs/msharp-registry/msharp-registry-admin.log"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

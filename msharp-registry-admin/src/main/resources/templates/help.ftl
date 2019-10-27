@@ -22,7 +22,7 @@
 		<!-- Main content -->
 		<section class="content">
 			<div class="callout callout-info">
-				<h4>分布式服务注册中心Msharp-REGISTRY</h4>
+				<h4>分布式服务注册中心MSharp-REGISTRY</h4>
 				<br>
 				<p>
                     <#--<a target="_blank" href="https://github.com/xuxueli/xxl-registry">Github</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
