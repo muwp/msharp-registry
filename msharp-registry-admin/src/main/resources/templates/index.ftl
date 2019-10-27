@@ -7,7 +7,7 @@
     <!-- daterangepicker -->
     <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css">
 </head>
-<body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlregistry_adminlte_settings"]?exists && "off" == cookieMap["xxlregistry_adminlte_settings"].value >sidebar-collapse</#if> ">
+<body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["registry_adminlte_settings"]?exists && "off" == cookieMap["registry_adminlte_settings"].value >sidebar-collapse</#if> ">
 <div class="wrapper">
 	<!-- header -->
 	<@netCommon.commonHeader />

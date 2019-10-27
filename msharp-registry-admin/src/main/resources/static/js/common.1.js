@@ -38,13 +38,13 @@ $(function(){
 
     // left menu status v: js + server + cookie
     $('.sidebar-toggle').click(function(){
-        var xxlregistry_adminlte_settings = $.cookie('xxlregistry_adminlte_settings');	// on=open，off=close
-        if ('off' == xxlregistry_adminlte_settings) {
-            xxlregistry_adminlte_settings = 'on';
+        var registry_adminlte_settings = $.cookie('registry_adminlte_settings');	// on=open，off=close
+        if ('off' == registry_adminlte_settings) {
+            registry_adminlte_settings = 'on';
         } else {
-            xxlregistry_adminlte_settings = 'off';
+            registry_adminlte_settings = 'off';
         }
-        $.cookie('xxlregistry_adminlte_settings', xxlregistry_adminlte_settings, { expires: 7 });	//$.cookie('the_cookie', '', { expires: -1 });
+        $.cookie('registry_adminlte_settings', registry_adminlte_settings, { expires: 7 });	//$.cookie('the_cookie', '', { expires: -1 });
     });
 
 });
