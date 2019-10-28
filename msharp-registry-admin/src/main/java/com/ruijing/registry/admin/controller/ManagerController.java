@@ -3,6 +3,7 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.ManagerService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +34,11 @@ public class ManagerController {
 
     @RequestMapping("/pageList")
     @ResponseBody
-    public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start, @RequestParam(required = false, defaultValue = "10") int length, String biz, String env, String key) {
-        return managerService.pageList(start, length, biz, env, key);
+    public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start, @RequestParam(required = false, defaultValue = "10") int length, String appkey, String env, String serviceName) {
+        if (StringUtils.isNotBlank(serviceName)) {
+            serviceName = serviceName.trim();
+        }
+        return managerService.pageList(start, length, appkey, env, serviceName);
     }
 
     @RequestMapping("/delete")

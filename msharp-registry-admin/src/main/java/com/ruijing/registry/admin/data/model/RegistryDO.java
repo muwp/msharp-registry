@@ -14,7 +14,7 @@ public class RegistryDO {
     /**
      * 业务标识
      */
-    private String biz;
+    private String appkey;
 
     /**
      * 环境标识
@@ -24,7 +24,7 @@ public class RegistryDO {
     /**
      * 注册Key
      */
-    private String key;
+    private String serviceName;
 
     /**
      * 注册Value有效数据
@@ -49,28 +49,12 @@ public class RegistryDO {
         this.id = id;
     }
 
-    public String getBiz() {
-        return biz;
-    }
-
-    public void setBiz(String biz) {
-        this.biz = biz;
-    }
-
     public String getEnv() {
         return env;
     }
 
     public void setEnv(String env) {
         this.env = env;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getData() {
@@ -97,13 +81,29 @@ public class RegistryDO {
         this.status = status;
     }
 
+    public String getAppkey() {
+        return appkey;
+    }
+
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryDO{");
         sb.append("id=").append(id);
-        sb.append(", biz='").append(biz).append('\'');
+        sb.append(", appkey='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
-        sb.append(", key='").append(key).append('\'');
+        sb.append(", key='").append(serviceName).append('\'');
         sb.append(", data='").append(data).append('\'');
         sb.append(", version='").append(version).append('\'');
         sb.append(", status=").append(status);

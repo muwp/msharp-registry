@@ -26,7 +26,7 @@ public interface RegistryNodeMapper {
 
     Date getSystemDateTime();
 
-    List<RegistryNodeDO> findData(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
+    List<RegistryNodeDO> findData(@Param("appkey") String appkey, @Param("env") String env, @Param("serviceName") String serviceName);
 
     List<RegistryNodeDO> findByRegistryId(Long registryId);
 
@@ -34,11 +34,11 @@ public interface RegistryNodeMapper {
 
     int cleanData(@Param("timeout") int timeout);
 
-    int deleteData(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
+    int deleteData(@Param("appkey") String appkey, @Param("env") String env, @Param("serviceName") String serviceName);
 
-    int deleteDataValue(@Param("biz") String biz, @Param("env") String env, @Param("key") String key, @Param("value") String value);
+    int deleteDataValue(@Param("appkey") String appkey, @Param("env") String env, @Param("serviceName") String serviceName, @Param("value") String value);
 
-    int removeDataValue(@Param("biz") String biz, @Param("env") String env, @Param("key") String key, @Param("value") String value);
+    int removeDataValue(@Param("appkey") String appkey, @Param("env") String env, @Param("serviceName") String serviceName, @Param("value") String value);
 
     int delete(Long id);
 

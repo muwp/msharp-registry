@@ -6,9 +6,9 @@
     <resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.RegistryNodeDO">
         <result column="id" property="id"/>
         <result column="registry_id" property="registryId"/>
-        <result column="biz" property="biz"/>
+        <result column="appkey" property="appkey"/>
         <result column="env" property="env"/>
-        <result column="key" property="key"/>
+        <result column="service_name" property="serviceName"/>
         <result column="value" property="value"/>
         <result column="meta" property="meta"/>
         <result column="status" property="status"/>
@@ -18,9 +18,9 @@
     <sql id="Base_Column_List">
         `id`,
         `registry_id`,
-        `biz`,
+        `appkey`,
         `env`,
-        `key`,
+        `service_name`,
         `value`,
         `meta`,
         `status`,
@@ -32,10 +32,11 @@
         SET
         `updateTime` = now(),
         `status` = 1,
-        `meta`=#{meta}
+        `meta`=#{meta},
+        `registry_id`=#{registryId}
         <where>
-            <if test="biz!=null">
-                biz=#{biz}
+            <if test="appkey!=null">
+                appkey=#{appkey}
             </if>
             <if test="env!=null">
                 AND `env` = #{env}
@@ -43,8 +44,8 @@
             <if test="id!=null">
                 AND id=#{id}
             </if>
-            <if test="key!=null">
-                AND `key` = #{key}
+            <if test="serviceName!=null">
+                AND `service_name` = #{serviceName}
             </if>
             <if test="value!=null">
                 AND `value` = #{value}
@@ -58,8 +59,8 @@
         <include refid="Base_Column_List"/>
         FROM registry_node
         <where>
-            <if test="biz!=null">
-                biz=#{biz}
+            <if test="appkey!=null">
+                appkey=#{appkey}
             </if>
             <if test="env!=null">
                 AND `env` = #{env}
@@ -67,8 +68,8 @@
             <if test="id!=null">
                 AND id=#{id}
             </if>
-            <if test="key!=null">
-                AND `key` = #{key}
+            <if test="serviceName!=null">
+                AND `service_name` = #{serviceName}
             </if>
             <if test="registryId!=null">
                 AND `registry_id` = #{registryId}
@@ -89,14 +90,14 @@
             <if test="registryId != null">
                 registry_id,
             </if>
-            <if test="biz != null">
-                biz,
+            <if test="appkey != null">
+                appkey,
             </if>
             <if test="env != null">
                 env,
             </if>
-            <if test="key != null">
-                `key`,
+            <if test="serviceName != null">
+                `service_name`,
             </if>
             <if test="value != null">
                 `value`,
@@ -118,14 +119,14 @@
             <if test="registryId != null">
                 #{registryId,jdbcType=BIGINT},
             </if>
-            <if test="biz != null">
-                #{biz,jdbcType=VARCHAR},
+            <if test="appkey != null">
+                #{appkey,jdbcType=VARCHAR},
             </if>
             <if test="env != null">
                 #{env,jdbcType=VARCHAR},
             </if>
-            <if test="key != null">
-                #{key,jdbcType=VARCHAR},
+            <if test="serviceName != null">
+                #{serviceName,jdbcType=VARCHAR},
             </if>
             <if test="value != null">
                 #{value,jdbcType=VARCHAR},
@@ -145,18 +146,18 @@
     <insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryNodeDO" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO registry_node (`registry_id`,
-                                       `biz`,
-                                       `env`,
-                                       `key`,
-                                       `value`,
-                                       `meta`,
-                                       `status`,
-                                       `updateTime`)
+                                   `appkey`,
+                                   `env`,
+                                   `service_name`,
+                                   `value`,
+                                   `meta`,
+                                   `status`,
+                                   `updateTime`)
         VALUES
         (#{registryId},
-         #{biz},
+         #{appkey},
          #{env},
-         #{key},
+         #{serviceName},
          #{value},
          #{meta},
          #{status},
@@ -184,9 +185,9 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM registry_node
-        where biz = #{biz}
+        where appkey = #{appkey}
         and env = #{env}
-        and `key` = #{key}
+        and `service_name` = #{serviceName}
     </select>
 
     <select id="getSystemDateTime" resultType="date">
@@ -202,26 +203,26 @@
     <delete id="deleteData" parameterType="java.util.HashMap">
         DELETE
         FROM registry_node
-        WHERE `biz` = #{biz}
+        WHERE `appkey` = #{appkey}
           and `env` = #{env}
-          and `key` = #{key}
+          and `service_name` = #{serviceName}
     </delete>
 
     <delete id="deleteDataValue" parameterType="java.util.HashMap">
         DELETE
         FROM registry_node
-        WHERE `biz` = #{biz}
+        WHERE `appkey` = #{appkey}
           and `env` = #{env}
-          and `key` = #{key}
+          and `service_name` = #{serviceName}
           and `value` = #{value}
     </delete>
 
     <delete id="removeDataValue" parameterType="java.util.HashMap">
         update registry_node
         set `status` = 0
-        WHERE `biz` = #{biz}
+        WHERE `appkey` = #{appkey}
           and `env` = #{env}
-          and `key` = #{key}
+          and `service_name` = #{serviceName}
           and `value` = #{value}
     </delete>
 

@@ -1,5 +1,7 @@
 package com.ruijing.registry.client.model.client;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -21,7 +23,8 @@ public class RegistryNodeQuery implements Serializable {
     /**
      * 业务标识
      */
-    private String biz;
+    @JsonProperty("biz")
+    private String appkey;
 
     /**
      * 环境标识
@@ -31,14 +34,23 @@ public class RegistryNodeQuery implements Serializable {
     /**
      * 注册Key
      */
-    private String key;
+    @JsonProperty("key")
+    private String serviceName;
 
-    public String getBiz() {
-        return biz;
+    public String getAppkey() {
+        return appkey;
     }
 
-    public void setBiz(String biz) {
-        this.biz = biz;
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public String getEnv() {
@@ -47,14 +59,6 @@ public class RegistryNodeQuery implements Serializable {
 
     public void setEnv(String env) {
         this.env = env;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getClientAppkey() {
@@ -69,9 +73,9 @@ public class RegistryNodeQuery implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNodeQuery{");
         sb.append("clientAppkey='").append(clientAppkey).append('\'');
-        sb.append(", biz='").append(biz).append('\'');
+        sb.append(", appkey='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
-        sb.append(", key='").append(key).append('\'');
+        sb.append(", serviceName='").append(serviceName).append('\'');
         sb.append('}');
         return sb.toString();
     }

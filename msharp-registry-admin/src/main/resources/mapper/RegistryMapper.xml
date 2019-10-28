@@ -5,9 +5,9 @@
 
     <resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.RegistryDO">
         <result column="id" property="id"/>
-        <result column="biz" property="biz"/>
+        <result column="appkey" property="appkey"/>
         <result column="env" property="env"/>
-        <result column="key" property="key"/>
+        <result column="service_name" property="serviceName"/>
         <result column="data" property="data"/>
         <result column="version" property="version"/>
         <result column="status" property="status"/>
@@ -15,9 +15,9 @@
 
     <sql id="Base_Column_List">
         `id`,
-        `biz`,
+        `appkey`,
         `env`,
-        `key`,
+        `service_name`,
         `data`,
         `version`,
         `status`
@@ -29,8 +29,8 @@
         <include refid="Base_Column_List"/>
         FROM registry_service
         <where>
-            <if test="biz!=null">
-                biz=#{biz}
+            <if test="appkey!=null">
+                appkey=#{appkey}
             </if>
             <if test="env!=null">
                 AND `env` = #{env}
@@ -38,8 +38,8 @@
             <if test="id!=null">
                 AND id=#{id}
             </if>
-            <if test="key!=null">
-                AND `key` = #{key}
+            <if test="serviceName!=null">
+                AND `service_name` = #{serviceName}
             </if>
         </where>
         <if test="offset!=null">
@@ -52,14 +52,14 @@
         <include refid="Base_Column_List"/>
         FROM registry_service
         <trim prefix="WHERE" prefixOverrides="AND | OR">
-            <if test="biz != null and biz != ''">
-                AND biz = #{biz}
+            <if test="appkey != null and appkey != ''">
+                AND appkey = #{appkey}
             </if>
             <if test="env != null and env != ''">
                 AND env = #{env}
             </if>
-            <if test="key != null and key != ''">
-                AND `key` like CONCAT(CONCAT('%', #{key}), '%')
+            <if test="serviceName != null and serviceName != ''">
+                AND `service_name` like CONCAT(CONCAT('%', #{serviceName}), '%')
             </if>
         </trim>
         LIMIT #{offset}, #{pagesize}
@@ -69,14 +69,14 @@
         SELECT count(1)
         FROM registry_service
         <trim prefix="WHERE" prefixOverrides="AND | OR">
-            <if test="biz != null and biz != ''">
-                AND biz = #{biz}
+            <if test="appkey != null and appkey != ''">
+                AND appkey = #{appkey}
             </if>
             <if test="env != null and env != ''">
                 AND env = #{env}
             </if>
-            <if test="key != null and key != ''">
-                AND `key` like CONCAT(CONCAT('%', #{key}), '%')
+            <if test="serviceName != null and serviceName != ''">
+                AND `service_name` like CONCAT(CONCAT('%', #{serviceName}), '%')
             </if>
         </trim>
     </select>
@@ -85,9 +85,9 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM registry_service
-        WHERE `biz` = #{biz}
+        WHERE `appkey` = #{appkey}
         and `env` = #{env}
-        and `key` = #{key}
+        and `service_name` = #{serviceName}
     </select>
 
     <select id="loadById" parameterType="java.util.HashMap" resultMap="BaseMap">
@@ -99,16 +99,16 @@
 
     <insert id="add" parameterType="com.ruijing.registry.admin.data.model.RegistryDO" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO registry_service (`biz`,
-                                  `env`,
-                                  `key`,
-                                  `data`,
-                                  `version`,
-                                  `status`)
+        INSERT INTO registry_service (`appkey`,
+                                      `env`,
+                                      `service_name`,
+                                      `data`,
+                                      `version`,
+                                      `status`)
         VALUES
-        (#{biz},
+        (#{appkey},
          #{env},
-         #{key},
+         #{serviceName},
          #{data},
          #{version},
          #{status})

@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.manager;
 
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.remoting.msharp.model.Entry;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.RegistryDO;
@@ -8,6 +9,7 @@ import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.service.MessageQueueService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,23 +91,27 @@ public class RegistryManager implements InitializingBean {
                 }
 
                 // refresh or add
-                final Long nodeId = this.syncUpdateRegistryAndReturnNodeId(registryNode);
+                final Pair<Long, Long> pairId = this.syncUpdateRegistryAndReturnNodeId(registryNode);
                 final RegistryNodeDO node = new RegistryNodeDO();
+                final Long nodeId = pairId.getKey();
+                final Long registryId = pairId.getRight();
                 if (null != nodeId) {
                     node.setId(nodeId);
                     node.setMeta(registryNode.getMeta());
+                    node.setRegistryId(registryId);
                 } else {
-                    node.setBiz(registryNode.getBiz());
+                    node.setAppkey(registryNode.getAppkey());
                     node.setEnv(registryNode.getEnv());
-                    node.setKey(registryNode.getKey());
+                    node.setServiceName(registryNode.getServiceName());
                     node.setValue(registryNode.getValue());
+                    node.setRegistryId(registryId);
                     node.setMeta(registryNode.getMeta());
                 }
 
                 final int updateSize = registryNodeCache.refresh(Arrays.asList(node));
 
                 if (updateSize == 0) {
-                    final RegistryDO registryDO = registryCache.get(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
+                    final RegistryDO registryDO = registryCache.get(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName());
                     registryNode.setRegistryId(registryDO.getId());
                     int isUpdate = registryNodeCache.persist(Arrays.asList(registryNode));
                     if (isUpdate > 0) {
@@ -142,31 +148,36 @@ public class RegistryManager implements InitializingBean {
     /**
      * add Registry
      */
-    private Long syncUpdateRegistryAndReturnNodeId(final RegistryNodeDO registryNode) {
-        final Triple<String, String, String> triple = Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
+    private Pair<Long, Long> syncUpdateRegistryAndReturnNodeId(final RegistryNodeDO registryNode) {
+        final Triple<String, String, String> triple = Triple.of(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName());
         RegistryDO registryDO = this.registryCache.get(triple);
         if (null == registryDO) {
             // update registry and message
             registryDO = new RegistryDO();
             registryDO.setEnv(registryNode.getEnv());
-            registryDO.setBiz(registryNode.getBiz());
-            registryDO.setKey(registryNode.getKey());
+            registryDO.setAppkey(registryNode.getAppkey());
+            registryDO.setServiceName(registryNode.getServiceName());
             registryDO.setData(StringUtils.EMPTY);
+            registryDO.setStatus(0);
             registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
             this.registryCache.persist(registryDO);
         }
 
+        if (registryDO.getId() == null) {
+            registryDO = this.registryCache.get(triple);
+        }
+
         final List<RegistryNodeDO> registryNodeDOList = this.registryNodeCache.get(triple);
         if (CollectionUtils.isEmpty(registryNodeDOList)) {
-            return null;
+            return Pair.of(null, registryDO.getId());
         }
 
         for (int i = 0, size = registryNodeDOList.size(); i < size; i++) {
             final RegistryNodeDO tmp = registryNodeDOList.get(i);
             if (Objects.equals(registryNode.getValue(), tmp.getValue())) {
-                return tmp.getId();
+                return Pair.of(tmp.getId(), registryDO.getId());
             }
         }
-        return null;
+        return Pair.of(null, registryDO.getId());
     }
 }

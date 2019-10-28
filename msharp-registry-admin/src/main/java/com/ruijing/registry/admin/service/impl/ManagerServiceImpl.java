@@ -97,7 +97,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public Response<String> update(RegistryDO registryDO) {
-        final Response<String> response = valid(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
+        final Response<String> response = valid(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName());
         if (null != response) {
             return response;
         }
@@ -126,8 +126,8 @@ public class ManagerServiceImpl implements ManagerService {
             final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setValue(valueList.get(i));
             registryNode.setEnv(registryDO.getEnv());
-            registryNode.setKey(registryDO.getKey());
-            registryNode.setBiz(registryDO.getBiz());
+            registryNode.setServiceName(registryDO.getServiceName());
+            registryNode.setAppkey(registryDO.getAppkey());
             registryNodeList.add(registryNode);
         }
 
@@ -136,11 +136,11 @@ public class ManagerServiceImpl implements ManagerService {
         return Response.SUCCESS;
     }
 
-    public Response<String> valid(String biz, String env, String key) {
-        if (StringUtils.isBlank(key)) {
+    public Response<String> valid(String appkey, String env, String serviceName) {
+        if (StringUtils.isBlank(serviceName)) {
             return new Response<>(Response.FAIL_CODE, "注册Key非空");
         }
-        if (StringUtils.isBlank(biz)) {
+        if (StringUtils.isBlank(appkey)) {
             return new Response<>(Response.FAIL_CODE, "业务线格式非空");
         }
 
@@ -152,7 +152,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public Response<String> add(RegistryDO registryDO) {
-        Response<String> response = valid(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey());
+        Response<String> response = valid(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName());
         if (null != response) {
             return response;
         }
@@ -167,7 +167,7 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         // valid exist
-        final RegistryDO exist = registryCache.get(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()));
+        final RegistryDO exist = registryCache.get(Triple.of(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName()));
 
         if (exist != null) {
             return new Response<>(Response.FAIL_CODE, "注册Key请勿重复");
@@ -176,9 +176,9 @@ public class ManagerServiceImpl implements ManagerService {
         final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
             final RegistryNodeDO registryNode = new RegistryNodeDO();
-            registryNode.setBiz(registryDO.getBiz());
+            registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setEnv(registryDO.getEnv());
-            registryNode.setKey(registryDO.getKey());
+            registryNode.setServiceName(registryDO.getServiceName());
             registryNode.setValue(valueList.get(i));
             registryNode.setUpdateTime(new Date());
             registryNodeDOList.add(registryNode);

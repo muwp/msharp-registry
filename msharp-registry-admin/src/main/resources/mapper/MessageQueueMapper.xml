@@ -5,18 +5,18 @@
 
     <resultMap id="BaseMap" type="com.ruijing.registry.admin.data.model.MessageQueueDO">
         <result column="id" property="id"/>
-        <result column="biz" property="biz"/>
+        <result column="appkey" property="appkey"/>
         <result column="env" property="env"/>
-        <result column="key" property="key"/>
+        <result column="service_name" property="serviceName"/>
         <result column="sequence_id" property="sequenceId"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         `id`,
-        `biz`,
+        `appkey`,
         `env`,
-        `key`,
+        `service_name`,
         `sequence_id`,
         `update_time`
     </sql>
@@ -26,14 +26,14 @@
         <include refid="Base_Column_List"/>
         FROM message_queue
         <trim prefix="where" prefixOverrides="AND | OR">
-            <if test="biz != null and biz != ''">
-                AND biz = #{biz}
+            <if test="appkey != null and biz != ''">
+                AND appkey = #{appkey}
             </if>
             <if test="env != null and env != ''">
                 AND env = #{env}
             </if>
-            <if test="key != null and key != ''">
-                AND `key` = #{key}
+            <if test="serviceName != null and key != ''">
+                AND `service_name` = #{serviceName}
             </if>
         </trim>
     </select>
@@ -65,14 +65,14 @@
             <if test="id != null">
                 id,
             </if>
-            <if test="biz != null">
-                biz,
+            <if test="appkey != null">
+                appkey,
             </if>
             <if test="env != null">
                 env,
             </if>
-            <if test="key != null">
-                `key`,
+            <if test="serviceName != null">
+                `service_name`,
             </if>
             <if test="sequenceId != null">
                 sequence_id,
@@ -85,14 +85,14 @@
             <if test="id != null">
                 #{id,jdbcType=BIGINT},
             </if>
-            <if test="biz != null">
-                #{biz,jdbcType=BIGINT},
+            <if test="appkey != null">
+                #{appkey,jdbcType=BIGINT},
             </if>
             <if test="env != null">
                 #{env,jdbcType=VARCHAR},
             </if>
-            <if test="key != null">
-                #{key,jdbcType=VARCHAR},
+            <if test="serviceName != null">
+                #{serviceName,jdbcType=VARCHAR},
             </if>
             <if test="sequenceId != null">
                 #{sequenceId,jdbcType=BIGINT},
@@ -106,14 +106,14 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.ruijing.registry.admin.data.model.MessageQueueDO">
         update message_queue
         <set>
-            <if test="biz != null">
-                biz = #{appkey,jdbcType=VARCHAR},
+            <if test="appkey != null">
+                appkey = #{appkey,jdbcType=VARCHAR},
             </if>
             <if test="env != null">
                 env = #{env,jdbcType=VARCHAR},
             </if>
-            <if test="key != null">
-                `key` = #{env,jdbcType=VARCHAR},
+            <if test="serviceName != null">
+                `service_name` = #{serviceName,jdbcType=VARCHAR},
             </if>
             <if test="sequenceId != null">
                 `sequence_id` = #{sequenceId,jdbcType=BIGINT},

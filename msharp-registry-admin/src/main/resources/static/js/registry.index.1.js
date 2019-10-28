@@ -122,9 +122,9 @@ $(function () {
                     var obj = {};
                     obj.start = d.start;
                     obj.length = d.length;
-                    obj.biz = $(".appList option:selected").text();
+                    obj.appkey = $(".appList option:selected").text();
                     obj.env = $(".envList option:selected").text();
-                    obj.key = $('#key').val();
+                    obj.serviceName = $('#key').val();
                     return obj;
                 }
             },
@@ -133,9 +133,9 @@ $(function () {
             //"scrollX": true,	// X轴滚动条，取消自适应
             "columns": [
                 {data: 'id'},
-                {data: 'biz'},
+                {data: 'appkey'},
                 {data: 'env'},
-                {data: 'key'},
+                {data: 'serviceName'},
                 {
                     data: 'data',
                     ordering: true,
@@ -280,7 +280,7 @@ $(function () {
         errorClass: 'help-block',
         focusInvalid: true,
         rules: {
-            biz: {
+            appkey: {
                 required: true,
                 rangelength: [4, 255]
             },
@@ -288,13 +288,13 @@ $(function () {
                 required: true,
                 rangelength: [2, 255]
             },
-            key: {
+            serviceName: {
                 required: true,
                 rangelength: [4, 255]
             }
         },
         messages: {
-            biz: {
+            appkey: {
                 required: '请输入',
                 rangelength: '长度限制为[4~255]'
             },
@@ -302,7 +302,7 @@ $(function () {
                 required: '请输入',
                 rangelength: '长度限制为[2~255]'
             },
-            key: {
+            serviceName: {
                 required: '请输入',
                 rangelength: '长度限制为[4~255]'
             }
@@ -370,9 +370,9 @@ $(function () {
         var row = tableData['key' + id];
 
         $("#updateModal .form input[name='id']").val(id);
-        $("#updateModal .form input[name='biz']").val(row.biz);
+        $("#updateModal .form input[name='appkey']").val(row.appkey);
         $("#updateModal .form input[name='env']").val(row.env);
-        $("#updateModal .form input[name='key']").val(row.key);
+        $("#updateModal .form input[name='serviceName']").val(row.serviceName);
         $("#updateModal .form textarea[name='data']").val(row.data);
         $("#updateModal .form select[name='status']").find("option[value='" + row.status + "']").prop("selected", true);
 
@@ -383,7 +383,7 @@ $(function () {
         errorClass: 'help-block',
         focusInvalid: true,
         rules: {
-            biz: {
+            appkey: {
                 required: true,
                 rangelength: [4, 255]
             },
@@ -391,13 +391,13 @@ $(function () {
                 required: true,
                 rangelength: [2, 255]
             },
-            key: {
+            serviceName: {
                 required: true,
                 rangelength: [4, 255]
             }
         },
         messages: {
-            biz: {
+            appkey: {
                 required: '请输入',
                 rangelength: '长度限制为[4~255]'
             },
@@ -405,7 +405,7 @@ $(function () {
                 required: '请输入',
                 rangelength: '长度限制为[2~255]'
             },
-            key: {
+            serviceName: {
                 required: '请输入',
                 rangelength: '长度限制为[4~255]'
             }

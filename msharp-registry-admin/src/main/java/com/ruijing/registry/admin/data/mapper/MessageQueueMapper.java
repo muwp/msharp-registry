@@ -20,7 +20,7 @@ public interface MessageQueueMapper {
 
     MessageQueueDO selectByPrimaryKey(Long id);
 
-    List<MessageQueueDO> queryForList(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
+    List<MessageQueueDO> queryForList(@Param("appkey") String appkey, @Param("env") String env, @Param("serviceName") String serviceName);
 
     List<MessageQueueDO> listAll();
 

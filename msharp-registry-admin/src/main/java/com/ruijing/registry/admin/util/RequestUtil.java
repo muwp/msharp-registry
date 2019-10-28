@@ -30,10 +30,10 @@ public class RequestUtil {
         for (int i = 0, size = mapList.size(); i < size; i++) {
             final RegistryNodeQuery query = new RegistryNodeQuery();
             final Map<String, String> map = mapList.get(i);
-            query.setBiz(map.get("biz"));
+            query.setAppkey(map.get("biz"));
             query.setClientAppkey(map.get("clientAppkey"));
             query.setEnv(map.get("env"));
-            query.setKey(map.get("key"));
+            query.setServiceName(map.get("key"));
             queryList.add(query);
         }
         request.setList(queryList);
@@ -60,9 +60,9 @@ public class RequestUtil {
         for (int i = 0, size = mapList.size(); i < size; i++) {
             final Map<String, String> map = mapList.get(i);
             final RegistryNode node = new RegistryNode();
-            node.setBiz(map.get("biz"));
+            node.setAppkey(map.get("biz"));
             node.setEnv(map.get("env"));
-            node.setKey(map.get("key"));
+            node.setServiceName(map.get("key"));
             node.setMeta(map.get("meta"));
             node.setValue(map.get("value"));
             node.setClientAppkey(map.get("clientAppkey"));

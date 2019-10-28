@@ -83,7 +83,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
         if (null != registryDO) {
             int updateSize = delete(registryDO.getId());
             registryIdCache.invalidate(id);
-            registryCache.invalidate(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()));
+            registryCache.invalidate(Triple.of(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName()));
             return updateSize >= 1;
         }
         return false;
@@ -91,7 +91,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
 
     @Override
     public boolean remove(final RegistryDO R) {
-        Triple<String, String, String> key = Triple.of(R.getBiz(), R.getEnv(), R.getKey());
+        Triple<String, String, String> key = Triple.of(R.getAppkey(), R.getEnv(), R.getServiceName());
         RegistryDO registryDO = registryCache.getIfPresent(key);
         if (null != registryDO) {
             int updateSize = delete(registryDO.getId());
@@ -109,7 +109,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
         try {
             updateSize = this.registryMapper.update(registryDO);
             if (updateSize > 0) {
-                this.registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
+                this.registryCache.put(Triple.of(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName()), registryDO);
                 this.registryIdCache.put(registryDO.getId(), registryDO);
             }
             transaction.setSuccessStatus();
@@ -129,7 +129,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
             updateSize = this.registryMapper.add(registryDO);
             if (updateSize > 0) {
                 registryIdCache.put(registryDO.getId(), registryDO);
-                registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
+                registryCache.put(Triple.of(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName()), registryDO);
             }
             transaction.setSuccessStatus();
         } catch (Exception ex) {
@@ -180,9 +180,9 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
 
                 for (int i = 0, size = registryList.size(); i < size; i++) {
                     final RegistryDO registryDO = registryList.get(i);
-                    this.registryCache.put(Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey()), registryDO);
+                    this.registryCache.put(Triple.of(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName()), registryDO);
                     this.registryIdCache.put(registryDO.getId(), registryDO);
-                    registryIdSet.add(Pair.of(registryDO.getId(), Triple.of(registryDO.getBiz(), registryDO.getEnv(), registryDO.getKey())));
+                    registryIdSet.add(Pair.of(registryDO.getId(), Triple.of(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName())));
                 }
 
                 if (registryList.size() < DEFAULT_BATCH_UPDATE_SIZE) {

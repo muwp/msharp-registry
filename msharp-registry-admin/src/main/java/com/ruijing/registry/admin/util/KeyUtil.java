@@ -22,8 +22,8 @@ public final class KeyUtil {
 
     private static final Map<String, Boolean> VALID_KEY_MAP = new ConcurrentHashMap<>();
 
-    public static String getKey(String biz, String env, String key) {
-        return biz + Separator.DOT + env + Separator.DOT + key;
+    public static String getKey(String appkey, String env, String serviceName) {
+        return appkey + Separator.DOT + env + Separator.DOT + serviceName;
     }
 
     public static boolean validAppkey(String appkey) {

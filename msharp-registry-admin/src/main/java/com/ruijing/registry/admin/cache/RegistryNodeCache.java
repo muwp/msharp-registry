@@ -64,8 +64,8 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     }
 
     @Override
-    public List<RegistryNodeDO> get(String biz, String env, String key) {
-        return get(Triple.of(biz, env, key));
+    public List<RegistryNodeDO> get(String appkey, String env, String serviceName) {
+        return get(Triple.of(appkey, env, serviceName));
     }
 
     @Override
@@ -99,7 +99,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         int del = 0;
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO registryNode = registryNodeList.get(i);
-            del += registryNode.getId() == null ? deleteNode(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey(), registryNode.getValue()) : deleteNode(registryNode.getId());
+            del += registryNode.getId() == null ? deleteNode(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName(), registryNode.getValue()) : deleteNode(registryNode.getId());
         }
         return del > 0;
     }
@@ -248,7 +248,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
             if (registryNode.getStatus() == null || registryNode.getStatus() == RegistryNodeStatusEnum.DELETED.getCode()) {
                 continue;
             }
-            final Pair<Long, Triple<String, String, String>> pair = Pair.of(registryNode.getRegistryId(), Triple.of(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey()));
+            final Pair<Long, Triple<String, String, String>> pair = Pair.of(registryNode.getRegistryId(), Triple.of(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName()));
             List<RegistryNodeDO> registryList = registryNodeCache.get(pair);
             if (null == registryList) {
                 registryList = New.list();

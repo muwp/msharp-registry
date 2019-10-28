@@ -44,7 +44,7 @@
                     <input type="text" class="form-control" id="env" autocomplete="on" value="${topic!''}" placeholder="请输入环境(env)，精确匹配" >
                 </div>-->
                 <div class="col-xs-3">
-                    <input type="text" class="form-control" id="key" autocomplete="on" value="${topic!''}" placeholder="请输入服务(serviceName)，精确匹配" >
+                    <input type="text" class="form-control" id="serviceName" autocomplete="on" value="${topic!''}" placeholder="请输入服务(serviceName)，精确匹配" >
                 </div>
 	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">搜索</button>
@@ -64,9 +64,9 @@
 				                <thead>
 					            	<tr>
 					                	<th name="id" >ID</th>
-					                  	<th name="biz" >应用(appkey)</th>
+					                  	<th name="appkey" >应用(appkey)</th>
                                         <th name="env" >环境(env)</th>
-                                        <th name="key" >服务(serviceName)</th>
+                                        <th name="serviceName" >服务(serviceName)</th>
                                         <th name="data" >注册信息<#--注册Value有效数据--></th>
                                         <th name="version" >版本</th>
                                         <th name="status" >状态<#--状态：0-正常、1-锁定、2-禁用--></th>
@@ -95,7 +95,7 @@
                     <form class="form-horizontal form" role="form" >
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">应用(appkey) <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="appkey" maxlength="255" placeholder="请输入业务标识" ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">环境(env) <font color="red">*</font></label>
@@ -103,7 +103,7 @@
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">服务(serviceName) <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="key" maxlength="255" placeholder="请输入注册Key" ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="serviceName" maxlength="255" placeholder="请输入注册Key" ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">注册信息 <font color="black">*</font></label>
@@ -146,7 +146,7 @@
                     <form class="form-horizontal form" role="form" >
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">应用(appkey) <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="biz" maxlength="255" placeholder="请输入业务标识" ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="appkey" maxlength="255" placeholder="请输入业务标识" ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">环境(env) <font color="red">*</font></label>
@@ -154,7 +154,7 @@
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">服务(serviceName) <font color="red">*</font></label>
-                            <div class="col-sm-9"><input type="text" class="form-control" name="key" maxlength="255" placeholder="请输入注册Key" readonly ></div>
+                            <div class="col-sm-9"><input type="text" class="form-control" name="serviceName" maxlength="255" placeholder="请输入注册Key" readonly ></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname" class="col-sm-3 control-label">注册信息 <font color="black">*</font></label>

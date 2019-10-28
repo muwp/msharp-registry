@@ -29,11 +29,11 @@ public class MessageQueueServiceImpl implements MessageQueueService {
     @Override
     public void sendMessageQueue(RegistryNodeDO registryNode) {
         final MessageQueueDO queueDO = new MessageQueueDO();
-        queueDO.setBiz(registryNode.getBiz());
+        queueDO.setAppkey(registryNode.getAppkey());
         queueDO.setEnv(registryNode.getEnv());
-        queueDO.setKey(registryNode.getKey());
+        queueDO.setServiceName(registryNode.getServiceName());
         try {
-            final List<MessageQueueDO> list = this.messageQueueMapper.queryForList(registryNode.getBiz(), registryNode.getEnv(), registryNode.getKey());
+            final List<MessageQueueDO> list = this.messageQueueMapper.queryForList(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName());
             if (CollectionUtils.isEmpty(list)) {
                 final Date date = new Date();
                 queueDO.setUpdateTime(date);

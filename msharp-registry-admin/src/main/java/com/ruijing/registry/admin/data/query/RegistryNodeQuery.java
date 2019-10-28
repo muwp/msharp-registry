@@ -17,7 +17,7 @@ public class RegistryNodeQuery {
     /**
      * 业务标识
      */
-    private String biz;
+    private String appkey;
 
     /**
      * 环境标识
@@ -27,7 +27,7 @@ public class RegistryNodeQuery {
     /**
      * 注册Key
      */
-    private String key;
+    private String serviceName;
 
     /**
      * 注册id
@@ -52,28 +52,12 @@ public class RegistryNodeQuery {
         this.id = id;
     }
 
-    public String getBiz() {
-        return biz;
-    }
-
-    public void setBiz(String biz) {
-        this.biz = biz;
-    }
-
     public String getEnv() {
         return env;
     }
 
     public void setEnv(String env) {
         this.env = env;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public Long getOffset() {
@@ -100,13 +84,29 @@ public class RegistryNodeQuery {
         this.registryId = registryId;
     }
 
+    public String getAppkey() {
+        return appkey;
+    }
+
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNodeQuery{");
         sb.append("id=").append(id);
-        sb.append(", biz='").append(biz).append('\'');
+        sb.append(", biz='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
-        sb.append(", key='").append(key).append('\'');
+        sb.append(", key='").append(serviceName).append('\'');
         sb.append(", registryId=").append(registryId);
          sb.append(", offset=").append(offset);
         sb.append(", pageSize=").append(pageSize);

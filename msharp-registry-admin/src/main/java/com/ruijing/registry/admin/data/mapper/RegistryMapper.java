@@ -19,11 +19,11 @@ public interface RegistryMapper {
 
     List<RegistryDO> queryForList(RegistryQuery query);
 
-    List<RegistryDO> pageList(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("biz") String biz, @Param("env") String env, @Param("key") String key);
+    List<RegistryDO> pageList(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("appkey") String biz, @Param("env") String env, @Param("serviceName") String key);
 
-    int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("biz") String biz, @Param("env") String env, @Param("key") String key);
+    int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("appkey") String biz, @Param("env") String env, @Param("serviceName") String key);
 
-    RegistryDO load(@Param("biz") String biz, @Param("env") String env, @Param("key") String key);
+    RegistryDO load(@Param("appkey") String appkey, @Param("env") String env, @Param("serviceName") String serviceName);
 
     RegistryDO loadById(@Param("id") Long id);
 

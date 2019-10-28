@@ -17,7 +17,7 @@ public class RegistryQuery {
     /**
      * 业务标识
      */
-    private String biz;
+    private String appkey;
 
     /**
      * 环境标识
@@ -27,7 +27,7 @@ public class RegistryQuery {
     /**
      * 注册Key
      */
-    private String key;
+    private String serviceName;
 
     /**
      * 查询偏移量
@@ -47,14 +47,6 @@ public class RegistryQuery {
         this.id = id;
     }
 
-    public String getBiz() {
-        return biz;
-    }
-
-    public void setBiz(String biz) {
-        this.biz = biz;
-    }
-
     public String getEnv() {
         return env;
     }
@@ -63,12 +55,20 @@ public class RegistryQuery {
         this.env = env;
     }
 
-    public String getKey() {
-        return key;
+    public String getAppkey() {
+        return appkey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public Long getOffset() {
@@ -91,9 +91,9 @@ public class RegistryQuery {
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNodeQuery{");
         sb.append("id=").append(id);
-        sb.append(", biz='").append(biz).append('\'');
+        sb.append(", biz='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
-        sb.append(", key='").append(key).append('\'');
+        sb.append(", key='").append(serviceName).append('\'');
         sb.append(", offset=").append(offset);
         sb.append(", pageSize=").append(pageSize);
         sb.append('}');

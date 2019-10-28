@@ -55,7 +55,7 @@ public class MessageQueueScanner implements InitializingBean {
             }
             for (int i = 0, size = messageQueueDOList.size(); i < size; i++) {
                 final MessageQueueDO queueDO = messageQueueDOList.get(i);
-                deferredCacheManager.remove(queueDO.getBiz() + Separator.DOT + queueDO.getEnv() + Separator.DOT + queueDO.getKey());
+                deferredCacheManager.remove(queueDO.getAppkey() + Separator.DOT + queueDO.getEnv() + Separator.DOT + queueDO.getServiceName());
             }
         } catch (Exception ex) {
             Cat.logError(CAT_TYPE, "syncMessageQueue", null, ex);

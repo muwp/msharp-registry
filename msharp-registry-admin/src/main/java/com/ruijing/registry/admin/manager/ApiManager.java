@@ -47,9 +47,9 @@ public class ApiManager {
             return Response.FAIL;
         }
         final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-        registryNodeDO.setBiz(node.getBiz());
+        registryNodeDO.setAppkey(node.getAppkey());
         registryNodeDO.setEnv(node.getEnv());
-        registryNodeDO.setKey(node.getKey());
+        registryNodeDO.setServiceName(node.getServiceName());
         registryNodeDO.setValue(node.getValue());
         registryNodeDO.setMeta(StringUtils.EMPTY);
         registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
@@ -70,9 +70,9 @@ public class ApiManager {
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (final RegistryNode node : registryNodeList) {
             final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-            registryNodeDO.setKey(node.getKey());
+            registryNodeDO.setAppkey(node.getAppkey());
             registryNodeDO.setValue(node.getValue());
-            registryNodeDO.setBiz(node.getBiz());
+            registryNodeDO.setServiceName(node.getServiceName());
             registryNodeDO.setEnv(node.getEnv());
             registryNodeDO.setMeta(StringUtils.EMPTY);
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
@@ -87,8 +87,8 @@ public class ApiManager {
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (final RegistryNode node : registryNodeList) {
             final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-            registryNodeDO.setKey(node.getKey());
-            registryNodeDO.setBiz(node.getBiz());
+            registryNodeDO.setAppkey(node.getAppkey());
+            registryNodeDO.setServiceName(node.getServiceName());
             registryNodeDO.setValue(node.getValue());
             registryNodeDO.setEnv(node.getEnv());
             registryNodeDO.setMeta(node.getMeta());
@@ -104,8 +104,8 @@ public class ApiManager {
         for (int i = 0, size = nodeList.size(); i < size; i++) {
             final RegistryNode node = nodeList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
-            registryNode.setBiz(node.getBiz());
-            registryNode.setKey(node.getKey());
+            registryNode.setAppkey(node.getAppkey());
+            registryNode.setServiceName(node.getServiceName());
             registryNode.setEnv(node.getEnv());
             registryNode.setValue(node.getValue());
             registryNodeDOList.add(registryNode);
@@ -125,9 +125,9 @@ public class ApiManager {
             return Response.FAIL;
         }
         RegistryNodeDO registryNode = new RegistryNodeDO();
-        registryNode.setBiz(registryData.getBiz());
+        registryNode.setAppkey(registryData.getAppkey());
         registryNode.setEnv(registryData.getEnv());
-        registryNode.setKey(registryData.getKey());
+        registryNode.setServiceName(registryData.getServiceName());
         registryNode.setValue(registryData.getValue());
         return registryService.remove(registryNode);
     }
@@ -151,7 +151,7 @@ public class ApiManager {
             result.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
             return result;
         }
-        Cat.logEvent("monitor", JsonObjectBuilder.custom().put("clientAppkey", registryNode.getClientAppkey()).put("biz", registryNode.getBiz()).put("env", registryNode.getEnv()).put("key", registryNode.getKey()).build().toString(), Transaction.ERROR, "");
-        return registryService.monitor(registryNode.getBiz(), registryNode.getEnv(), Arrays.asList(registryNode.getKey()));
+        Cat.logEvent("monitor", JsonObjectBuilder.custom().put("clientAppkey", registryNode.getClientAppkey()).put("biz", registryNode.getAppkey()).put("env", registryNode.getEnv()).put("key", registryNode.getServiceName()).build().toString(), Transaction.ERROR, "");
+        return registryService.monitor(registryNode.getAppkey(), registryNode.getEnv(), Arrays.asList(registryNode.getServiceName()));
     }
 }

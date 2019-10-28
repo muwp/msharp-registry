@@ -25,7 +25,7 @@ public class RegistryNodeDO {
     /**
      * 业务标识
      */
-    private String biz;
+    private String appkey;
 
     /**
      * 环境标识
@@ -35,7 +35,7 @@ public class RegistryNodeDO {
     /**
      * 注册Key
      */
-    private String key;
+    private String serviceName;
 
     /**
      * 注册Value
@@ -73,13 +73,6 @@ public class RegistryNodeDO {
         this.registryId = registryId;
     }
 
-    public String getBiz() {
-        return biz;
-    }
-
-    public void setBiz(String biz) {
-        this.biz = biz;
-    }
 
     public String getEnv() {
         return env;
@@ -89,12 +82,20 @@ public class RegistryNodeDO {
         this.env = env;
     }
 
-    public String getKey() {
-        return key;
+    public String getAppkey() {
+        return appkey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public String getValue() {
@@ -140,15 +141,15 @@ public class RegistryNodeDO {
         }
         final RegistryNodeDO that = (RegistryNodeDO) o;
         return Objects.equals(registryId, that.registryId) &&
-                Objects.equals(biz, that.biz) &&
+                Objects.equals(appkey, that.appkey) &&
                 Objects.equals(env, that.env) &&
-                Objects.equals(key, that.key) &&
+                Objects.equals(serviceName, that.serviceName) &&
                 Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(registryId, biz, env, key, value);
+        return Objects.hash(registryId, appkey, env, serviceName, value);
     }
 
     @Override
@@ -156,10 +157,10 @@ public class RegistryNodeDO {
         final StringBuilder sb = new StringBuilder("RegistryNodeDO{");
         sb.append("id=").append(id);
         sb.append(", registryId=").append(registryId);
-        sb.append(", biz='").append(biz).append('\'');
+        sb.append(", biz='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", meta='").append(meta).append('\'');
-        sb.append(", key='").append(key).append('\'');
+        sb.append(", key='").append(serviceName).append('\'');
         sb.append(", value='").append(value).append('\'');
         sb.append(", status=").append(status);
         sb.append(", updateTime=").append(updateTime);

@@ -21,7 +21,7 @@ public class MessageQueueDO {
     /**
      * 业务标识
      */
-    private String biz;
+    private String appkey;
 
     /**
      * 环境标识
@@ -31,7 +31,7 @@ public class MessageQueueDO {
     /**
      * 注册Key
      */
-    private String key;
+    private String serviceName;
 
     /**
      * 版本
@@ -62,12 +62,20 @@ public class MessageQueueDO {
         this.updateTime = updateTime;
     }
 
-    public String getBiz() {
-        return biz;
+    public String getAppkey() {
+        return appkey;
     }
 
-    public void setBiz(String biz) {
-        this.biz = biz;
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public String getEnv() {
@@ -78,22 +86,15 @@ public class MessageQueueDO {
         this.env = env;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("MessageQueueDO{");
         sb.append("id=").append(id);
         sb.append(", sequenceId=").append(sequenceId);
-        sb.append(", biz='").append(biz).append('\'');
+        sb.append(", appkey='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
-        sb.append(", key='").append(key).append('\'');
+        sb.append(", serviceName='").append(serviceName).append('\'');
         sb.append(", updateTime=").append(updateTime);
         sb.append('}');
         return sb.toString();

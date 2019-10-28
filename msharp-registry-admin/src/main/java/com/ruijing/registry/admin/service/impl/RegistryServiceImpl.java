@@ -90,7 +90,7 @@ public class RegistryServiceImpl implements RegistryService {
         for (int i = 0, size = queries.size(); i < size; i++) {
             RegistryNodeQuery query = queries.get(i);
             Response<List<String>> returnT = this.discovery(query);
-            result.put(query.getBiz() + Separator.LOW_MINUS + query.getEnv() + Separator.LOW_MINUS + query.getKey(), returnT.getData());
+            result.put(query.getAppkey() + Separator.LOW_MINUS + query.getEnv() + Separator.LOW_MINUS + query.getServiceName(), returnT.getData());
         }
         return new Response<>(result);
     }
@@ -98,9 +98,9 @@ public class RegistryServiceImpl implements RegistryService {
     @Override
     public Response<List<String>> discovery(RegistryNodeQuery query) {
         String clientAppkey = query.getClientAppkey();
-        String biz = query.getBiz();
+        String biz = query.getAppkey();
         String env = query.getEnv();
-        String key = query.getKey();
+        String key = query.getServiceName();
         Response<String> response = valid(biz, env, key);
         if (null != response) {
             return EMPTY_RETURN_LIST;
