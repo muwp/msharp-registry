@@ -45,7 +45,7 @@ CREATE TABLE `registry_node`
   `meta`         varchar(1000) NOT NULL DEFAULT '' COMMENT '注册结点元数据',
   `updateTime`   datetime      NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_biz_env_key_value` (`biz`, `env`, `key`, `value`),
+  UNIQUE KEY `uq_biz_env_key_value` (`appkey`, `env`, `service_name`, `value`),
   key `idx_registry_id` (`registry_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -62,7 +62,7 @@ CREATE TABLE `message_queue`
     ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_sequence_id` (`sequence_id`),
-  UNIQUE KEY `uq_biz_env_key` (`biz`, `env`, `key`)
+  UNIQUE KEY `uq_biz_env_key` (`appkey`, `env`, `service_name`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
