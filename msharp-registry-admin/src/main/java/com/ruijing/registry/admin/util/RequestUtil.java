@@ -26,9 +26,9 @@ public class RequestUtil {
             return request;
         }
         final List<Map<String, String>> mapList = request.getList();
-        final List<RegistryNodeQuery> queryList = new ArrayList<>(mapList.size());
+        final List<RegistryQuery> queryList = new ArrayList<>(mapList.size());
         for (int i = 0, size = mapList.size(); i < size; i++) {
-            final RegistryNodeQuery query = new RegistryNodeQuery();
+            final RegistryQuery query = new RegistryQuery();
             final Map<String, String> map = mapList.get(i);
             query.setAppkey(map.get("biz"));
             query.setClientAppkey(map.get("clientAppkey"));
