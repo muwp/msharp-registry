@@ -40,14 +40,14 @@ public class SimpleApiController {
      * 地址格式：{服务注册中心跟地址}/registry
      * <p>
      * 请求参数说明：
-     * 2、biz：业务标识
+     * 2、appkey：业务标识
      * 2、env：环境标识
      * 3、registryDataList：服务注册信息
      * <p>
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "biz" : "xx",
+     * "appkey" : "xx",
      * "env" : "xx",
      * "key" : "service01",
      * "value" : "address01"
@@ -78,14 +78,14 @@ public class SimpleApiController {
      * 地址格式：{服务注册中心跟地址}/remove
      * <p>
      * 请求参数说明：
-     * 2、biz：业务标识
+     * 2、appkey：业务标识
      * 2、env：环境标识
      * 3、registryDataList：服务注册信息
      * <p>
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "biz" : "xx",
+     * "appkey" : "xx",
      * "env" : "xx",
      * "key" : "service01",
      * "value" : "address01"
@@ -108,14 +108,14 @@ public class SimpleApiController {
      * 地址格式：{服务注册中心跟地址}/discovery
      * <p>
      * 请求参数说明：
-     * 2、biz：业务标识
+     * 2、appkey：业务标识
      * 2、env：环境标识
      * 3、keys：服务注册Key列表
      * <p>
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "biz" : "pearl-service",
+     * "appkey" : "pearl-service",
      * "env" : "test",
      * "key":"serviceName"
      * }
@@ -153,14 +153,14 @@ public class SimpleApiController {
      * 地址格式：{服务注册中心跟地址}/monitor
      * <p>
      * 请求参数说明：
-     * 2、biz：业务标识
+     * 2、appkey：业务标识
      * 2、env：环境标识
      * 3、keys：服务注册Key列表
      * <p>
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "biz" : "xx",
+     * "appkey" : "xx",
      * "env" : "xx",
      * "service02"
      * }

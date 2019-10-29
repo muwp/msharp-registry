@@ -26,7 +26,7 @@
         <include refid="Base_Column_List"/>
         FROM message_queue
         <trim prefix="where" prefixOverrides="AND | OR">
-            <if test="appkey != null and biz != ''">
+            <if test="appkey != null and appkey != ''">
                 AND appkey = #{appkey}
             </if>
             <if test="env != null and env != ''">
