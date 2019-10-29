@@ -43,16 +43,16 @@ public class Api2Controller {
      * 地址格式：{服务注册中心跟地址}/registry
      * <p>
      * 请求参数说明：
-     * 2、biz：业务标识
+     * 1、appkey：业务标识
      * 2、env：环境标识
-     * 3、registryNodeList:服务注册信息
+     * 3、serviceName:服务注册信息
      * <p>
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "biz" : "xx",
+     * "appkey" : "xx",
      * "env" : "xx",
-     * "key" : "service01",
+     * "serviceName" : "service01",
      * "value" : "address01"
      * }
      */
@@ -90,16 +90,16 @@ public class Api2Controller {
      * 地址格式：{服务注册中心跟地址}/discovery
      * <p>
      * 请求参数说明：
-     * 2、biz：业务标识
+     * 1、appkey：业务标识
      * 2、env：环境标识
-     * 3、keys：服务注册Key列表
+     * 3、serviceName：服务注册Key列表
      * <p>
      * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
      * <p>
      * {
-     * "biz" : "pearl-service",
+     * "appkey" : "pearl-service",
      * "env" : "test",
-     * "key":"serviceName"
+     * "serviceName":"serviceName"
      * }
      */
     @RequestMapping("/find")
