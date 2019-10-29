@@ -89,6 +89,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
         return false;
     }
 
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     @Override
     public boolean remove(final RegistryDO R) {
         Triple<String, String, String> key = Triple.of(R.getAppkey(), R.getEnv(), R.getServiceName());

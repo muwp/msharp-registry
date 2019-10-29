@@ -4,9 +4,9 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
+import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.request.Request;
-import com.ruijing.registry.client.model.client.RegistryNodeQuery;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
@@ -132,7 +132,7 @@ public class ApiManager {
         return registryService.remove(registryNode);
     }
 
-    public Response<List<String>> discovery(RegistryNodeQuery query) {
+    public Response<List<String>> discovery(RegistryQuery query) {
         final Response<List<String>> returnT = registryService.discovery(query);
         return returnT;
     }

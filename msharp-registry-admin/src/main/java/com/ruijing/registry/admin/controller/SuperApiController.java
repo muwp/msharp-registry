@@ -2,34 +2,34 @@ package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
-import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
-import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
+import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.admin.util.Request2Util;
-import com.ruijing.registry.client.model.v2.RegistryNode;
+import com.ruijing.registry.admin.util.RequestUtil;
+import com.ruijing.registry.client.model.server.RegistryNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Api2Controller
+ * ApiController
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
 @Controller
-@RequestMapping("/api/v2")
-public class Api2Controller {
+@RequestMapping("/api")
+public class SuperApiController {
+
+    @Resource
+    private ApiManager apiManager;
 
     @Resource
     private RegistryService registryService;
@@ -61,24 +61,11 @@ public class Api2Controller {
     @PermissionLimit(limit = false)
     @RegistryClient
     public Response<String> renew(@RequestBody(required = false) String data) {
-        final Request<RegistryNode> request = Request2Util.getServerRequest(data);
+        final Request<RegistryNode> request = RequestUtil.getServerRequest(data);
         if (null == request) {
             return Response.FAIL;
         }
-        List<RegistryNode> registryNodeList = request.getList();
-        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
-        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
-            final RegistryNode node = registryNodeList.get(i);
-            RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-            registryNodeDO.setAppkey(node.getAppkey());
-            registryNodeDO.setServiceName(node.getServiceName());
-            registryNodeDO.setValue(node.getValue());
-            registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
-            registryNodeDO.setEnv(node.getEnv());
-            registryNodeDO.setMeta(node.getMeta());
-            registryNodeDOList.add(registryNodeDO);
-        }
-        return registryService.registry(registryNodeDOList);
+        return apiManager.renew(request);
     }
 
     /**
@@ -107,11 +94,10 @@ public class Api2Controller {
     @PermissionLimit(limit = false)
     @RegistryClient
     public String find(@RequestBody(required = false) String data) {
-        final Request<RegistryQuery> request = Request2Util.getClientRequest(data);
+        final Request<RegistryQuery> request = RequestUtil.getClientRequest(data);
         if (null == request) {
             return JsonUtils.toJson(Response.FAIL_);
         }
-
         Object result;
         if (request.getMode() == 0 && request.getList().size() == 1) {
             result = registryService.discovery(request.getList().get(0));
@@ -126,21 +112,10 @@ public class Api2Controller {
     @PermissionLimit(limit = false)
     @RegistryClient
     public Response<String> remove(@RequestBody(required = false) String data) {
-        final Request<RegistryNode> request = Request2Util.getServerRequest(data);
+        final Request<RegistryNode> request = RequestUtil.getServerRequest(data);
         if (null == request) {
             return Response.FAIL;
         }
-        List<RegistryNode> registryNodeList = request.getList();
-        List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
-        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
-            RegistryNode node = registryNodeList.get(i);
-            RegistryNodeDO registryNode = new RegistryNodeDO();
-            registryNode.setServiceName(node.getServiceName());
-            registryNode.setAppkey(node.getAppkey());
-            registryNode.setEnv(node.getEnv());
-            registryNode.setValue(node.getValue());
-            registryNodeDOList.add(registryNode);
-        }
-        return registryService.remove(registryNodeDOList);
+        return apiManager.remove(request);
     }
 }

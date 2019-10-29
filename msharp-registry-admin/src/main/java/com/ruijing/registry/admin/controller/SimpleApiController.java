@@ -3,6 +3,7 @@ package com.ruijing.registry.admin.controller;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
+import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.util.JsonUtils;
@@ -135,7 +136,12 @@ public class SimpleApiController {
         if (null == query) {
             return null;
         }
-        return apiManager.discovery(query);
+        RegistryQuery registryQuery = new RegistryQuery();
+        registryQuery.setClientAppkey(query.getClientAppkey());
+        registryQuery.setAppkey(query.getAppkey());
+        registryQuery.setEnv(query.getEnv());
+        registryQuery.setServiceName(query.getServiceName());
+        return apiManager.discovery(registryQuery);
     }
 
     /**

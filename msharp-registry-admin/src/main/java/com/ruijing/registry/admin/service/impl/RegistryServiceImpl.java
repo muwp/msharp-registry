@@ -8,6 +8,7 @@ import com.ruijing.registry.admin.cache.ClientNodeCache;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.ClientNodeDO;
+import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.request.Request;
@@ -84,11 +85,11 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<Map<String, List<String>>> discovery(final Request<RegistryNodeQuery> request) {
-        final List<RegistryNodeQuery> queries = request.getList();
+    public Response<Map<String, List<String>>> discovery(final Request<RegistryQuery> request) {
+        final List<RegistryQuery> queries = request.getList();
         final Map<String, List<String>> result = New.mapWithCapacity(queries.size());
         for (int i = 0, size = queries.size(); i < size; i++) {
-            RegistryNodeQuery query = queries.get(i);
+            RegistryQuery query = queries.get(i);
             Response<List<String>> returnT = this.discovery(query);
             result.put(query.getAppkey() + Separator.LOW_MINUS + query.getEnv() + Separator.LOW_MINUS + query.getServiceName(), returnT.getData());
         }
@@ -96,11 +97,11 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<List<String>> discovery(RegistryNodeQuery query) {
-        String clientAppkey = query.getClientAppkey();
-        String biz = query.getAppkey();
-        String env = query.getEnv();
-        String key = query.getServiceName();
+    public Response<List<String>> discovery(RegistryQuery query) {
+        final String clientAppkey = query.getClientAppkey();
+        final String biz = query.getAppkey();
+        final String env = query.getEnv();
+        final String key = query.getServiceName();
         Response<String> response = valid(biz, env, key);
         if (null != response) {
             return EMPTY_RETURN_LIST;

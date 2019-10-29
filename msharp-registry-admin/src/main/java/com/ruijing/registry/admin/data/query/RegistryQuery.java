@@ -15,6 +15,11 @@ public class RegistryQuery {
     private Long id;
 
     /**
+     * clientAppkey
+     */
+    private String clientAppkey;
+
+    /**
      * 业务标识
      */
     private String appkey;
@@ -45,6 +50,14 @@ public class RegistryQuery {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getClientAppkey() {
+        return clientAppkey;
+    }
+
+    public void setClientAppkey(String clientAppkey) {
+        this.clientAppkey = clientAppkey;
     }
 
     public String getEnv() {

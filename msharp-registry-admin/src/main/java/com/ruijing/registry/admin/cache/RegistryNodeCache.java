@@ -50,7 +50,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.nodeUpdateExecutor.scheduleWithFixedDelay(this::updateRegistryNode, 1, 2, TimeUnit.SECONDS);
+        this.nodeUpdateExecutor.scheduleWithFixedDelay(this::scheduleUpdateRegistryNode, 1, 2, TimeUnit.SECONDS);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
         return deletedSize;
     }
 
-    private void updateRegistryNode() {
+    private void scheduleUpdateRegistryNode() {
         try {
             final List<Pair<Long, Triple<String, String, String>>> registryCacheList = registryCache.getRegistryList();
             if (CollectionUtils.isEmpty(registryCacheList)) {
