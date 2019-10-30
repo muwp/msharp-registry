@@ -29,8 +29,8 @@ public class ClientNodeController {
     @PermissionLimit(limit = false)
     @RequestMapping(value = "/consumers")
     @ResponseBody
-    public RemoteResponse<List<ClientNodeDO>> token(@RequestParam(value = "serviceName") String serviceName, @RequestParam(value = "env") String env) {
-        final List<ClientNodeDO> clientNodeList = this.clientNodeCache.get(serviceName, env);
+    public RemoteResponse<List<ClientNodeDO>> token(@RequestParam(value = "appkey") String appkey, @RequestParam(value = "serviceName") String serviceName, @RequestParam(value = "env") String env) {
+        final List<ClientNodeDO> clientNodeList = this.clientNodeCache.syncGet(appkey, env, serviceName);
         return RemoteResponse.custom().setData(clientNodeList).setSuccess().build();
     }
 }

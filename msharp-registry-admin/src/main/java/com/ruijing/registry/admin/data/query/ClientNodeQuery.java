@@ -20,6 +20,16 @@ public class ClientNodeQuery {
     private String clientAppkey;
 
     /**
+     * registry id
+     */
+    private Long registryId;
+
+    /**
+     * appkey
+     */
+    private String appkey;
+
+    /**
      * 业务标识
      */
     private String serviceName;
@@ -45,6 +55,22 @@ public class ClientNodeQuery {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAppkey() {
+        return appkey;
+    }
+
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
+    }
+
+    public Long getRegistryId() {
+        return registryId;
+    }
+
+    public void setRegistryId(Long registryId) {
+        this.registryId = registryId;
     }
 
     public String getClientAppkey() {

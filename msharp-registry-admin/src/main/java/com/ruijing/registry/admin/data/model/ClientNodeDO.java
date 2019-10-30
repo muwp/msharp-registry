@@ -1,7 +1,6 @@
 package com.ruijing.registry.admin.data.model;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * ClientNodeDO
@@ -12,12 +11,25 @@ import java.util.Objects;
  **/
 public class ClientNodeDO {
 
+    /**
+     * id
+     */
     private Long id;
+
+    /**
+     * registry id
+     */
+    private Long registryId;
 
     /**
      * 业务标识
      */
     private String clientAppkey;
+
+    /**
+     * 服务appkey
+     */
+    private String appkey;
 
     /**
      * 环境标识
@@ -30,6 +42,11 @@ public class ClientNodeDO {
     private String serviceName;
 
     /**
+     * status
+     */
+    private Integer status;
+
+    /**
      * 版本
      */
     private Date updateTime;
@@ -40,6 +57,22 @@ public class ClientNodeDO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getRegistryId() {
+        return registryId;
+    }
+
+    public void setRegistryId(Long registryId) {
+        this.registryId = registryId;
+    }
+
+    public String getAppkey() {
+        return appkey;
+    }
+
+    public void setAppkey(String appkey) {
+        this.appkey = appkey;
     }
 
     public String getClientAppkey() {
@@ -74,23 +107,12 @@ public class ClientNodeDO {
         this.updateTime = updateTime;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ClientNodeDO that = (ClientNodeDO) o;
-        return Objects.equals(clientAppkey, that.clientAppkey) &&
-                Objects.equals(env, that.env) &&
-                Objects.equals(serviceName, that.serviceName);
+    public Integer getStatus() {
+        return status;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(clientAppkey, env, serviceName);
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override

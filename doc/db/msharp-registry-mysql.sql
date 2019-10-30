@@ -10,29 +10,31 @@ CREATE TABLE `registry_service`
   `service_name` varchar(255) NOT NULL COMMENT '注册Key',
   `data`         text         NOT NULL COMMENT '注册Value有效数据',
   `version`      varchar(255) NOT NULL COMMENT '版本',
-  `status`       tinyint(4)   NOT NULL DEFAULT '0' COMMENT '状态:0-正常、1-锁定、2-禁用,3-下线',
+  `status`       int(4)       NOT NULL DEFAULT '0' COMMENT '状态:0-正常、1-锁定、2-禁用,3-下线',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_biz_env_key` (`appkey`, `env`, `service_name`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-## 注册表详细信息
+## 服务消费者结点信息表
 CREATE TABLE `client_node`
 (
   `id`            BIGINT(20)   NOT NULL AUTO_INCREMENT,
+  `registry_id`   BIGINT(20)   NOT NULL COMMENT 'registry_id',
   `client_appkey` varchar(50)  NOT NULL COMMENT '客户端appkey',
+  `appkey`        varchar(255) NOT NULL COMMENT '业务标识',
   `env`           varchar(255) NOT NULL COMMENT '环境标识',
   `service_name`  varchar(255) NOT NULL COMMENT '服务名称',
   `update_time`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP
     COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_service_name_env_client_appkey` (`service_name`, `client_appkey`, `env`),
-  key `update_time` (`update_time`)
+  UNIQUE KEY `uq_service_name_env_client_appkey` (`service_name`, `appkey`, `client_appkey`, `env`),
+  key `idx_registry_id` (`registry_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-## 注册结点表详细信息
+## 服务生产者注册结点表详细信息
 CREATE TABLE `registry_node`
 (
   `id`           bigint(22)    NOT NULL AUTO_INCREMENT,

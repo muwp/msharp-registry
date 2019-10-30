@@ -55,8 +55,8 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
     }
 
     @Override
-    public RegistryDO get(String biz, String env, String key) {
-        return get(Triple.of(biz, env, key));
+    public RegistryDO get(String appkey, String env, String serviceName) {
+        return get(Triple.of(appkey, env, serviceName));
     }
 
     @Override
@@ -89,7 +89,6 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
         return false;
     }
 
-    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     @Override
     public boolean remove(final RegistryDO R) {
         Triple<String, String, String> key = Triple.of(R.getAppkey(), R.getEnv(), R.getServiceName());

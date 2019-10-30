@@ -3,7 +3,9 @@
 <mapper namespace="com.ruijing.registry.admin.data.mapper.ClientNodeMapper">
     <resultMap id="BaseResultMap" type="com.ruijing.registry.admin.data.model.ClientNodeDO">
         <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="registry_id" property="registryId" jdbcType="BIGINT"/>
         <result column="client_appkey" property="clientAppkey" jdbcType="VARCHAR"/>
+        <result column="appkey" property="appkey" jdbcType="VARCHAR"/>
         <result column="service_name" property="serviceName" jdbcType="VARCHAR"/>
         <result column="env" property="env" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
@@ -11,9 +13,12 @@
 
     <sql id="Base_Column_List">
         id,
+        `registry_id`,
         client_appkey,
+        appkey,
         service_name,
         env,
+        `status`,
         update_time
     </sql>
 
@@ -23,17 +28,23 @@
         <include refid="Base_Column_List"/>
         FROM client_node
         <where>
+            <if test="registryId!=null">
+                `registry_id` = #{registryId}
+            </if>
+            <if test="clientAppkey!=null">
+                AND `client_appkey` = #{clientAppkey}
+            </if>
+            <if test="appkey!=null">
+                AND `appkey` = #{appkey}
+            </if>
             <if test="serviceName!=null">
-                service_name=#{serviceName}
+                AND service_name=#{serviceName}
             </if>
             <if test="env!=null">
                 AND `env` = #{env}
             </if>
             <if test="id!=null">
                 AND id = #{id}
-            </if>
-            <if test="clientAppkey!=null">
-                AND `client_appkey` = #{clientAppkey}
             </if>
         </where>
         <if test="offset!=null">
@@ -48,8 +59,14 @@
             <if test="id != null">
                 id,
             </if>
+            <if test="registryId != null">
+                registry_id,
+            </if>
             <if test="clientAppkey != null">
                 client_appkey,
+            </if>
+            <if test="appkey!=null">
+                `appkey`,
             </if>
             <if test="serviceName != null">
                 service_name,
@@ -57,22 +74,35 @@
             <if test="env != null">
                 env,
             </if>
+            <if test="status != null">
+                `status`,
+            </if>
             <if test="updateTime != null">
                 update_time,
             </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 #{id,jdbcType=INTEGER},
             </if>
+            <if test="registryId != null">
+                #{registryId,jdbcType=BIGINT},
+            </if>
             <if test="clientAppkey != null">
                 #{clientAppkey,jdbcType=VARCHAR},
+            </if>
+            <if test="appkey!=null">
+                #{appkey,jdbcType=VARCHAR},
             </if>
             <if test="serviceName != null">
                 #{serviceName,jdbcType=VARCHAR},
             </if>
             <if test="env != null">
                 #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
             </if>
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},
@@ -87,26 +117,26 @@
         where id=#{id,jdbcType=BIGINT}
     </select>
 
-    <select id="query" resultMap="BaseResultMap" parameterType="com.ruijing.registry.admin.data.model.ClientNodeDO">
-        select
-        <include refid="Base_Column_List"/>
-        from client_node
-        where service_name = #{serviceName,jdbcType=VARCHAR}
-        and
-        env = #{env,jdbcType=VARCHAR}
-    </select>
-
     <update id="updateByPrimaryKeySelective" parameterType="com.ruijing.registry.admin.data.model.ClientNodeDO">
         update client_node
         <set>
+            <if test="registryId != null">
+                registry_id = #{registryId,jdbcType=BIGINT},
+            </if>
             <if test="clientAppkey != null">
                 client_appkey = #{clientAppkey,jdbcType=VARCHAR},
+            </if>
+            <if test="appkey != null">
+                appkey = #{appkey,jdbcType=VARCHAR},
             </if>
             <if test="serviceName != null">
                 service_name = #{serviceName,jdbcType=VARCHAR},
             </if>
             <if test="env != null">
                 env = #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -117,10 +147,12 @@
 
     <update id="refresh" parameterType="com.ruijing.registry.admin.data.model.ClientNodeDO">
         update client_node
-        set update_time=now()
+        set update_time=now(),
+            registry_id=#{registryId},
+            `status`=1
         where client_appkey = #{clientAppkey,jdbcType=VARCHAR}
+          and appkey = #{appkey,jdbcType=VARCHAR}
           and service_name = #{serviceName,jdbcType=VARCHAR}
           and env = #{env,jdbcType=VARCHAR}
-
     </update>
 </mapper>

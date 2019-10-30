@@ -4,12 +4,12 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.fundamental.common.collections.New;
-import com.ruijing.registry.admin.cache.ClientNodeCache;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.ClientNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
+import com.ruijing.registry.admin.manager.DiscoveryManager;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
@@ -19,7 +19,6 @@ import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
 import com.ruijing.registry.admin.util.JsonUtils;
-import com.ruijing.registry.client.model.client.RegistryNodeQuery;
 import com.ruijing.registry.common.http.Separator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +48,7 @@ public class RegistryServiceImpl implements RegistryService {
     private RegistryNodeCache registryNodeCache;
 
     @Resource
-    private ClientNodeCache clientNodeCache;
+    private DiscoveryManager discoveryManager;
 
     @Autowired
     private RegistryManager registryManager;
@@ -99,10 +98,10 @@ public class RegistryServiceImpl implements RegistryService {
     @Override
     public Response<List<String>> discovery(RegistryQuery query) {
         final String clientAppkey = query.getClientAppkey();
-        final String biz = query.getAppkey();
+        final String appkey = query.getAppkey();
         final String env = query.getEnv();
-        final String key = query.getServiceName();
-        Response<String> response = valid(biz, env, key);
+        final String serviceName = query.getServiceName();
+        Response<String> response = valid(appkey, env, serviceName);
         if (null != response) {
             return EMPTY_RETURN_LIST;
         }
@@ -111,15 +110,16 @@ public class RegistryServiceImpl implements RegistryService {
             final ClientNodeDO clientNode = new ClientNodeDO();
             clientNode.setClientAppkey(clientAppkey);
             clientNode.setEnv(env);
-            clientNode.setServiceName(key);
+            clientNode.setAppkey(query.getAppkey());
+            clientNode.setServiceName(serviceName);
             clientNode.setUpdateTime(new Date());
-            this.clientNodeCache.refreshNode(clientNode);
+            this.discoveryManager.addClientNode(clientNode);
         }
 
-        final RegistryDO registryDO = registryCache.get(biz, env, key);
+        final RegistryDO registryDO = registryCache.get(appkey, env, serviceName);
 
         if (null == registryDO) {
-            Cat.logEvent("discovery[no_registry]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
+            Cat.logEvent("discovery[no_registry]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("appkey", appkey).put("env", env).put("serviceName", serviceName).build().toString(), Transaction.ERROR, "");
             return EMPTY_RETURN_LIST;
         }
 
@@ -130,7 +130,7 @@ public class RegistryServiceImpl implements RegistryService {
         final List<RegistryNodeDO> registryNodeList = this.registryNodeCache.get(registryDO.getId());
 
         if (CollectionUtils.isEmpty(registryNodeList)) {
-            Cat.logEvent("discovery[no_registry_node]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("biz", biz).put("env", env).put("key", key).build().toString(), Transaction.ERROR, "");
+            Cat.logEvent("discovery[no_registry_node]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("appkey", appkey).put("env", env).put("serviceName", serviceName).build().toString(), Transaction.ERROR, "");
             return EMPTY_RETURN_LIST;
         }
 
@@ -187,13 +187,13 @@ public class RegistryServiceImpl implements RegistryService {
         }
     }
 
-    private Response<String> valid(String biz, String env, String key) {
+    private Response<String> valid(String appkey, String env, String serviceName) {
         // valid
-        if (StringUtils.isBlank(biz)) {
+        if (StringUtils.isBlank(appkey)) {
             return new Response<>(Response.FAIL_CODE, "业务线格式非空");
         }
 
-        if (StringUtils.isBlank(key)) {
+        if (StringUtils.isBlank(serviceName)) {
             return new Response<>(Response.FAIL_CODE, "注册Key非空");
         }
 

@@ -26,6 +26,4 @@ public interface ClientNodeMapper {
     int updateByPrimaryKeySelective(ClientNodeDO clientNodeDO);
 
     int refresh(ClientNodeDO clientNodeDO);
-
-    List<ClientNodeDO> query(@Param("serviceName") String serviceName,@Param("env") String env);
 }
