@@ -25,6 +25,7 @@ CREATE TABLE `client_node`
   `appkey`        varchar(255) NOT NULL COMMENT '业务标识',
   `env`           varchar(255) NOT NULL COMMENT '环境标识',
   `service_name`  varchar(255) NOT NULL COMMENT '服务名称',
+  `status`       int(4)       NOT NULL DEFAULT '1' COMMENT '',
   `update_time`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP
     COMMENT '更新时间',
