@@ -39,7 +39,7 @@ public class ClientNodeController {
         for (int i = 0, size = clientNodeList.size(); i < size; i++) {
             final ClientNodeDO clientNode = clientNodeList.get(i);
             final Map<String, String> map = new HashMap<>();
-            map.put("clientAppkey", clientNode.getAppkey());
+            map.put("clientAppkey", clientNode.getClientAppkey());
             map.put("env", clientNode.getEnv());
             map.put("serviceName", clientNode.getServiceName());
             map.put("remoteAppkey", clientNode.getAppkey());

@@ -1,12 +1,12 @@
 package com.ruijing.registry.admin.controller;
 
 import com.ruijing.fundamental.api.remote.RemoteResponse;
+import com.ruijing.fundamental.common.env.Environment;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.cache.TokenCache;
 import com.ruijing.registry.admin.data.model.TokenDO;
 import com.ruijing.registry.admin.util.KeyUtil;
 import com.ruijing.registry.admin.util.RandNumUtil;
-import com.ruijing.registry.common.env.Environment;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
