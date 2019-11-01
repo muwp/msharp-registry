@@ -4,6 +4,7 @@ import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
+import com.ruijing.registry.admin.enums.ClientInvokerVersionEnum;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
@@ -11,6 +12,7 @@ import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.util.Request2Util;
 import com.ruijing.registry.client.model.v2.RegistryNode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Api2Controller
@@ -76,6 +79,7 @@ public class Api2Controller {
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDO.setEnv(node.getEnv());
             registryNodeDO.setMeta(node.getMeta());
+            registryNodeDO.setVersion(Optional.ofNullable(node.getVersion()).orElse(StringUtils.EMPTY));
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);
@@ -114,12 +118,32 @@ public class Api2Controller {
 
         Object result;
         if (request.getMode() == 0 && request.getList().size() == 1) {
-            result = registryService.discovery(request.getList().get(0));
+            result = registryService.discovery(request.getList().get(0), ClientInvokerVersionEnum.VERSION_0.getName());
         } else {
-            result = registryService.discovery(request);
+            result = registryService.discovery(request, ClientInvokerVersionEnum.VERSION_0.getName());
         }
         return JsonUtils.toJson(result);
     }
+
+    @RequestMapping("/discovery")
+    @ResponseBody
+    @PermissionLimit(limit = false)
+    @RegistryClient
+    public String discovery(@RequestBody(required = false) String data) {
+        final Request<RegistryQuery> request = Request2Util.getClientRequest(data);
+        if (null == request) {
+            return JsonUtils.toJson(Response.FAIL_);
+        }
+
+        Object result;
+        if (request.getMode() == 0 && request.getList().size() == 1) {
+            result = registryService.discovery(request.getList().get(0), ClientInvokerVersionEnum.VERSION_2.getName());
+        } else {
+            result = registryService.discovery(request, ClientInvokerVersionEnum.VERSION_2.getName());
+        }
+        return JsonUtils.toJson(result);
+    }
+
 
     @RequestMapping("/offline")
     @ResponseBody

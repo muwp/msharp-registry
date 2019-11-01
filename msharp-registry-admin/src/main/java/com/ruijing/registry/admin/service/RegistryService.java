@@ -26,9 +26,9 @@ public interface RegistryService {
 
     Response<String> remove(RegistryNodeDO registryNode);
 
-    Response<List<String>> discovery(RegistryQuery query);
+    Response<List<String>> discovery(RegistryQuery query,String version);
 
-    Response<Map<String, List<String>>> discovery(Request<RegistryQuery> request);
+    Response<Map<String, List<String>>> discovery(Request<RegistryQuery> request,String version);
 
     DeferredResult<Response<String>> monitor(String biz, String env, List<String> keys);
 }

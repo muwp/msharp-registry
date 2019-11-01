@@ -38,6 +38,11 @@ public class RegistryNodeDO {
     private String serviceName;
 
     /**
+     * 版本号
+     */
+    private String version;
+
+    /**
      * 注册Value
      */
     private String value;
@@ -104,6 +109,14 @@ public class RegistryNodeDO {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public Integer getStatus() {

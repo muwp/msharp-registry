@@ -100,9 +100,9 @@ public class SuperApiController {
         }
         Object result;
         if (request.getMode() == 0 && request.getList().size() == 1) {
-            result = registryService.discovery(request.getList().get(0));
+            result = registryService.discovery(request.getList().get(0), "0");
         } else {
-            result = registryService.discovery(request);
+            result = registryService.discovery(request, "0");
         }
         return JsonUtils.toJson(result);
     }

@@ -39,6 +39,11 @@ public class RegistryNode implements Serializable {
     private String value;
 
     /**
+     * 版本号
+     */
+    private String version;
+
+    /**
      * 单个注册结点的元数据
      */
     private String meta;
@@ -90,6 +95,14 @@ public class RegistryNode implements Serializable {
 
     public void setMeta(String meta) {
         this.meta = meta;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     @Override

@@ -25,7 +25,7 @@ CREATE TABLE `client_node`
   `appkey`        varchar(255) NOT NULL COMMENT '业务标识',
   `env`           varchar(255) NOT NULL COMMENT '环境标识',
   `service_name`  varchar(255) NOT NULL COMMENT '服务名称',
-  `status`       int(4)       NOT NULL DEFAULT '1' COMMENT '',
+  `status`        int(4)       NOT NULL DEFAULT '1' COMMENT '',
   `update_time`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP
     COMMENT '更新时间',
@@ -46,6 +46,7 @@ CREATE TABLE `registry_node`
   `value`        varchar(255)  NOT NULL COMMENT '注册Value',
   `status`       int(11)       NOT NULL DEFAULT 1 COMMENT '状态:0-删除 1-正常',
   `meta`         varchar(1000) NOT NULL DEFAULT '' COMMENT '注册结点元数据',
+  `version`      varchar(25)   NOT NULL DEFAULT '0' COMMENT '结点版本号',
   `updateTime`   datetime      NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_biz_env_key_value` (`appkey`, `env`, `service_name`, `value`),

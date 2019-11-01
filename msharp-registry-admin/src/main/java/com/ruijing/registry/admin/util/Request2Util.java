@@ -66,6 +66,7 @@ public class Request2Util {
             node.setServiceName(map.get("serviceName"));
             node.setMeta(map.get("meta"));
             node.setClientAppkey(map.get("clientAppkey"));
+            node.setVersion(map.get("version"));
             nodeList.add(node);
         }
         request.setList(nodeList);
