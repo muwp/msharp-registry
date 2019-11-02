@@ -53,6 +53,11 @@ public class RegistryNodeDO {
     private String meta;
 
     /**
+     * 服务结点运行指标数据
+     */
+    private String metric;
+
+    /**
      * 状态值
      */
     private Integer status;
@@ -141,6 +146,14 @@ public class RegistryNodeDO {
 
     public void setMeta(String meta) {
         this.meta = meta;
+    }
+
+    public String getMetric() {
+        return metric;
+    }
+
+    public void setMetric(String metric) {
+        this.metric = metric;
     }
 
     @Override

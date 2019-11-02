@@ -138,6 +138,9 @@ public class RegistryServiceImpl implements RegistryService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
+            if (!meetGroup(query.getGroup(), "*")) {
+                continue;
+            }
             if (ClientInvokerVersionEnum.VERSION_2.getName().equalsIgnoreCase(version) && ClientInvokerVersionEnum.VERSION_2.getName().equalsIgnoreCase(nodeDO.getVersion())) {
                 list.add(nodeDO.getMeta());
             } else {
@@ -145,6 +148,19 @@ public class RegistryServiceImpl implements RegistryService {
             }
         }
         return new Response<>(list);
+    }
+
+    private boolean meetGroup(String clientGroup, String remoteGroup) {
+        if (StringUtils.isBlank(clientGroup) || "*".equalsIgnoreCase(clientGroup)) {
+            return true;
+        }
+        if (StringUtils.isBlank(remoteGroup) || "*".equalsIgnoreCase(remoteGroup)) {
+            return true;
+        }
+        if (clientGroup.equalsIgnoreCase(remoteGroup)) {
+            return true;
+        }
+        return true;
     }
 
     @Override

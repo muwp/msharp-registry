@@ -129,6 +129,7 @@ public class ManagerServiceImpl implements ManagerService {
             registryNode.setServiceName(registryDO.getServiceName());
             registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setVersion(StringUtils.EMPTY);
+            registryNode.setMetric(StringUtils.EMPTY);
             registryNodeList.add(registryNode);
         }
 
@@ -182,6 +183,7 @@ public class ManagerServiceImpl implements ManagerService {
             registryNode.setServiceName(registryDO.getServiceName());
             registryNode.setValue(valueList.get(i));
             registryNode.setVersion(StringUtils.EMPTY);
+            registryNode.setMetric(StringUtils.EMPTY);
             registryNode.setUpdateTime(new Date());
             registryNodeDOList.add(registryNode);
 

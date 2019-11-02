@@ -80,6 +80,8 @@ public class Api2Controller {
             registryNodeDO.setEnv(node.getEnv());
             registryNodeDO.setMeta(node.getMeta());
             registryNodeDO.setVersion(Optional.ofNullable(node.getVersion()).orElse(StringUtils.EMPTY));
+            registryNodeDO.setMetric(Optional.ofNullable(node.getMetric()).orElse(StringUtils.EMPTY));
+
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);

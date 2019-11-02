@@ -46,6 +46,7 @@ CREATE TABLE `registry_node`
   `value`        varchar(255)  NOT NULL COMMENT '注册Value',
   `status`       int(11)       NOT NULL DEFAULT 1 COMMENT '状态:0-删除 1-正常',
   `meta`         varchar(1000) NOT NULL DEFAULT '' COMMENT '注册结点元数据',
+  `metric`       varchar(1000) NOT NULL DEFAULT '' COMMENT '服务结点运行指标数据',
   `version`      varchar(25)   NOT NULL DEFAULT '0' COMMENT '结点版本号',
   `updateTime`   datetime      NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),

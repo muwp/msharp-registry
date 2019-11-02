@@ -10,8 +10,9 @@
         <result column="env" property="env"/>
         <result column="service_name" property="serviceName"/>
         <result column="value" property="value"/>
-        <result column="version" property="version"/>
         <result column="meta" property="meta"/>
+        <result column="metric" property="metric"/>
+        <result column="version" property="version"/>
         <result column="status" property="status"/>
         <result column="updateTime" property="updateTime"/>
     </resultMap>
@@ -25,6 +26,7 @@
         `value`,
         `meta`,
         `version`,
+        `metric`,
         `status`,
         `updateTime`
     </sql>
@@ -36,6 +38,7 @@
         `status` = 1,
         `meta`=#{meta},
         `registry_id`=#{registryId},
+        `metric`=#{metric},
         `version`=#{version}
         <where>
             <if test="appkey!=null">
@@ -108,6 +111,9 @@
             <if test="meta != null">
                 `meta`,
             </if>
+            <if test="metric != null">
+                `metric`,
+            </if>
             <if test="status != null">
                 `status`,
             </if>
@@ -140,6 +146,9 @@
             <if test="meta != null">
                 #{meta,jdbcType=VARCHAR},
             </if>
+            <if test="metric != null">
+                #{metric,jdbcType=VARCHAR},
+            </if>
             <if test="status != null">
                 #{status,jdbcType=INTEGER},
             </if>
@@ -160,6 +169,7 @@
                                    `service_name`,
                                    `value`,
                                    `meta`,
+                                   `metric`,
                                    `status`,
                                    `version`,
                                    `updateTime`)
@@ -170,6 +180,7 @@
          #{serviceName},
          #{value},
          #{meta},
+         #{metric},
          #{version},
          #{status},
          now())

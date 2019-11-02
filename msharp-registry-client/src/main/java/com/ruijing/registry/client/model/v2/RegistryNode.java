@@ -44,6 +44,11 @@ public class RegistryNode implements Serializable {
     private String version;
 
     /**
+     * 服务结点指标
+     */
+    private String metric;
+
+    /**
      * 单个注册结点的元数据
      */
     private String meta;
@@ -88,7 +93,6 @@ public class RegistryNode implements Serializable {
         this.clientAppkey = clientAppkey;
     }
 
-
     public String getMeta() {
         return meta;
     }
@@ -103,6 +107,14 @@ public class RegistryNode implements Serializable {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getMetric() {
+        return metric;
+    }
+
+    public void setMetric(String metric) {
+        this.metric = metric;
     }
 
     @Override

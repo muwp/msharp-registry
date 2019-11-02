@@ -50,7 +50,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.nodeUpdateExecutor.scheduleWithFixedDelay(this::scheduleUpdateRegistryNode, 1, 2, TimeUnit.SECONDS);
+        this.nodeUpdateExecutor.scheduleWithFixedDelay(this::scheduleUpdateRegistryNode, 1, 4, TimeUnit.SECONDS);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * RequestUtil
+ * Request2Util
  *
  * @author mwup
  * @version 1.0
@@ -34,6 +34,8 @@ public class Request2Util {
             query.setClientAppkey(map.get("clientAppkey"));
             query.setEnv(map.get("env"));
             query.setServiceName(map.get("serviceName"));
+            query.setGroup(map.get("group"));
+            query.setScope(map.get("scope"));
             queryList.add(query);
         }
         request.setList(queryList);
@@ -67,6 +69,7 @@ public class Request2Util {
             node.setMeta(map.get("meta"));
             node.setClientAppkey(map.get("clientAppkey"));
             node.setVersion(map.get("version"));
+            node.setMetric(map.get("metric"));
             nodeList.add(node);
         }
         request.setList(nodeList);

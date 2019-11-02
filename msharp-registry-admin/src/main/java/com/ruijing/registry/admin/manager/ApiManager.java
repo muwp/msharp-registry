@@ -3,8 +3,10 @@ package com.ruijing.registry.admin.manager;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
+import com.ruijing.fundamental.registry.enums.RegistryVersionEnum;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
+import com.ruijing.registry.admin.enums.ClientInvokerVersionEnum;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
@@ -77,6 +79,7 @@ public class ApiManager {
             registryNodeDO.setMeta(StringUtils.EMPTY);
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDO.setVersion(StringUtils.EMPTY);
+            registryNodeDO.setMetric(StringUtils.EMPTY);
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);
@@ -95,6 +98,7 @@ public class ApiManager {
             registryNodeDO.setMeta(node.getMeta());
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDO.setVersion(StringUtils.EMPTY);
+            registryNodeDO.setMetric(StringUtils.EMPTY);
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);
@@ -135,8 +139,8 @@ public class ApiManager {
     }
 
     public Response<List<String>> discovery(RegistryQuery query) {
-        final Response<List<String>> returnT = registryService.discovery(query,"0");
-        return returnT;
+        final Response<List<String>> response = registryService.discovery(query, ClientInvokerVersionEnum.VERSION_0.getName());
+        return response;
     }
 
     public DeferredResult monitor(String data) {

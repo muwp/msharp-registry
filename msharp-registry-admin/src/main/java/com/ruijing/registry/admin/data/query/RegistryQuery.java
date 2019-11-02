@@ -35,6 +35,16 @@ public class RegistryQuery {
     private String serviceName;
 
     /**
+     * 服务分组
+     */
+    private String group;
+
+    /**
+     * 服务订阅维度
+     */
+    private String scope;
+
+    /**
      * 查询偏移量
      */
     private Long offset;
@@ -98,6 +108,22 @@ public class RegistryQuery {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 
     @Override
