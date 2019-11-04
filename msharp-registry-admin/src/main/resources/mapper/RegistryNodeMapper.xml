@@ -181,8 +181,8 @@
          #{value},
          #{meta},
          #{metric},
-         #{version},
          #{status},
+         #{version},
          now())
     </insert>
 
