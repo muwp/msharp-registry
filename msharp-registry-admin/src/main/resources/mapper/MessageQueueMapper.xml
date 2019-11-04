@@ -32,7 +32,7 @@
             <if test="env != null and env != ''">
                 AND env = #{env}
             </if>
-            <if test="serviceName != null and key != ''">
+            <if test="serviceName != null and serviceName != ''">
                 AND `service_name` = #{serviceName}
             </if>
         </trim>
