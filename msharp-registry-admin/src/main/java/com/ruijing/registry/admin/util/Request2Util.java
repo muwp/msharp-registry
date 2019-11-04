@@ -5,10 +5,12 @@ import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.client.model.v2.RegistryNode;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Request2Util
@@ -42,7 +44,7 @@ public class Request2Util {
         return request;
     }
 
-    private static Request<RegistryQuery> getRequest(String json) {
+    private static Request<RegistryQuery> getRequest(final String json) {
         Request request = null;
         try {
             request = JsonUtils.fromJson(json, Request.class);
@@ -66,10 +68,10 @@ public class Request2Util {
             node.setEnv(map.get("env"));
             node.setValue(map.get("value"));
             node.setServiceName(map.get("serviceName"));
-            node.setMeta(map.get("meta"));
             node.setClientAppkey(map.get("clientAppkey"));
-            node.setVersion(map.get("version"));
-            node.setMetric(map.get("metric"));
+            node.setMeta(Optional.ofNullable(map.get("meta")).orElse(StringUtils.EMPTY));
+            node.setVersion(Optional.ofNullable(map.get("version")).orElse(StringUtils.EMPTY));
+            node.setMetric(Optional.ofNullable(map.get("metric")).orElse(StringUtils.EMPTY));
             nodeList.add(node);
         }
         request.setList(nodeList);

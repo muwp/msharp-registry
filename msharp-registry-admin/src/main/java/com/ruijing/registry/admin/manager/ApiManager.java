@@ -54,6 +54,7 @@ public class ApiManager {
         registryNodeDO.setServiceName(node.getServiceName());
         registryNodeDO.setValue(node.getValue());
         registryNodeDO.setMeta(StringUtils.EMPTY);
+        registryNodeDO.setMetric(StringUtils.EMPTY);
         registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
         return registryService.registry(registryNodeDO);
     }

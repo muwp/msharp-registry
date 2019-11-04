@@ -78,10 +78,9 @@ public class Api2Controller {
             registryNodeDO.setValue(node.getValue());
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDO.setEnv(node.getEnv());
-            registryNodeDO.setMeta(node.getMeta());
+            registryNodeDO.setMeta(Optional.ofNullable(node.getMeta()).orElse(StringUtils.EMPTY));
             registryNodeDO.setVersion(Optional.ofNullable(node.getVersion()).orElse(StringUtils.EMPTY));
             registryNodeDO.setMetric(Optional.ofNullable(node.getMetric()).orElse(StringUtils.EMPTY));
-
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);
