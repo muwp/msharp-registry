@@ -1,13 +1,14 @@
 package com.ruijing.registry.admin.cache;
 
 import cn.hutool.core.thread.NamedThreadFactory;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
+import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
+import com.ruijing.registry.admin.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -116,11 +117,12 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
 
     private int refreshNode(final RegistryNodeDO registryNode) {
         int updateSize = 0;
-        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.refresh");
+        Transaction transaction = Cat.newTransaction("RegistryNodeCache", "registryNodeMapper.refresh");
         try {
             updateSize = registryNodeMapper.refresh(registryNode);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
+            Cat.logError("RegistryNodeCache", "registryNodeMapper.refreshNode", JsonUtils.toJson(registryNode), ex);
             transaction.setStatus(ex);
         } finally {
             transaction.complete();
@@ -142,14 +144,12 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     private int addNode(final RegistryNodeDO registryNode) {
         //update
         int updateSize = 0;
-        Transaction newTransaction = Cat.newTransaction("registryManager", "registryNodeMapper.add");
+        Transaction newTransaction = Cat.newTransaction("RegistryNodeCache", "registryNodeMapper.add");
         try {
             updateSize = registryNodeMapper.add(registryNode);
             newTransaction.setSuccessStatus();
         } catch (Exception ex) {
-            if (ex instanceof MySQLIntegrityConstraintViolationException) {
-                Cat.logError("registryManager", "registryNodeMapper.add", null, ex);
-            }
+            Cat.logError("RegistryNodeCache", "registryNodeMapper.addNode", JsonUtils.toJson(registryNode), ex);
             newTransaction.setStatus(ex);
         } finally {
             newTransaction.complete();
@@ -160,11 +160,12 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     private int deleteNode(final String biz, final String env, final String key, final String value) {
         // delete
         int deletedSize = 0;
-        Transaction transaction = Cat.newTransaction("registryManager", "registryNodeMapper.removeDataValue");
+        Transaction transaction = Cat.newTransaction("RegistryNodeCache", "registryNodeMapper.removeDataValue");
         try {
             deletedSize = registryNodeMapper.removeDataValue(biz, env, key, value);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
+            Cat.logError("RegistryNodeCache", "registryNodeMapper.removeDataValue", JsonObjectBuilder.custom().put("biz", biz).put("env", env).put("key", key).put("value", value).build().toString(), ex);
             transaction.setStatus(ex);
         } finally {
             transaction.complete();
@@ -181,6 +182,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
+            Cat.logError("RegistryNodeCache", "registryNodeMapper.delete", "id=" + id, ex);
         } finally {
             transaction.complete();
         }
@@ -234,7 +236,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
                 }
             }
         } catch (Exception ex) {
-            Cat.logError("RegistryNodeCache", "updateRegistryNode", null, ex);
+            Cat.logError("RegistryNodeCache", "scheduleUpdateRegistryNode", null, ex);
         }
     }
 

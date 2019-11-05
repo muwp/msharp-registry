@@ -8,6 +8,7 @@ import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
+import com.ruijing.registry.admin.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -115,6 +116,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
+            Cat.logError("RegistryCache", "registryMapper.update", JsonUtils.toJson(registryDO), ex);
         } finally {
             transaction.complete();
         }
@@ -134,6 +136,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
+            Cat.logError("RegistryCache", "registryMapper.add", JsonUtils.toJson(registryDO), ex);
         } finally {
             transaction.complete();
         }
@@ -148,6 +151,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             transaction.setStatus(ex);
+            Cat.logError("RegistryCache", "registryMapper.delete", "id=" + id, ex);
         } finally {
             transaction.complete();
         }
