@@ -9,11 +9,9 @@ import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.client.model.client.RegistryNodeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
 
@@ -24,8 +22,8 @@ import java.util.List;
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-@Controller
-@RequestMapping("/simple/api")
+//@Controller
+//@RequestMapping("/simple/api")
 public class SimpleApiController {
 
     @Autowired
@@ -165,11 +163,11 @@ public class SimpleApiController {
      * "service02"
      * }
      */
-    @RequestMapping("/monitor")
-    @ResponseBody
-    @PermissionLimit(limit = false)
-    @RegistryClient
-    public DeferredResult monitor(@RequestBody(required = false) String data) {
-        return apiManager.monitor(data);
-    }
+//    @RequestMapping("/monitor")
+//    @ResponseBody
+//    @PermissionLimit(limit = false)
+//    @RegistryClient
+//    public DeferredResult monitor(@RequestBody(required = false) String data) {
+//        return apiManager.monitor(data);
+//    }
 }

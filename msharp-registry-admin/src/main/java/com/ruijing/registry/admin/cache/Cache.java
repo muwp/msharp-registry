@@ -13,7 +13,7 @@ public interface Cache<R> {
 
     R get(final Long id);
 
-    R get(String biz, String env, String key);
+    R get(String appkey, String env, String serviceName);
 
     R get(final Triple<String, String, String> key);
 

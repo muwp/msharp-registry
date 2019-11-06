@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -143,34 +142,5 @@ public class ApiController {
         registryQuery.setServiceName(query.getServiceName());
         registryQuery.setEnv(query.getEnv());
         return apiManager.discovery(registryQuery);
-    }
-
-    /**
-     * 服务监控 API
-     * <p>
-     * 说明：long-polling 接口，主动阻塞一段时间（三倍于注册中心心跳时间）；直至阻塞超时或服务注册信息变动时响应；
-     * <p>
-     * ------
-     * 地址格式：{服务注册中心跟地址}/monitor
-     * <p>
-     * 请求参数说明：
-     * 2、biz：业务标识
-     * 2、env：环境标识
-     * 3、keys：服务注册Key列表
-     * <p>
-     * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
-     * <p>
-     * {
-     * "biz" : "xx",
-     * "env" : "xx",
-     * "service02"
-     * }
-     */
-    @RequestMapping("/monitor")
-    @ResponseBody
-    @PermissionLimit(limit = false)
-    @RegistryClient
-    public DeferredResult monitor(@RequestBody(required = false) String data) {
-        return apiManager.monitor(data);
     }
 }

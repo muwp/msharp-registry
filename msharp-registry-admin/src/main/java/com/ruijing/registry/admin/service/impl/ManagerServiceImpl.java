@@ -58,7 +58,7 @@ public class ManagerServiceImpl implements ManagerService {
                 } else {
                     final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
                     if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                        List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getValue).collect(Collectors.toList());
+                        List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).collect(Collectors.toList());
                         registryDO.setData(JsonUtils.toJson(result));
                     } else {
                         registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
