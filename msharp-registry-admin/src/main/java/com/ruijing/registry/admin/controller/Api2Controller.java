@@ -6,10 +6,12 @@ import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.ClientInvokerVersionEnum;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
+import com.ruijing.registry.admin.meta.ServiceMeta;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.admin.util.Request2Util;
 import com.ruijing.registry.client.model.v2.RegistryNode;
 import org.apache.commons.lang3.StringUtils;
@@ -72,10 +74,11 @@ public class Api2Controller {
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNode node = registryNodeList.get(i);
+            final ServiceMeta meta = JsonUtils.fromJson(node.getMeta(), ServiceMeta.class);
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setAppkey(node.getAppkey());
             registryNodeDO.setServiceName(node.getServiceName());
-            registryNodeDO.setValue(node.getValue());
+            registryNodeDO.setValue(MetaUtil.convert(meta));
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDO.setEnv(node.getEnv());
             registryNodeDO.setMeta(Optional.ofNullable(node.getMeta()).orElse(StringUtils.EMPTY));
@@ -144,7 +147,6 @@ public class Api2Controller {
         }
         return JsonUtils.toJson(result);
     }
-
 
     @RequestMapping("/offline")
     @ResponseBody

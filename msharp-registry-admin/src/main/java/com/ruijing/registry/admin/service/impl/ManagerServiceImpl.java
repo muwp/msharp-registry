@@ -8,9 +8,11 @@ import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
+import com.ruijing.registry.admin.meta.ServiceMeta;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.ManagerService;
 import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.admin.util.MetaUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -58,7 +60,7 @@ public class ManagerServiceImpl implements ManagerService {
                 } else {
                     final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
                     if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                        List<String> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).collect(Collectors.toList());
+                        List<ServiceMeta> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).map((x) -> JsonUtils.fromJson(x, ServiceMeta.class)).collect(Collectors.toList());
                         registryDO.setData(JsonUtils.toJson(result));
                     } else {
                         registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
@@ -106,7 +108,7 @@ public class ManagerServiceImpl implements ManagerService {
             registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
         }
 
-        final List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
+        final List<ServiceMeta> valueList = JsonUtils.parseList(registryDO.getData(), ServiceMeta.class);
 
         if (CollectionUtils.isEmpty(valueList)) {
             return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
@@ -123,19 +125,19 @@ public class ManagerServiceImpl implements ManagerService {
 
         final List<RegistryNodeDO> registryNodeList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
+            final ServiceMeta serviceMeta = valueList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
-            registryNode.setValue(valueList.get(i));
+            registryNode.setMeta(JsonUtils.toJson(serviceMeta));
             registryNode.setEnv(registryDO.getEnv());
             registryNode.setServiceName(registryDO.getServiceName());
             registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setVersion(StringUtils.EMPTY);
             registryNode.setMetric(StringUtils.EMPTY);
-            registryNode.setMeta(StringUtils.EMPTY);
+            registryNode.setValue(MetaUtil.convert(serviceMeta));
             registryNodeList.add(registryNode);
         }
 
         registryManager.addRegistryNodeList(registryNodeList);
-
         return Response.SUCCESS;
     }
 
@@ -164,8 +166,10 @@ public class ManagerServiceImpl implements ManagerService {
             registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
         }
 
-        List<String> valueList = JsonUtils.parseList(registryDO.getData(), String.class);
-        if (valueList == null) {
+         List<ServiceMeta> valueList = JsonUtils.parseList(registryDO.getData(), ServiceMeta.class);
+
+
+         if (valueList == null) {
             return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
         }
 
@@ -178,17 +182,17 @@ public class ManagerServiceImpl implements ManagerService {
 
         final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
+            final ServiceMeta serviceMeta = valueList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setEnv(registryDO.getEnv());
             registryNode.setServiceName(registryDO.getServiceName());
-            registryNode.setValue(valueList.get(i));
+            registryNode.setValue(MetaUtil.convert(serviceMeta));
             registryNode.setVersion(StringUtils.EMPTY);
             registryNode.setMetric(StringUtils.EMPTY);
-            registryNode.setMeta(StringUtils.EMPTY);
+            registryNode.setMeta(JsonUtils.toJson(serviceMeta));
             registryNode.setUpdateTime(new Date());
             registryNodeDOList.add(registryNode);
-
         }
 
         this.registryManager.addRegistryNodeList(registryNodeDOList);
