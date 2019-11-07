@@ -75,6 +75,7 @@ public class Api2Controller {
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNode node = registryNodeList.get(i);
             final ServiceMeta meta = JsonUtils.fromJson(node.getMeta(), ServiceMeta.class);
+            meta.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setAppkey(node.getAppkey());
             registryNodeDO.setServiceName(node.getServiceName());

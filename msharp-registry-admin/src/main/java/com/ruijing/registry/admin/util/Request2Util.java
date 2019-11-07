@@ -21,7 +21,7 @@ import java.util.Optional;
  **/
 public class Request2Util {
 
-    public static Request<RegistryQuery> getClientRequest(String json) {
+    public static Request<RegistryQuery> getClientRequest(final String json) {
         Request request = getRequest(json);
         if (request == null || CollectionUtils.isEmpty(request.getList())) {
             return request;
@@ -54,7 +54,7 @@ public class Request2Util {
         return request;
     }
 
-    public static Request<RegistryNode> getServerRequest(String json) {
+    public static Request<RegistryNode> getServerRequest(final String json) {
         final Request request = getRequest(json);
         if (request == null || CollectionUtils.isEmpty(request.getList())) {
             return null;
@@ -64,11 +64,11 @@ public class Request2Util {
         for (int i = 0, size = mapList.size(); i < size; i++) {
             final Map<String, String> map = mapList.get(i);
             final RegistryNode node = new RegistryNode();
+            node.setClientAppkey(map.get("clientAppkey"));
             node.setAppkey(map.get("appkey"));
+            node.setServiceName(map.get("serviceName"));
             node.setEnv(map.get("env"));
             node.setValue(map.get("value"));
-            node.setServiceName(map.get("serviceName"));
-            node.setClientAppkey(map.get("clientAppkey"));
             node.setMeta(Optional.ofNullable(map.get("meta")).orElse(StringUtils.EMPTY));
             node.setVersion(Optional.ofNullable(map.get("version")).orElse(StringUtils.EMPTY));
             node.setMetric(Optional.ofNullable(map.get("metric")).orElse(StringUtils.EMPTY));
