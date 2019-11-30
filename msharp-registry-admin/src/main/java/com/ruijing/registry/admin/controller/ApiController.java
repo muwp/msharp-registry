@@ -31,44 +31,6 @@ public class ApiController {
     private ApiManager apiManager;
 
     /**
-     * 服务注册 & 续约 API
-     * <p>
-     * 说明：新服务注册上线1s内广播通知接入方；需要接入方循环续约，否则服务将会过期（三倍于注册中心心跳时间）下线；
-     * <p>
-     * ------
-     * 地址格式：{服务注册中心跟地址}/registry
-     * <p>
-     * 请求参数说明：
-     * 2、biz：业务标识
-     * 2、env：环境标识
-     * 3、registryNodeList:服务注册信息
-     * <p>
-     * 请求数据格式如下，放置在 RequestBody 中，JSON格式：
-     * <p>
-     * {
-     * "biz" : "xx",
-     * "env" : "xx",
-     * "key" : "service01",
-     * "value" : "address01"
-     * }
-     */
-    @RequestMapping("/registry")
-    @ResponseBody
-    @PermissionLimit(limit = false)
-    @RegistryClient
-    public Response<String> registry(@RequestBody(required = false) String data) {
-        return apiManager.registry(data);
-    }
-
-    @RequestMapping("/batch/registry")
-    @ResponseBody
-    @PermissionLimit(limit = false)
-    @RegistryClient
-    public Response<String> batchRegistry(@RequestBody(required = false) String data) {
-        return apiManager.batchRegistry(data);
-    }
-
-    /**
      * 服务摘除 API
      * <p>
      * 说明：新服务摘除下线1s内广播通知接入方；

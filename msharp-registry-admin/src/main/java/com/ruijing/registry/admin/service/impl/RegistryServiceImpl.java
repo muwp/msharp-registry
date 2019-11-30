@@ -15,10 +15,8 @@ import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
-import com.ruijing.registry.admin.util.KeyUtil;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.manager.RegistryDeferredCacheManager;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.common.http.Separator;
 import org.apache.commons.collections.CollectionUtils;
@@ -53,9 +51,6 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Autowired
     private RegistryManager registryManager;
-
-    @Autowired
-    private RegistryDeferredCacheManager deferredResultCache;
 
     @Override
     public Response<String> registry(RegistryNodeDO registryNode) {
@@ -183,30 +178,9 @@ public class RegistryServiceImpl implements RegistryService {
             deferredResult.setResult(new Response<>(Response.FAIL_CODE, "keys is empty"));
             return deferredResult;
         }
-
-        // monitor by client
-        for (int i = 0, size = keys.size(); i < size; i++) {
-            final String key = keys.get(i);
-            final String fileName = KeyUtil.getKey(biz, env, key);
-            deferredResult.onCompletion(() -> this.clearDeferredResult(key, deferredResult));
-            deferredResultCache.add(fileName, deferredResult);
-        }
         return deferredResult;
     }
 
-    private void clearDeferredResult(String key, DeferredResult deferredResult) {
-        final List<DeferredResult> deferredResults = deferredResultCache.get(key);
-        if (CollectionUtils.isEmpty(deferredResults)) {
-            return;
-        }
-        Iterator<DeferredResult> iterator = deferredResults.iterator();
-        while (iterator.hasNext()) {
-            if (deferredResult == iterator.next()) {
-                iterator.remove();
-                break;
-            }
-        }
-    }
 
     private Response<String> valid(String appkey, String env, String serviceName) {
         // valid

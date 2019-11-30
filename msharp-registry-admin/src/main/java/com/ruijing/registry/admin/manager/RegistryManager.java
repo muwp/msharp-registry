@@ -5,7 +5,6 @@ import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.service.MessageQueueService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,9 +25,6 @@ import java.util.concurrent.*;
  **/
 @Service
 public class RegistryManager implements InitializingBean {
-
-    @Autowired
-    private MessageQueueService messageQueueService;
 
     @Autowired
     private RegistryCache registryCache;
@@ -112,10 +108,7 @@ public class RegistryManager implements InitializingBean {
                 if (updateSize == 0) {
                     final RegistryDO registryDO = registryCache.get(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName());
                     registryNode.setRegistryId(registryDO.getId());
-                    int isUpdate = registryNodeCache.persist(Arrays.asList(registryNode));
-                    if (isUpdate > 0) {
-                        this.messageQueueService.sendMessageQueue(registryNode);
-                    }
+                    registryNodeCache.persist(Arrays.asList(registryNode));
                 }
             } catch (Exception e) {
                 Cat.logError("RegistryManager", "scheduledSaveOrUpdateRegistryNode", StringUtils.EMPTY, e);
@@ -134,10 +127,7 @@ public class RegistryManager implements InitializingBean {
                     continue;
                 }
                 // delete
-                boolean deletedSize = registryNodeCache.remove(Arrays.asList(registryNode));
-                if (deletedSize) {
-                    this.messageQueueService.sendMessageQueue(registryNode);
-                }
+                registryNodeCache.remove(Arrays.asList(registryNode));
             } catch (Exception e) {
                 Cat.logError("RegistryManager", "scheduledClearRegistryNode", StringUtils.EMPTY, e);
             }

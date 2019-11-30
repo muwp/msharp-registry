@@ -162,11 +162,12 @@ public class Api2Controller {
         List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             RegistryNode node = registryNodeList.get(i);
+            final ServiceMeta meta = JsonUtils.fromJson(node.getMeta(), ServiceMeta.class);
             RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setServiceName(node.getServiceName());
             registryNode.setAppkey(node.getAppkey());
             registryNode.setEnv(node.getEnv());
-            registryNode.setValue(node.getValue());
+            registryNode.setValue(MetaUtil.convert(meta));
             registryNodeDOList.add(registryNode);
         }
         return registryService.remove(registryNodeDOList);
