@@ -27,9 +27,9 @@ import java.net.URLEncoder;
  * @created 2019/07/23 17:03
  **/
 @Component
-public class PermissionInterceptorAdapter extends HandlerInterceptorAdapter {
+public class AuthInterceptorAdapter extends HandlerInterceptorAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(PermissionInterceptorAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthInterceptorAdapter.class);
 
     public static final String LOGIN_IDENTITY_KEY = "MSHARP_REGISTRY_LOGIN_IDENTITY";
 

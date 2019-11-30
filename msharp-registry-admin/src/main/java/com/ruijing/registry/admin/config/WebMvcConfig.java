@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.config;
 
 import com.ruijing.registry.admin.filter.CookieInterceptor;
-import com.ruijing.registry.admin.filter.PermissionInterceptorAdapter;
+import com.ruijing.registry.admin.filter.AuthInterceptorAdapter;
 import com.ruijing.registry.admin.filter.TokenInterceptorAdapter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Resource
-    private PermissionInterceptorAdapter interceptorAdapter;
+    private AuthInterceptorAdapter interceptorAdapter;
 
     @Resource
     private CookieInterceptor cookieInterceptor;

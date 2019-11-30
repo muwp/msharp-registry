@@ -78,7 +78,7 @@ public class TokenCache implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::scheduledUpdateToken, 1, 30, TimeUnit.SECONDS);
+        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::scheduledUpdateToken, 1, 60, TimeUnit.SECONDS);
     }
 
     public void scheduledUpdateToken() {
