@@ -1,9 +1,6 @@
 package com.ruijing.registry.admin.manager;
 
 import com.ruijing.fundamental.cat.Cat;
-import com.ruijing.fundamental.cat.message.Transaction;
-import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
-import com.ruijing.fundamental.registry.enums.RegistryVersionEnum;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.ClientInvokerVersionEnum;
@@ -15,12 +12,9 @@ import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.client.model.server.RegistryNode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -57,52 +51,6 @@ public class ApiManager {
         registryNodeDO.setMetric(StringUtils.EMPTY);
         registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
         return registryService.registry(registryNodeDO);
-    }
-
-    public Response<String> batchRegistry(final String data) {
-        // parse data
-        List<RegistryNode> registryNodeList = null;
-        try {
-            registryNodeList = JsonUtils.parseList(data, RegistryNode.class);
-        } catch (Exception e) {
-            Cat.logError("apiController.batchRegistry,data:" + data, e);
-        }
-        if (CollectionUtils.isEmpty(registryNodeList)) {
-            return Response.FAIL;
-        }
-        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
-        for (final RegistryNode node : registryNodeList) {
-            final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-            registryNodeDO.setAppkey(node.getAppkey());
-            registryNodeDO.setValue(node.getValue());
-            registryNodeDO.setServiceName(node.getServiceName());
-            registryNodeDO.setEnv(node.getEnv());
-            registryNodeDO.setMeta(StringUtils.EMPTY);
-            registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
-            registryNodeDO.setVersion(StringUtils.EMPTY);
-            registryNodeDO.setMetric(StringUtils.EMPTY);
-            registryNodeDOList.add(registryNodeDO);
-        }
-        return registryService.registry(registryNodeDOList);
-    }
-
-    public Response<String> renew(final Request<RegistryNode> request) {
-        // parse data
-        final List<RegistryNode> registryNodeList = request.getList();
-        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
-        for (final RegistryNode node : registryNodeList) {
-            final RegistryNodeDO registryNodeDO = new RegistryNodeDO();
-            registryNodeDO.setAppkey(node.getAppkey());
-            registryNodeDO.setServiceName(node.getServiceName());
-            registryNodeDO.setValue(node.getValue());
-            registryNodeDO.setEnv(node.getEnv());
-            registryNodeDO.setMeta(node.getMeta());
-            registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
-            registryNodeDO.setVersion(StringUtils.EMPTY);
-            registryNodeDO.setMetric(StringUtils.EMPTY);
-            registryNodeDOList.add(registryNodeDO);
-        }
-        return registryService.registry(registryNodeDOList);
     }
 
     public Response<String> remove(final Request<RegistryNode> request) {
@@ -142,23 +90,5 @@ public class ApiManager {
     public Response<List<String>> discovery(RegistryQuery query) {
         final Response<List<String>> response = registryService.discovery(query, ClientInvokerVersionEnum.VERSION_0.getName());
         return response;
-    }
-
-    public DeferredResult monitor(String data) {
-        // parse data
-        RegistryNode registryNode = null;
-        try {
-            registryNode = JsonUtils.fromJson(data, RegistryNode.class);
-        } catch (Exception e) {
-            Cat.logError("apiController.monitor,data:" + data, e);
-        }
-
-        if (null == registryNode) {
-            DeferredResult result = new DeferredResult();
-            result.setResult(new Response<>(Response.FAIL_CODE, "Monitor key update."));
-            return result;
-        }
-        Cat.logEvent("monitor", JsonObjectBuilder.custom().put("clientAppkey", registryNode.getClientAppkey()).put("biz", registryNode.getAppkey()).put("env", registryNode.getEnv()).put("key", registryNode.getServiceName()).build().toString(), Transaction.ERROR, "");
-        return registryService.monitor(registryNode.getAppkey(), registryNode.getEnv(), Arrays.asList(registryNode.getServiceName()));
     }
 }

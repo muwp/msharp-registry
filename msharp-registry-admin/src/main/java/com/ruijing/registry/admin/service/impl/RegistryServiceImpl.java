@@ -23,7 +23,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -133,9 +132,6 @@ public class RegistryServiceImpl implements RegistryService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
-            if (!meetGroup(query.getGroup(), "*")) {
-                continue;
-            }
             if (ClientInvokerVersionEnum.VERSION_2.getName().equalsIgnoreCase(version) && ClientInvokerVersionEnum.VERSION_2.getName().equalsIgnoreCase(nodeDO.getVersion())) {
                 list.add(nodeDO.getMeta());
             } else {
@@ -143,42 +139,6 @@ public class RegistryServiceImpl implements RegistryService {
             }
         }
         return new Response<>(list);
-    }
-
-    private boolean meetGroup(String clientGroup, String remoteGroup) {
-        if (StringUtils.isBlank(clientGroup) || "*".equalsIgnoreCase(clientGroup)) {
-            return true;
-        }
-        if (StringUtils.isBlank(remoteGroup) || "*".equalsIgnoreCase(remoteGroup)) {
-            return true;
-        }
-        if (clientGroup.equalsIgnoreCase(remoteGroup)) {
-            return true;
-        }
-        return true;
-    }
-
-    @Override
-    public DeferredResult<Response<String>> monitor(String biz, String env, List<String> keys) {
-
-        // init
-        final DeferredResult deferredResult = new DeferredResult(30 * 1000L, new Response<>(Response.FAIL_CODE, "Monitor timeout."));
-
-        if (StringUtils.isBlank(biz)) {
-            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Biz is empty"));
-            return deferredResult;
-        }
-
-        if (StringUtils.isBlank(env)) {
-            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "Env is empty"));
-            return deferredResult;
-        }
-
-        if (CollectionUtils.isEmpty(keys)) {
-            deferredResult.setResult(new Response<>(Response.FAIL_CODE, "keys is empty"));
-            return deferredResult;
-        }
-        return deferredResult;
     }
 
 

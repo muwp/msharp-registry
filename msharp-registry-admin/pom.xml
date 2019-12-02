@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>msharp-registry-admin</artifactId>
-    <version>2.1.16-SNAPSHOT</version>
+    <version>2.1.16</version>
     <packaging>jar</packaging>
 
     <properties>
