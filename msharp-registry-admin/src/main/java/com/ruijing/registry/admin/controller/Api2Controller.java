@@ -1,5 +1,7 @@
 package com.ruijing.registry.admin.controller;
 
+import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
@@ -120,6 +122,8 @@ public class Api2Controller {
         if (null == request) {
             return JsonUtils.toJson(Response.FAIL_);
         }
+
+        Cat.logEvent("Api2Controller[find]", JsonUtils.toJson(request), Transaction.ERROR, StringUtils.EMPTY);
 
         Object result;
         if (request.getMode() == 0 && request.getList().size() == 1) {

@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.controller;
 
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
@@ -8,6 +9,7 @@ import com.ruijing.registry.admin.manager.ApiManager;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.client.model.client.RegistryNodeQuery;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -97,6 +99,8 @@ public class ApiController {
         if (null == query) {
             return null;
         }
+
+        Cat.logEvent("ApiController[discovery]", JsonUtils.toJson(query), Transaction.ERROR, StringUtils.EMPTY);
 
         final RegistryQuery registryQuery = new RegistryQuery();
         registryQuery.setClientAppkey(query.getClientAppkey());
