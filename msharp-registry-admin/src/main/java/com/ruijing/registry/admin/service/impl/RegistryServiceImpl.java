@@ -11,6 +11,7 @@ import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.DiscoveryManager;
 import com.ruijing.registry.admin.manager.RegistryManager;
+import com.ruijing.registry.admin.meta.ServiceMeta;
 import com.ruijing.registry.admin.request.Request;
 import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.RegistryService;
@@ -131,6 +132,10 @@ public class RegistryServiceImpl implements RegistryService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
+            final ServiceMeta serviceMeta = JsonUtils.fromJson(nodeDO.getMeta(), ServiceMeta.class);
+            if (StringUtils.isNotBlank(query.getTransportType()) && StringUtils.isNotBlank(serviceMeta.getTransportType()) && !query.getTransportType().equals(serviceMeta.getTransportType())) {
+                continue;
+            }
             list.add(nodeDO.getMeta());
         }
         return new Response<>(list);

@@ -26,6 +26,11 @@ public class ServiceMeta {
     private String serviceName;
 
     /**
+     * 传输类型
+     */
+    private String transportType;
+
+    /**
      * 版本号
      */
     private String version;
@@ -42,6 +47,9 @@ public class ServiceMeta {
 
     /**
      * 状态值
+     * 0,
+     * 1,正常有效状态
+     * 2 被锁状
      */
     private int status;
 
@@ -115,6 +123,14 @@ public class ServiceMeta {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getTransportType() {
+        return transportType;
+    }
+
+    public void setTransportType(String transportType) {
+        this.transportType = transportType;
     }
 
     @Override

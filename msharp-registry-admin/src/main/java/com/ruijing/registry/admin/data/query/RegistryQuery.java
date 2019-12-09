@@ -20,7 +20,7 @@ public class RegistryQuery {
     private String clientAppkey;
 
     /**
-     * 业务标识
+     * 业务标识(服务端appkey)
      */
     private String appkey;
 
@@ -33,6 +33,11 @@ public class RegistryQuery {
      * 注册Key
      */
     private String serviceName;
+
+    /**
+     * 传输方式
+     */
+    private String transportType;
 
     /**
      * 服务分组
@@ -92,6 +97,14 @@ public class RegistryQuery {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public String getTransportType() {
+        return transportType;
+    }
+
+    public void setTransportType(String transportType) {
+        this.transportType = transportType;
     }
 
     public Long getOffset() {

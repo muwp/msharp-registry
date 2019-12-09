@@ -37,6 +37,7 @@ public class Request2Util {
             query.setEnv(map.get("env"));
             query.setServiceName(map.get("serviceName"));
             query.setGroup(map.get("group"));
+            query.setTransportType(map.get("transportType"));
             query.setScope(map.get("scope"));
             queryList.add(query);
         }
