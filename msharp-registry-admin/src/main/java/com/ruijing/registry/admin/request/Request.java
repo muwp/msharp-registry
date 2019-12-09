@@ -17,13 +17,9 @@ public class Request<T> implements Serializable {
     private List<T> list;
 
     /**
-     * version
-     */
-    private int version;
-
-    /**
      * 返回数据的模式
-     * 0
+     * 0 表示单数据模式
+     * 1 表示多数据模式
      */
     private int mode;
 
@@ -33,14 +29,6 @@ public class Request<T> implements Serializable {
 
     public void setList(List<T> list) {
         this.list = list;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public int getMode() {
@@ -55,7 +43,7 @@ public class Request<T> implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Request{");
         sb.append("list=").append(list);
-        sb.append(", version=").append(version);
+        sb.append(", mode=").append(mode);
         sb.append('}');
         return sb.toString();
     }

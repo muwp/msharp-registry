@@ -8,7 +8,6 @@ import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.ClientNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
-import com.ruijing.registry.admin.enums.ClientInvokerVersionEnum;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.DiscoveryManager;
 import com.ruijing.registry.admin.manager.RegistryManager;
@@ -79,19 +78,19 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
-    public Response<Map<String, List<String>>> discovery(final Request<RegistryQuery> request, String verson) {
+    public Response<Map<String, List<String>>> discovery(final Request<RegistryQuery> request) {
         final List<RegistryQuery> queries = request.getList();
         final Map<String, List<String>> result = New.mapWithCapacity(queries.size());
         for (int i = 0, size = queries.size(); i < size; i++) {
             RegistryQuery query = queries.get(i);
-            Response<List<String>> returnT = this.discovery(query, verson);
+            Response<List<String>> returnT = this.discovery(query);
             result.put(query.getAppkey() + Separator.LOW_MINUS + query.getEnv() + Separator.LOW_MINUS + query.getServiceName(), returnT.getData());
         }
         return new Response<>(result);
     }
 
     @Override
-    public Response<List<String>> discovery(RegistryQuery query, String version) {
+    public Response<List<String>> discovery(RegistryQuery query) {
         final String clientAppkey = query.getClientAppkey();
         final String appkey = query.getAppkey();
         final String env = query.getEnv();
@@ -132,15 +131,10 @@ public class RegistryServiceImpl implements RegistryService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
-            if (ClientInvokerVersionEnum.VERSION_2.getName().equalsIgnoreCase(version) && ClientInvokerVersionEnum.VERSION_2.getName().equalsIgnoreCase(nodeDO.getVersion())) {
-                list.add(nodeDO.getMeta());
-            } else {
-                list.add(nodeDO.getValue());
-            }
+            list.add(nodeDO.getMeta());
         }
         return new Response<>(list);
     }
-
 
     private Response<String> valid(String appkey, String env, String serviceName) {
         // valid

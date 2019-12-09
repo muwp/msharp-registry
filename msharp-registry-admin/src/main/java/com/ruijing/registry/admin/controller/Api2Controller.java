@@ -1,12 +1,9 @@
 package com.ruijing.registry.admin.controller;
 
-import com.ruijing.fundamental.cat.Cat;
-import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
-import com.ruijing.registry.admin.enums.ClientInvokerVersionEnum;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.meta.ServiceMeta;
 import com.ruijing.registry.admin.request.Request;
@@ -113,42 +110,21 @@ public class Api2Controller {
      * "serviceName":"serviceName"
      * }
      */
-    @RequestMapping("/find")
-    @ResponseBody
-    @PermissionLimit(limit = false)
-    @RegistryClient
-    public String find(@RequestBody(required = false) String data) {
-        final Request<RegistryQuery> request = Request2Util.getClientRequest(data);
-        if (null == request) {
-            return JsonUtils.toJson(Response.FAIL_);
-        }
-
-        Cat.logEvent("Api2Controller[find]", JsonUtils.toJson(request), Transaction.ERROR, StringUtils.EMPTY);
-
-        Object result;
-        if (request.getMode() == 0 && request.getList().size() == 1) {
-            result = registryService.discovery(request.getList().get(0), ClientInvokerVersionEnum.VERSION_0.getName());
-        } else {
-            result = registryService.discovery(request, ClientInvokerVersionEnum.VERSION_0.getName());
-        }
-        return JsonUtils.toJson(result);
-    }
-
     @RequestMapping("/discovery")
-    @ResponseBody
     @PermissionLimit(limit = false)
     @RegistryClient
+    @ResponseBody
     public String discovery(@RequestBody(required = false) String data) {
-        final Request<RegistryQuery> request = Request2Util.getClientRequest(data);
+        Request<RegistryQuery> request = Request2Util.getClientRequest(data);
         if (null == request) {
             return JsonUtils.toJson(Response.FAIL_);
         }
 
         Object result;
-        if (request.getMode() == 0 && request.getList().size() == 1) {
-            result = registryService.discovery(request.getList().get(0), ClientInvokerVersionEnum.VERSION_2.getName());
+        if (request.getMode() == 0) {
+            result = registryService.discovery(request.getList().get(0));
         } else {
-            result = registryService.discovery(request, ClientInvokerVersionEnum.VERSION_2.getName());
+            result = registryService.discovery(request);
         }
         return JsonUtils.toJson(result);
     }
