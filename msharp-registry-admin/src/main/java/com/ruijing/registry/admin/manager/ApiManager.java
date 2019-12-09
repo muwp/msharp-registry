@@ -88,7 +88,7 @@ public class ApiManager {
     }
 
     public Response<List<String>> discovery(RegistryQuery query) {
-        final Response<List<String>> response = registryService.discovery(query, ClientInvokerVersionEnum.VERSION_0.getName());
+        final Response<List<String>> response = registryService.discovery(query);
         return response;
     }
 }

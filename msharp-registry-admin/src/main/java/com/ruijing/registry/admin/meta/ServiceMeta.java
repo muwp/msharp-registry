@@ -41,11 +41,6 @@ public class ServiceMeta {
     private int port;
 
     /**
-     * RPC基于http通信的端口
-     */
-    private int httpPort;
-
-    /**
      * 状态值
      */
     private int status;
@@ -56,7 +51,6 @@ public class ServiceMeta {
     private double weight = 10d;
 
     public ServiceMeta() {
-
     }
 
     public int getStatus() {
@@ -121,14 +115,6 @@ public class ServiceMeta {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public int getHttpPort() {
-        return httpPort;
-    }
-
-    public void setHttpPort(int httpPort) {
-        this.httpPort = httpPort;
     }
 
     @Override
