@@ -69,7 +69,6 @@ public class Request2Util {
             node.setAppkey(map.get("appkey"));
             node.setServiceName(map.get("serviceName"));
             node.setEnv(map.get("env"));
-            node.setValue(map.get("value"));
             node.setMeta(Optional.ofNullable(map.get("meta")).orElse(StringUtils.EMPTY));
             node.setVersion(Optional.ofNullable(map.get("version")).orElse(StringUtils.EMPTY));
             node.setMetric(Optional.ofNullable(map.get("metric")).orElse(StringUtils.EMPTY));

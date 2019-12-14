@@ -34,11 +34,6 @@ public class RegistryNode implements Serializable {
     private String serviceName;
 
     /**
-     * 注册Value
-     */
-    private String value;
-
-    /**
      * 版本号
      */
     private String version;
@@ -75,14 +70,6 @@ public class RegistryNode implements Serializable {
 
     public void setEnv(String env) {
         this.env = env;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getClientAppkey() {
@@ -124,7 +111,6 @@ public class RegistryNode implements Serializable {
         sb.append(", appkey='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", serviceName='").append(serviceName).append('\'');
-        sb.append(", value='").append(value).append('\'');
         sb.append(", meta='").append(meta).append('\'');
         sb.append('}');
         return sb.toString();
