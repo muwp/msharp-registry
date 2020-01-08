@@ -3,7 +3,7 @@ package com.ruijing.registry.admin.util;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.request.Request;
-import com.ruijing.registry.client.model.v2.RegistryNode;
+import com.ruijing.registry.admin.vo.RegistryNode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 

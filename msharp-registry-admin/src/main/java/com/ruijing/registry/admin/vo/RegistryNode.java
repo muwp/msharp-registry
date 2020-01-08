@@ -1,11 +1,9 @@
-package com.ruijing.registry.client.model.server;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.ruijing.registry.admin.vo;
 
 import java.io.Serializable;
 
 /**
- * RegistryNodeDO
+ * RegistryNode
  *
  * @author mwup
  * @version 1.0
@@ -23,7 +21,6 @@ public class RegistryNode implements Serializable {
     /**
      * 业务标识
      */
-    @JsonProperty("biz")
     private String appkey;
 
     /**
@@ -34,13 +31,17 @@ public class RegistryNode implements Serializable {
     /**
      * 注册Key
      */
-    @JsonProperty("key")
     private String serviceName;
 
     /**
-     * 注册Value
+     * 版本号
      */
-    private String value;
+    private String version;
+
+    /**
+     * 服务结点指标
+     */
+    private String metric;
 
     /**
      * 单个注册结点的元数据
@@ -71,14 +72,6 @@ public class RegistryNode implements Serializable {
         this.env = env;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public String getClientAppkey() {
         return clientAppkey;
     }
@@ -86,7 +79,6 @@ public class RegistryNode implements Serializable {
     public void setClientAppkey(String clientAppkey) {
         this.clientAppkey = clientAppkey;
     }
-
 
     public String getMeta() {
         return meta;
@@ -96,6 +88,22 @@ public class RegistryNode implements Serializable {
         this.meta = meta;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getMetric() {
+        return metric;
+    }
+
+    public void setMetric(String metric) {
+        this.metric = metric;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RegistryNode{");
@@ -103,7 +111,6 @@ public class RegistryNode implements Serializable {
         sb.append(", appkey='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", serviceName='").append(serviceName).append('\'');
-        sb.append(", value='").append(value).append('\'');
         sb.append(", meta='").append(meta).append('\'');
         sb.append('}');
         return sb.toString();

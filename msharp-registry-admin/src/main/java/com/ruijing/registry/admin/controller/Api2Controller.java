@@ -12,7 +12,7 @@ import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.admin.util.Request2Util;
-import com.ruijing.registry.client.model.v2.RegistryNode;
+import com.ruijing.registry.admin.vo.RegistryNode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
