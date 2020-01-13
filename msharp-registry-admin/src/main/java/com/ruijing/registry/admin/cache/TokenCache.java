@@ -34,7 +34,7 @@ public class TokenCache implements InitializingBean {
     @Resource
     private TokenMapper tokenMapper;
 
-    private final Cache<String, TokenDO> tokenMap = CacheBuilder.newBuilder().expireAfterWrite(80, TimeUnit.SECONDS).build();
+    private final Cache<String, TokenDO> tokenMap = CacheBuilder.newBuilder().expireAfterWrite(180, TimeUnit.SECONDS).build();
 
     /**
      * 轮询服务
@@ -78,7 +78,7 @@ public class TokenCache implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::scheduledUpdateToken, 1, 60, TimeUnit.SECONDS);
+        this.tokenUpdateExecutor.scheduleWithFixedDelay(this::scheduledUpdateToken, 1, 120, TimeUnit.SECONDS);
     }
 
     public void scheduledUpdateToken() {

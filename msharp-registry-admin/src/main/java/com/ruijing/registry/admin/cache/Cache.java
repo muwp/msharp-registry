@@ -23,7 +23,7 @@ public interface Cache<R> {
 
     boolean remove(R R);
 
-    int persist(R r);
+    int add(R r);
 
     int refresh(R r);
 }

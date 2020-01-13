@@ -42,7 +42,6 @@ public class ManagerServiceImpl implements ManagerService {
     @Resource
     private RegistryNodeCache registryNodeCache;
 
-
     @Autowired
     private RegistryManager registryManager;
 

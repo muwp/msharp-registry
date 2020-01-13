@@ -32,13 +32,15 @@ public class RegistryManager implements InitializingBean {
     @Autowired
     private RegistryNodeCache registryNodeCache;
 
-    private volatile LinkedBlockingQueue<RegistryNodeDO> registryQueue = new LinkedBlockingQueue<RegistryNodeDO>();
+    private volatile BlockingQueue<RegistryNodeDO> registryQueue = new LinkedBlockingQueue<RegistryNodeDO>();
 
-    private volatile LinkedBlockingQueue<RegistryNodeDO> removeQueue = new LinkedBlockingQueue<RegistryNodeDO>();
+    private volatile BlockingQueue<RegistryNodeDO> removeQueue = new LinkedBlockingQueue<RegistryNodeDO>();
 
-    private volatile boolean executorStop = false;
+    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
 
-    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100));
+    public RegistryManager() {
+        this.addShutDownHook();
+    }
 
     public void addRegistryNodeList(final List<RegistryNodeDO> registryNodeList) {
         if (CollectionUtils.isEmpty(registryNodeList)) {
@@ -78,7 +80,7 @@ public class RegistryManager implements InitializingBean {
      * registry registry data
      */
     private void scheduledSaveOrUpdateRegistryNode() {
-        while (!executorStop) {
+        while (true) {
             try {
                 RegistryNodeDO registryNode = registryQueue.take();
                 if (null == registryNode) {
@@ -108,7 +110,7 @@ public class RegistryManager implements InitializingBean {
                 if (updateSize == 0) {
                     final RegistryDO registryDO = registryCache.get(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName());
                     registryNode.setRegistryId(registryDO.getId());
-                    registryNodeCache.persist(Arrays.asList(registryNode));
+                    registryNodeCache.add(Arrays.asList(registryNode));
                 }
             } catch (Exception e) {
                 Cat.logError("RegistryManager", "scheduledSaveOrUpdateRegistryNode", StringUtils.EMPTY, e);
@@ -120,7 +122,7 @@ public class RegistryManager implements InitializingBean {
      * remove registry data (client-num/start-interval s)
      */
     private void scheduledClearRegistryNode() {
-        while (!executorStop) {
+        while (true) {
             try {
                 final RegistryNodeDO registryNode = this.removeQueue.take();
                 if (null == registryNode) {
@@ -149,7 +151,7 @@ public class RegistryManager implements InitializingBean {
             registryDO.setData(StringUtils.EMPTY);
             registryDO.setStatus(0);
             registryDO.setVersion(UUID.randomUUID().toString().replaceAll("-", ""));
-            this.registryCache.persist(registryDO);
+            this.registryCache.add(registryDO);
         }
 
         if (registryDO.getId() == null) {
@@ -168,5 +170,31 @@ public class RegistryManager implements InitializingBean {
             }
         }
         return Pair.of(null, registryDO.getId());
+    }
+
+    public void close() {
+        executorService.shutdown();
+    }
+
+    public void addShutDownHook() {
+        _hook = new ShutDownHook(this);
+        Runtime.getRuntime().addShutdownHook(_hook);
+    }
+
+    private volatile ShutDownHook _hook;
+
+    private class ShutDownHook extends Thread {
+
+        private RegistryManager _server;
+
+        public ShutDownHook(RegistryManager server) {
+            this._server = server;
+        }
+
+        @Override
+        public void run() {
+            _hook = null;
+            _server.close();
+        }
     }
 }

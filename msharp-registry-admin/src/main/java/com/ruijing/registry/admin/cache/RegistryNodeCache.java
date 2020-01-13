@@ -131,7 +131,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
     }
 
     @Override
-    public int persist(final List<RegistryNodeDO> registryNodeList) {
+    public int add(final List<RegistryNodeDO> registryNodeList) {
         //persist
         int updateSize = 0;
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {

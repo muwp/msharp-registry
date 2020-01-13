@@ -124,7 +124,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
     }
 
     @Override
-    public int persist(final RegistryDO registryDO) {
+    public int add(final RegistryDO registryDO) {
         int updateSize = 0;
         Transaction transaction = Cat.newTransaction("registryManager", "registryMapper.add");
         try {
@@ -166,6 +166,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 8, TimeUnit.SECONDS);
+        this.addShutDownHook();
     }
 
     private void updateRegistry() {
@@ -214,5 +215,31 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
     private synchronized void setRegistrySet(Set<Pair<Long, Triple<String, String, String>>> registryIdSet) {
         this.registryIdSet.clear();
         this.registryIdSet.addAll(registryIdSet);
+    }
+
+    public void close() {
+        registryUpdateExecutor.shutdown();
+    }
+
+    public void addShutDownHook() {
+        _hook = new ShutDownHook(this);
+        Runtime.getRuntime().addShutdownHook(_hook);
+    }
+
+    private volatile ShutDownHook _hook;
+
+    private class ShutDownHook extends Thread {
+
+        private RegistryCache _server;
+
+        public ShutDownHook(RegistryCache server) {
+            this._server = server;
+        }
+
+        @Override
+        public void run() {
+            _hook = null;
+            _server.close();
+        }
     }
 }
