@@ -3,16 +3,17 @@ package com.ruijing.registry.admin.service.impl;
 import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
+import com.ruijing.registry.admin.constants.ResponseConst;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
-import com.ruijing.registry.admin.meta.ServiceMeta;
-import com.ruijing.registry.admin.response.Response;
+import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
 import com.ruijing.registry.admin.service.ManagerService;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.util.MetaUtil;
+import com.ruijing.registry.client.response.Response;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -59,7 +60,7 @@ public class ManagerServiceImpl implements ManagerService {
                 } else {
                     final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
                     if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                        List<ServiceMeta> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).map((x) -> JsonUtils.fromJson(x, ServiceMeta.class)).collect(Collectors.toList());
+                        List<ServiceNodeMetaDTO> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).map((x) -> JsonUtils.fromJson(x, ServiceNodeMetaDTO.class)).collect(Collectors.toList());
                         registryDO.setData(JsonUtils.toJson(result));
                     } else {
                         registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
@@ -83,22 +84,22 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public Response<String> delete(long id) {
+    public Response<Boolean> delete(long id) {
         RegistryDO registryDO = registryCache.get(id);
         if (null == registryDO) {
-            return Response.SUCCESS;
+            return ResponseConst.SUCCESS;
         }
 
         registryCache.remove(registryDO.getId());
 
         final List<RegistryNodeDO> list = registryNodeCache.get(registryDO.getId());
         registryManager.removeRegistryNodeList(list);
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
     @Override
-    public Response<String> update(RegistryDO registryDO) {
-        final Response<String> response = valid(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName());
+    public Response<Boolean> update(RegistryDO registryDO) {
+        final Response<Boolean> response = valid(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName());
         if (null != response) {
             return response;
         }
@@ -107,7 +108,7 @@ public class ManagerServiceImpl implements ManagerService {
             registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
         }
 
-        final List<ServiceMeta> valueList = JsonUtils.parseList(registryDO.getData(), ServiceMeta.class);
+        final List<ServiceNodeMetaDTO> valueList = JsonUtils.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
 
         if (CollectionUtils.isEmpty(valueList)) {
             return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
@@ -124,7 +125,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         final List<RegistryNodeDO> registryNodeList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
-            final ServiceMeta serviceMeta = valueList.get(i);
+            final ServiceNodeMetaDTO serviceMeta = valueList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setMeta(JsonUtils.toJson(serviceMeta));
             registryNode.setEnv(registryDO.getEnv());
@@ -137,10 +138,10 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         registryManager.addRegistryNodeList(registryNodeList);
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
-    public Response<String> valid(String appkey, String env, String serviceName) {
+    public Response<Boolean> valid(String appkey, String env, String serviceName) {
         if (StringUtils.isBlank(serviceName)) {
             return new Response<>(Response.FAIL_CODE, "注册Key非空");
         }
@@ -155,8 +156,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public Response<String> add(RegistryDO registryDO) {
-        Response<String> response = valid(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName());
+    public Response<Boolean> add(RegistryDO registryDO) {
+        Response<Boolean> response = valid(registryDO.getAppkey(), registryDO.getEnv(), registryDO.getServiceName());
         if (null != response) {
             return response;
         }
@@ -165,7 +166,7 @@ public class ManagerServiceImpl implements ManagerService {
             registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
         }
 
-         List<ServiceMeta> valueList = JsonUtils.parseList(registryDO.getData(), ServiceMeta.class);
+         List<ServiceNodeMetaDTO> valueList = JsonUtils.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
 
 
          if (valueList == null) {
@@ -181,7 +182,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
-            final ServiceMeta serviceMeta = valueList.get(i);
+            final ServiceNodeMetaDTO serviceMeta = valueList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setEnv(registryDO.getEnv());
@@ -195,6 +196,6 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         this.registryManager.addRegistryNodeList(registryNodeDOList);
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 }

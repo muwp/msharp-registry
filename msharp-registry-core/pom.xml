@@ -5,12 +5,25 @@
     <parent>
         <artifactId>msharp-registry</artifactId>
         <groupId>com.ruijing.fundamental</groupId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>1.3.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ruijing.fundamental</groupId>
     <artifactId>msharp-registry-core</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.ruijing.fundamental</groupId>
+            <artifactId>msharp-registry-client</artifactId>
+            <version>1.3.5-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ruijing.fundamental</groupId>
+            <artifactId>msharp-remoting</artifactId>
+            <version>1.3.5-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -1,4 +1,4 @@
-package com.ruijing.registry.admin.request;
+package com.ruijing.registry.client.request;
 
 import java.io.Serializable;
 import java.util.List;

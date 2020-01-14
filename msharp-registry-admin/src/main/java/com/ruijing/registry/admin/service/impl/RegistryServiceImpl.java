@@ -6,18 +6,19 @@ import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
+import com.ruijing.registry.admin.constants.ResponseConst;
 import com.ruijing.registry.admin.data.model.ClientNodeDO;
-import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.DiscoveryManager;
 import com.ruijing.registry.admin.manager.RegistryManager;
-import com.ruijing.registry.admin.meta.ServiceMeta;
-import com.ruijing.registry.admin.request.Request;
-import com.ruijing.registry.admin.response.Response;
+import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
+import com.ruijing.registry.client.request.Request;
+import com.ruijing.registry.client.response.Response;
 import com.ruijing.registry.common.http.Separator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,46 +53,46 @@ public class RegistryServiceImpl implements RegistryService {
     private RegistryManager registryManager;
 
     @Override
-    public Response<String> registry(RegistryNodeDO registryNode) {
+    public Response<Boolean> registry(RegistryNodeDO registryNode) {
         this.registryManager.addRegistryNode(registryNode);
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
     @Override
-    public Response<String> registry(List<RegistryNodeDO> registryNodeList) {
+    public Response<Boolean> registry(List<RegistryNodeDO> registryNodeList) {
         this.registryManager.addRegistryNodeList(registryNodeList);
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
     @Override
-    public Response<String> remove(List<RegistryNodeDO> registryNodeList) {
+    public Response<Boolean> remove(List<RegistryNodeDO> registryNodeList) {
         if (CollectionUtils.isEmpty(registryNodeList)) {
             return new Response<>(Response.FAIL_CODE, "Registry DataList Invalid");
         }
         registryManager.removeRegistryNodeList(registryNodeList);
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
     @Override
-    public Response<String> remove(final RegistryNodeDO registryNode) {
+    public Response<Boolean> remove(final RegistryNodeDO registryNode) {
         registryManager.removeRegistryNode(registryNode);
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
     @Override
-    public Response<Map<String, List<String>>> discovery(final Request<RegistryQuery> request) {
-        final List<RegistryQuery> queries = request.getList();
+    public Response<Map<String, List<String>>> discovery(final Request<RegistryNodeQueryDTO> request) {
+        final List<RegistryNodeQueryDTO> queries = request.getList();
         final Map<String, List<String>> result = New.mapWithCapacity(queries.size());
         for (int i = 0, size = queries.size(); i < size; i++) {
-            RegistryQuery query = queries.get(i);
-            Response<List<String>> returnT = this.discovery(query);
+            RegistryNodeQueryDTO query = queries.get(i);
+            Response<List<String>> returnT = discovery(query);
             result.put(query.getAppkey() + Separator.LOW_MINUS + query.getEnv() + Separator.LOW_MINUS + query.getServiceName(), returnT.getData());
         }
         return new Response<>(result);
     }
 
     @Override
-    public Response<List<String>> discovery(RegistryQuery query) {
+    public Response<List<String>> discovery(RegistryNodeQueryDTO query) {
         final String clientAppkey = query.getClientAppkey();
         final String appkey = query.getAppkey();
         final String env = query.getEnv();
@@ -132,7 +133,7 @@ public class RegistryServiceImpl implements RegistryService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
-            final ServiceMeta serviceMeta = JsonUtils.fromJson(nodeDO.getMeta(), ServiceMeta.class);
+            final ServiceNodeMetaDTO serviceMeta = JsonUtils.fromJson(nodeDO.getMeta(), ServiceNodeMetaDTO.class);
             if (StringUtils.isNotBlank(query.getTransportType()) && StringUtils.isNotBlank(serviceMeta.getTransportType()) && !query.getTransportType().equals(serviceMeta.getTransportType())) {
                 continue;
             }

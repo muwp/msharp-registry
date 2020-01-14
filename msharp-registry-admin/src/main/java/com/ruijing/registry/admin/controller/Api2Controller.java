@@ -2,17 +2,18 @@ package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
+import com.ruijing.registry.admin.constants.ResponseConst;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
-import com.ruijing.registry.admin.meta.ServiceMeta;
-import com.ruijing.registry.admin.request.Request;
-import com.ruijing.registry.admin.response.Response;
+import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.util.JsonUtils;
 import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.admin.util.Request2Util;
-import com.ruijing.registry.admin.vo.RegistryNode;
+import com.ruijing.registry.client.dto.RegistryNodeDTO;
+import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
+import com.ruijing.registry.client.request.Request;
+import com.ruijing.registry.client.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +48,7 @@ public class Api2Controller {
      * 地址格式：{服务注册中心跟地址}/registry
      * <p>
      * 请求参数说明：
-     * 1、appkey：业务标识
+     * 1、appKey：业务标识
      * 2、env：环境标识
      * 3、serviceName:服务注册信息
      * <p>
@@ -64,16 +65,16 @@ public class Api2Controller {
     @ResponseBody
     @PermissionLimit(limit = false)
     @RegistryClient
-    public Response<String> renew(@RequestBody(required = false) String data) {
-        final Request<RegistryNode> request = Request2Util.getServerRequest(data);
+    public Response<Boolean> renew(@RequestBody(required = false) String data) {
+        final Request<RegistryNodeDTO> request = Request2Util.getServerRequest(data);
         if (null == request) {
-            return Response.FAIL;
+            return ResponseConst.REGISTRY_FAIL;
         }
-        List<RegistryNode> registryNodeList = request.getList();
+        List<RegistryNodeDTO> registryNodeList = request.getList();
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
-            final RegistryNode node = registryNodeList.get(i);
-            final ServiceMeta meta = JsonUtils.fromJson(node.getMeta(), ServiceMeta.class);
+            final RegistryNodeDTO node = registryNodeList.get(i);
+            final ServiceNodeMetaDTO meta = JsonUtils.fromJson(node.getMeta(), ServiceNodeMetaDTO.class);
             meta.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setAppkey(node.getAppkey());
@@ -115,9 +116,9 @@ public class Api2Controller {
     @RegistryClient
     @ResponseBody
     public String discovery(@RequestBody(required = false) String data) {
-        Request<RegistryQuery> request = Request2Util.getClientRequest(data);
+        Request<RegistryNodeQueryDTO> request = Request2Util.getClientRequest(data);
         if (null == request) {
-            return JsonUtils.toJson(Response.FAIL_);
+            return JsonUtils.toJson(ResponseConst.REGISTRY_FAIL);
         }
 
         Object result;
@@ -133,16 +134,16 @@ public class Api2Controller {
     @ResponseBody
     @PermissionLimit(limit = false)
     @RegistryClient
-    public Response<String> remove(@RequestBody(required = false) String data) {
-        final Request<RegistryNode> request = Request2Util.getServerRequest(data);
+    public Response<Boolean> remove(@RequestBody(required = false) String data) {
+        final Request<RegistryNodeDTO> request = Request2Util.getServerRequest(data);
         if (null == request) {
-            return Response.FAIL;
+            return ResponseConst.REGISTRY_FAIL;
         }
-        List<RegistryNode> registryNodeList = request.getList();
+        List<RegistryNodeDTO> registryNodeList = request.getList();
         List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
-            RegistryNode node = registryNodeList.get(i);
-            final ServiceMeta meta = JsonUtils.fromJson(node.getMeta(), ServiceMeta.class);
+            RegistryNodeDTO node = registryNodeList.get(i);
+            final ServiceNodeMetaDTO meta = JsonUtils.fromJson(node.getMeta(), ServiceNodeMetaDTO.class);
             RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setServiceName(node.getServiceName());
             registryNode.setAppkey(node.getAppkey());

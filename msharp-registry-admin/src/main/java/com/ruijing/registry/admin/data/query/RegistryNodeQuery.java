@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.data.query;
 
 /**
- * RegistryNodeQuery
+ * RegistryNodeQueryDTO
  *
  * @author mwup
  * @version 1.0
@@ -102,14 +102,14 @@ public class RegistryNodeQuery {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("RegistryNodeQuery{");
+        final StringBuilder sb = new StringBuilder("RegistryNodeQueryDTO{");
         sb.append("id=").append(id);
         sb.append(", biz='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
         sb.append(", key='").append(serviceName).append('\'');
         sb.append(", registryId=").append(registryId);
-         sb.append(", offset=").append(offset);
         sb.append(", pageSize=").append(pageSize);
+        sb.append(", offset=").append(offset);
         sb.append('}');
         return sb.toString();
     }

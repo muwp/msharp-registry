@@ -1,13 +1,17 @@
-package com.ruijing.registry.admin.data.query;
+package com.ruijing.registry.client.dto;
+
+import java.io.Serializable;
 
 /**
- * RegistryQuery
+ * RegistryNodeQueryDTO
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-public class RegistryQuery {
+public class RegistryNodeQueryDTO implements Serializable {
+
+    public static final long serialVersionUID = 42L;
 
     /**
      * id
@@ -15,12 +19,12 @@ public class RegistryQuery {
     private Long id;
 
     /**
-     * clientAppkey
+     * 客户端服务appKey
      */
     private String clientAppkey;
 
     /**
-     * 业务标识(服务端appkey)
+     * 业务标识
      */
     private String appkey;
 
@@ -67,22 +71,6 @@ public class RegistryQuery {
         this.id = id;
     }
 
-    public String getClientAppkey() {
-        return clientAppkey;
-    }
-
-    public void setClientAppkey(String clientAppkey) {
-        this.clientAppkey = clientAppkey;
-    }
-
-    public String getEnv() {
-        return env;
-    }
-
-    public void setEnv(String env) {
-        this.env = env;
-    }
-
     public String getAppkey() {
         return appkey;
     }
@@ -97,6 +85,38 @@ public class RegistryQuery {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
+    }
+
+    public String getClientAppkey() {
+        return clientAppkey;
+    }
+
+    public void setClientAppkey(String clientAppkey) {
+        this.clientAppkey = clientAppkey;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 
     public String getTransportType() {
@@ -123,31 +143,14 @@ public class RegistryQuery {
         this.pageSize = pageSize;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("RegistryNodeQuery{");
-        sb.append("id=").append(id);
-        sb.append(", biz='").append(appkey).append('\'');
+        final StringBuilder sb = new StringBuilder("RegistryNodeQueryDTO{");
+        sb.append("clientAppkey='").append(clientAppkey).append('\'');
+        sb.append(", serviceName='").append(serviceName).append('\'');
+        sb.append(", appkey='").append(appkey).append('\'');
         sb.append(", env='").append(env).append('\'');
-        sb.append(", key='").append(serviceName).append('\'');
-        sb.append(", offset=").append(offset);
-        sb.append(", pageSize=").append(pageSize);
+        sb.append(", scope='").append(scope).append('\'');
         sb.append('}');
         return sb.toString();
     }

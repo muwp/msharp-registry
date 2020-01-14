@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.data.mapper;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.admin.data.query.RegistryQuery;
+import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @Mapper
 public interface RegistryMapper {
 
-    List<RegistryDO> queryForList(RegistryQuery query);
+    List<RegistryDO> queryForList(RegistryNodeQueryDTO query);
 
     List<RegistryDO> pageList(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("appkey") String biz, @Param("env") String env, @Param("serviceName") String key);
 

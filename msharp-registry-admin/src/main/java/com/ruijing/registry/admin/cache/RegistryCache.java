@@ -7,8 +7,8 @@ import com.ruijing.fundamental.cat.message.Transaction;
 import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.admin.data.query.RegistryQuery;
 import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -175,7 +175,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
             int index = 1;
             boolean stop = false;
             while (!stop) {
-                final RegistryQuery query = new RegistryQuery();
+                final RegistryNodeQueryDTO query = new RegistryNodeQueryDTO();
                 query.setOffset((index++ - 1L) * DEFAULT_BATCH_UPDATE_SIZE);
                 query.setPageSize(DEFAULT_BATCH_UPDATE_SIZE);
                 final List<RegistryDO> registryList = registryMapper.queryForList(query);

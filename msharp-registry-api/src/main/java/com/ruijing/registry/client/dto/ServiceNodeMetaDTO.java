@@ -1,14 +1,19 @@
-package com.ruijing.registry.admin.meta;
+package com.ruijing.registry.client.dto;
+
+import java.io.Serializable;
 
 /**
- * ServiceMeta
+ * ServiceNodeMetaDTO
+ * <p>
  * 注册中心元数据
  *
  * @author mwup
  * @version 1.0
  * @created 2018/12/03 12:32
  **/
-public class ServiceMeta {
+public class ServiceNodeMetaDTO implements Serializable {
+
+    public static final long serialVersionUID = 42L;
 
     /**
      * 服务端项目名称
@@ -58,7 +63,7 @@ public class ServiceMeta {
      */
     private double weight = 10d;
 
-    public ServiceMeta() {
+    public ServiceNodeMetaDTO() {
     }
 
     public int getStatus() {
@@ -135,7 +140,7 @@ public class ServiceMeta {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ServiceMeta{");
+        final StringBuilder sb = new StringBuilder("ServiceNodeMetaDTO{");
         sb.append("appkey='").append(appkey).append('\'');
         sb.append(", ip='").append(ip).append('\'');
         sb.append(", serviceName='").append(serviceName).append('\'');

@@ -1,8 +1,8 @@
 package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.service.ManagerService;
+import com.ruijing.registry.client.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,19 +43,19 @@ public class ManagerController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public Response<String> delete(int id) {
+    public Response<Boolean> delete(int id) {
         return managerService.delete(id);
     }
 
     @RequestMapping("/update")
     @ResponseBody
-    public Response<String> update(RegistryDO registryDO) {
+    public Response<Boolean> update(RegistryDO registryDO) {
         return managerService.update(registryDO);
     }
 
     @RequestMapping("/add")
     @ResponseBody
-    public Response<String> add(RegistryDO registryDO) {
+    public Response<Boolean> add(RegistryDO registryDO) {
         return managerService.add(registryDO);
     }
 }

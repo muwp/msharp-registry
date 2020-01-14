@@ -1,10 +1,11 @@
 package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.annotation.PermissionLimit;
+import com.ruijing.registry.admin.constants.ResponseConst;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.filter.AuthInterceptorAdapter;
-import com.ruijing.registry.admin.response.Response;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
+import com.ruijing.registry.client.response.Response;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,10 +58,10 @@ public class IndexController {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
     @PermissionLimit(limit = false)
-    public Response<String> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) {
+    public Response<Boolean> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) {
         // valid
         if (AuthInterceptorAdapter.ifLogin(request)) {
-            return Response.SUCCESS;
+            return ResponseConst.SUCCESS;
         }
 
         // param
@@ -75,17 +76,17 @@ public class IndexController {
         if (!loginRet) {
             return new Response<>(500, "账号密码错误");
         }
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
     @RequestMapping(value = "logout", method = RequestMethod.POST)
     @ResponseBody
     @PermissionLimit(limit = false)
-    public Response<String> logout(HttpServletRequest request, HttpServletResponse response) {
+    public Response<Boolean> logout(HttpServletRequest request, HttpServletResponse response) {
         if (AuthInterceptorAdapter.ifLogin(request)) {
             AuthInterceptorAdapter.logout(request, response);
         }
-        return Response.SUCCESS;
+        return ResponseConst.SUCCESS;
     }
 
     @RequestMapping("/help")
