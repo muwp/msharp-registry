@@ -8,7 +8,7 @@ import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
-import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.admin.util.JsonUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -122,7 +122,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
             updateSize = registryNodeMapper.refresh(registryNode);
             transaction.setSuccessStatus();
         } catch (Exception ex) {
-            Cat.logError("RegistryNodeCache", "registryNodeMapper.refreshNode", JsonUtils.toJson(registryNode), ex);
+            Cat.logError("RegistryNodeCache", "registryNodeMapper.refreshNode", JsonUtil.toJson(registryNode), ex);
             transaction.setStatus(ex);
         } finally {
             transaction.complete();
@@ -149,7 +149,7 @@ public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, Initializ
             updateSize = registryNodeMapper.add(registryNode);
             newTransaction.setSuccessStatus();
         } catch (Exception ex) {
-            Cat.logError("RegistryNodeCache", "registryNodeMapper.addNode", JsonUtils.toJson(registryNode), ex);
+            Cat.logError("RegistryNodeCache", "registryNodeMapper.addNode", JsonUtil.toJson(registryNode), ex);
             newTransaction.setStatus(ex);
         } finally {
             newTransaction.complete();

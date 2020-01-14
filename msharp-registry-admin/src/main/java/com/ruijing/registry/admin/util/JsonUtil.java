@@ -21,7 +21,7 @@ import java.util.Map;
  * @version 1.0
  * @created 2018/9/4 17:03
  **/
-public final class JsonUtils {
+public final class JsonUtil {
 
     private static Logger logger = LoggerFactory.getLogger(JsonMapper.class);
 
@@ -63,7 +63,7 @@ public final class JsonUtils {
     }
 
     public static <T> Map<String, T> parseMap(String json, Class<T> clazz) {
-        final JavaType type = JsonUtils.getDefaultMapper().constructMapType(Map.class, String.class, clazz);
+        final JavaType type = JsonUtil.getDefaultMapper().constructMapType(Map.class, String.class, clazz);
         return defaultMapper.fromJson(json, type);
     }
 

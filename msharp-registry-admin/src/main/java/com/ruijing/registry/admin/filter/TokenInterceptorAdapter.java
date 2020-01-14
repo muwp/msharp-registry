@@ -6,7 +6,7 @@ import com.ruijing.fundamental.common.builder.JsonObjectBuilder;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.cache.TokenCache;
 import com.ruijing.registry.admin.constants.ResponseConst;
-import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.admin.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class TokenInterceptorAdapter extends HandlerInterceptorAdapter {
         }
 
         Cat.logEvent("token[no_security]", JsonObjectBuilder.custom().put("clientAppkey", clientAppkey).put("clientAccessToken", accessToken).put("serviceAccessToken", serverToken).build().toString(), Transaction.ERROR, "");
-        response.getOutputStream().print(JsonUtils.toJson(ResponseConst.FORBIDDEN));
+        response.getOutputStream().print(JsonUtil.toJson(ResponseConst.FORBIDDEN));
         response.getOutputStream().flush();
         return false;
     }

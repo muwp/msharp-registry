@@ -4,7 +4,7 @@ import com.ruijing.fundamental.remoting.msharp.annotation.MSharpService;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.service.RegistryService;
-import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.client.api.RegistryServiceApi;
 import com.ruijing.registry.client.dto.RegistryNodeDTO;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @MSharpService(registry = "direct")
 public class RegistryServiceApiImpl implements RegistryServiceApi {
@@ -44,17 +43,16 @@ public class RegistryServiceApiImpl implements RegistryServiceApi {
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             RegistryNodeDTO node = registryNodeList.get(i);
-            ServiceNodeMetaDTO meta = JsonUtils.fromJson(node.getMeta(), ServiceNodeMetaDTO.class);
-            meta.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
+            ServiceNodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), ServiceNodeMetaDTO.class);
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setServiceName(node.getServiceName());
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDO.setValue(MetaUtil.convert(meta));
             registryNodeDO.setAppkey(node.getAppkey());
             registryNodeDO.setEnv(node.getEnv());
-            registryNodeDO.setMetric(Optional.ofNullable(node.getMetric()).orElse(StringUtils.EMPTY));
-            registryNodeDO.setMeta(Optional.ofNullable(node.getMeta()).orElse(StringUtils.EMPTY));
-            registryNodeDO.setVersion(Optional.ofNullable(node.getVersion()).orElse(StringUtils.EMPTY));
+            registryNodeDO.setMetric(null == node.getMetric() ? StringUtils.EMPTY : node.getMetric());
+            registryNodeDO.setMeta(null == node.getMeta() ? StringUtils.EMPTY : node.getMeta());
+            registryNodeDO.setVersion(null == node.getVersion() ? StringUtils.EMPTY : node.getVersion());
             registryNodeDOList.add(registryNodeDO);
         }
         return registryService.registry(registryNodeDOList);

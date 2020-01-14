@@ -15,7 +15,7 @@ import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
 import com.ruijing.registry.admin.service.RegistryService;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
-import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
 import com.ruijing.registry.client.request.Request;
 import com.ruijing.registry.client.response.Response;
@@ -120,7 +120,7 @@ public class RegistryServiceImpl implements RegistryService {
         }
 
         if (registryDO.getStatus() == RegistryStatusEnum.LOCKED.getCode() || registryDO.getStatus() == RegistryStatusEnum.FORBID.getCode()) {
-            return new Response(JsonUtils.parseList(registryDO.getData(), String.class));
+            return new Response(JsonUtil.parseList(registryDO.getData(), String.class));
         }
 
         final List<RegistryNodeDO> registryNodeList = this.registryNodeCache.get(registryDO.getId());
@@ -133,7 +133,7 @@ public class RegistryServiceImpl implements RegistryService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
-            final ServiceNodeMetaDTO serviceMeta = JsonUtils.fromJson(nodeDO.getMeta(), ServiceNodeMetaDTO.class);
+            final ServiceNodeMetaDTO serviceMeta = JsonUtil.fromJson(nodeDO.getMeta(), ServiceNodeMetaDTO.class);
             if (StringUtils.isNotBlank(query.getTransportType()) && StringUtils.isNotBlank(serviceMeta.getTransportType()) && !query.getTransportType().equals(serviceMeta.getTransportType())) {
                 continue;
             }

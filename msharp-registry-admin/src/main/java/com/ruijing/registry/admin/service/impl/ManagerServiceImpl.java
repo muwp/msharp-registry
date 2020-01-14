@@ -11,7 +11,7 @@ import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
 import com.ruijing.registry.admin.service.ManagerService;
-import com.ruijing.registry.admin.util.JsonUtils;
+import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.client.response.Response;
 import org.apache.commons.collections.CollectionUtils;
@@ -60,10 +60,10 @@ public class ManagerServiceImpl implements ManagerService {
                 } else {
                     final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
                     if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                        List<ServiceNodeMetaDTO> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).map((x) -> JsonUtils.fromJson(x, ServiceNodeMetaDTO.class)).collect(Collectors.toList());
-                        registryDO.setData(JsonUtils.toJson(result));
+                        List<ServiceNodeMetaDTO> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).map((x) -> JsonUtil.fromJson(x, ServiceNodeMetaDTO.class)).collect(Collectors.toList());
+                        registryDO.setData(JsonUtil.toJson(result));
                     } else {
-                        registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
+                        registryDO.setData(JsonUtil.toJson(Collections.emptyList()));
                         registryDO.setStatus(RegistryStatusEnum.OFFLINE.getCode());
                     }
                 }
@@ -105,10 +105,10 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         if (StringUtils.isBlank(registryDO.getData())) {
-            registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
+            registryDO.setData(JsonUtil.toJson(Collections.emptyList()));
         }
 
-        final List<ServiceNodeMetaDTO> valueList = JsonUtils.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
+        final List<ServiceNodeMetaDTO> valueList = JsonUtil.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
 
         if (CollectionUtils.isEmpty(valueList)) {
             return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
@@ -127,7 +127,7 @@ public class ManagerServiceImpl implements ManagerService {
         for (int i = 0, size = valueList.size(); i < size; i++) {
             final ServiceNodeMetaDTO serviceMeta = valueList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
-            registryNode.setMeta(JsonUtils.toJson(serviceMeta));
+            registryNode.setMeta(JsonUtil.toJson(serviceMeta));
             registryNode.setEnv(registryDO.getEnv());
             registryNode.setServiceName(registryDO.getServiceName());
             registryNode.setAppkey(registryDO.getAppkey());
@@ -163,10 +163,10 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         if (StringUtils.isBlank(registryDO.getData())) {
-            registryDO.setData(JsonUtils.toJson(Collections.emptyList()));
+            registryDO.setData(JsonUtil.toJson(Collections.emptyList()));
         }
 
-         List<ServiceNodeMetaDTO> valueList = JsonUtils.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
+         List<ServiceNodeMetaDTO> valueList = JsonUtil.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
 
 
          if (valueList == null) {
@@ -190,7 +190,7 @@ public class ManagerServiceImpl implements ManagerService {
             registryNode.setValue(MetaUtil.convert(serviceMeta));
             registryNode.setVersion(StringUtils.EMPTY);
             registryNode.setMetric(StringUtils.EMPTY);
-            registryNode.setMeta(JsonUtils.toJson(serviceMeta));
+            registryNode.setMeta(JsonUtil.toJson(serviceMeta));
             registryNode.setUpdateTime(new Date());
             registryNodeDOList.add(registryNode);
         }

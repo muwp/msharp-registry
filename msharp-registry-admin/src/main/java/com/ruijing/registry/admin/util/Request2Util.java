@@ -48,7 +48,7 @@ public class Request2Util {
     private static Request<RegistryNodeQueryDTO> getRequest(final String json) {
         Request request = null;
         try {
-            request = JsonUtils.fromJson(json, Request.class);
+            request = JsonUtil.fromJson(json, Request.class);
         } catch (Exception e) {
             Cat.logError("ClientRequestUtil.getRequest,data:" + json, e);
         }
