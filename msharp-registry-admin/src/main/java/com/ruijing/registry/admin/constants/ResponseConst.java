@@ -1,6 +1,6 @@
 package com.ruijing.registry.admin.constants;
 
-import com.ruijing.registry.client.response.Response;
+import com.ruijing.registry.api.response.Response;
 
 import java.util.List;
 import java.util.Map;

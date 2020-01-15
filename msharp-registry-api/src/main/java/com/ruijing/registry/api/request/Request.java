@@ -1,6 +1,7 @@
-package com.ruijing.registry.client.request;
+package com.ruijing.registry.api.request;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class Request<T> implements Serializable {
 
     public static final long serialVersionUID = 42L;
 
-    private List<T> list;
+    private List<T> list = new ArrayList<>();
 
     /**
      * 返回数据的模式
@@ -29,6 +30,10 @@ public class Request<T> implements Serializable {
 
     public void setList(List<T> list) {
         this.list = list;
+    }
+
+    public void addNode(T t) {
+        this.list.add(t);
     }
 
     public int getMode() {

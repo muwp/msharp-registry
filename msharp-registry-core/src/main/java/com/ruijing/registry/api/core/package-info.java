@@ -1,0 +1,1 @@
+package com.ruijing.registry.api.core;

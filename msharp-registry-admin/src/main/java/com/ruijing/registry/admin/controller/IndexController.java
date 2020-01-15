@@ -5,7 +5,7 @@ import com.ruijing.registry.admin.constants.ResponseConst;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.filter.AuthInterceptorAdapter;
 import com.ruijing.registry.admin.data.mapper.RegistryNodeMapper;
-import com.ruijing.registry.client.response.Response;
+import com.ruijing.registry.api.response.Response;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

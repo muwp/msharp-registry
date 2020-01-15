@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.service;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.client.response.Response;
+import com.ruijing.registry.api.response.Response;
 
 import java.util.Map;
 

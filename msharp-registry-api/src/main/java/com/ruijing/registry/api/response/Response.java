@@ -1,4 +1,4 @@
-package com.ruijing.registry.client.response;
+package com.ruijing.registry.api.response;
 
 import java.io.Serializable;
 

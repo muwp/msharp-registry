@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.data.mapper;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
+import com.ruijing.registry.api.dto.RegistryNodeQueryDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,6 +1,6 @@
 package com.ruijing.registry.admin.util;
 
-import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
+import com.ruijing.registry.api.dto.ServiceNodeMetaDTO;
 
 public class MetaUtil {
 

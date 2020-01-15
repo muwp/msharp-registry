@@ -1,9 +1,9 @@
 package com.ruijing.registry.admin.util;
 
 import com.ruijing.fundamental.cat.Cat;
-import com.ruijing.registry.client.dto.RegistryNodeDTO;
-import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
-import com.ruijing.registry.client.request.Request;
+import com.ruijing.registry.api.dto.RegistryNodeDTO;
+import com.ruijing.registry.api.dto.RegistryNodeQueryDTO;
+import com.ruijing.registry.api.request.Request;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 

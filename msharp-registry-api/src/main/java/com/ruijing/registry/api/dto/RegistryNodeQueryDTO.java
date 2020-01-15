@@ -1,4 +1,4 @@
-package com.ruijing.registry.client.dto;
+package com.ruijing.registry.api.dto;
 
 import java.io.Serializable;
 

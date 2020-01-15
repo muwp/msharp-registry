@@ -1,9 +1,9 @@
-package com.ruijing.registry.client.api;
+package com.ruijing.registry.api.service;
 
-import com.ruijing.registry.client.dto.RegistryNodeDTO;
-import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
-import com.ruijing.registry.client.request.Request;
-import com.ruijing.registry.client.response.Response;
+import com.ruijing.registry.api.dto.RegistryNodeDTO;
+import com.ruijing.registry.api.dto.RegistryNodeQueryDTO;
+import com.ruijing.registry.api.request.Request;
+import com.ruijing.registry.api.response.Response;
 
 import java.util.List;
 import java.util.Map;

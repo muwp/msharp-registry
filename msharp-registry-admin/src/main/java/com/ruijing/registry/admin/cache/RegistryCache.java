@@ -8,7 +8,7 @@ import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.admin.data.mapper.RegistryMapper;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.util.JsonUtil;
-import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
+import com.ruijing.registry.api.dto.RegistryNodeQueryDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;

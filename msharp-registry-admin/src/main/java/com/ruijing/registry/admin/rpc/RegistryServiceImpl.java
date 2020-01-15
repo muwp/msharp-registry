@@ -6,12 +6,12 @@ import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
-import com.ruijing.registry.client.api.RegistryService;
-import com.ruijing.registry.client.dto.RegistryNodeDTO;
-import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
-import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
-import com.ruijing.registry.client.request.Request;
-import com.ruijing.registry.client.response.Response;
+import com.ruijing.registry.api.service.RegistryService;
+import com.ruijing.registry.api.dto.RegistryNodeDTO;
+import com.ruijing.registry.api.dto.RegistryNodeQueryDTO;
+import com.ruijing.registry.api.dto.ServiceNodeMetaDTO;
+import com.ruijing.registry.api.request.Request;
+import com.ruijing.registry.api.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -23,7 +23,7 @@
         `status`
     </sql>
 
-    <select id="queryForList" parameterType="com.ruijing.registry.client.dto.RegistryNodeQueryDTO"
+    <select id="queryForList" parameterType="com.ruijing.registry.api.dto.RegistryNodeQueryDTO"
             resultMap="BaseMap">
         SELECT
         <include refid="Base_Column_List"/>
