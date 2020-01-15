@@ -9,8 +9,8 @@ import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
+import com.ruijing.registry.admin.service.FrontManagerService;
 import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
-import com.ruijing.registry.admin.service.ManagerService;
 import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.client.response.Response;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @created 2019/07/23 17:03
  **/
 @Service
-public class ManagerServiceImpl implements ManagerService {
+public class FrontManagerServiceImpl implements FrontManagerService {
 
     @Resource
     private RegistryMapper registryMapper;

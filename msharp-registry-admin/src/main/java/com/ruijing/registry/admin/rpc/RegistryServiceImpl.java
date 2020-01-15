@@ -3,10 +3,10 @@ package com.ruijing.registry.admin.rpc;
 import com.ruijing.fundamental.remoting.msharp.annotation.MSharpService;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
-import com.ruijing.registry.admin.service.RegistryService;
+import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
-import com.ruijing.registry.client.api.RegistryServiceApi;
+import com.ruijing.registry.client.api.RegistryService;
 import com.ruijing.registry.client.dto.RegistryNodeDTO;
 import com.ruijing.registry.client.dto.RegistryNodeQueryDTO;
 import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@MSharpService(registry = "direct")
-public class RegistryServiceApiImpl implements RegistryServiceApi {
+@MSharpService(registry = "direct", port = 42000)
+public class RegistryServiceImpl implements RegistryService {
 
     @Autowired
-    private RegistryService registryService;
+    private RegistryManagerService registryService;
 
     @Override
     public Response<List<String>> discovery(RegistryNodeQueryDTO query) {

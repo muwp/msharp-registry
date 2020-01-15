@@ -6,13 +6,13 @@ import com.ruijing.registry.client.response.Response;
 import java.util.Map;
 
 /**
- * ManagerService
+ * FrontManagerService
  *
  * @author mwup
  * @version 1.0
  * @created 2019/07/23 17:03
  **/
-public interface ManagerService {
+public interface FrontManagerService {
 
     Map<String, Object> pageList(int start, int length, String biz, String env, String key);
 

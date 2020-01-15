@@ -12,7 +12,7 @@ import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.DiscoveryManager;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
-import com.ruijing.registry.admin.service.RegistryService;
+import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.util.JsonUtil;
@@ -36,7 +36,7 @@ import java.util.*;
  * @created 2019/07/23 17:03
  **/
 @Service
-public class RegistryServiceImpl implements RegistryService {
+public class RegistryManagerServiceImpl implements RegistryManagerService {
 
     private static final Response<List<String>> EMPTY_RETURN_LIST = new Response<>(Collections.emptyList());
 

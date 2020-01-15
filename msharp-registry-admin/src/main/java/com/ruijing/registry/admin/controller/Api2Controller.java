@@ -6,7 +6,7 @@ import com.ruijing.registry.admin.constants.ResponseConst;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.client.dto.ServiceNodeMetaDTO;
-import com.ruijing.registry.admin.service.RegistryService;
+import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.admin.util.Request2Util;
@@ -37,7 +37,7 @@ import java.util.Optional;
 public class Api2Controller {
 
     @Resource
-    private RegistryService registryService;
+    private RegistryManagerService registryService;
 
     /**
      * 服务注册 & 续约 API

@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * RegistryServiceApi
+ * RegistryService
  *
  * @author mwup
  * @version 1.0
  * @created 2020/01/14 17:03
  **/
-public interface RegistryServiceApi {
+public interface RegistryService {
 
     Response<List<String>> discovery(RegistryNodeQueryDTO query);
 

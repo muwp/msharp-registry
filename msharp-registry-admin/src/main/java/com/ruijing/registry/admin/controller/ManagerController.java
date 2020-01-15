@@ -1,7 +1,7 @@
 package com.ruijing.registry.admin.controller;
 
 import com.ruijing.registry.admin.data.model.RegistryDO;
-import com.ruijing.registry.admin.service.ManagerService;
+import com.ruijing.registry.admin.service.FrontManagerService;
 import com.ruijing.registry.client.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class ManagerController {
 
     @Resource
-    private ManagerService managerService;
+    private FrontManagerService managerService;
 
     @RequestMapping("")
     public String index(Model model) {
