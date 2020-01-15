@@ -10,7 +10,7 @@ import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.service.FrontManagerService;
-import com.ruijing.registry.api.dto.ServiceNodeMetaDTO;
+import com.ruijing.registry.api.dto.NodeMetaDTO;
 import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.api.response.Response;
@@ -60,7 +60,7 @@ public class FrontManagerServiceImpl implements FrontManagerService {
                 } else {
                     final List<RegistryNodeDO> registryNodeDOList = registryNodeCache.get(registryDO.getId());
                     if (CollectionUtils.isNotEmpty(registryNodeDOList)) {
-                        List<ServiceNodeMetaDTO> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).map((x) -> JsonUtil.fromJson(x, ServiceNodeMetaDTO.class)).collect(Collectors.toList());
+                        List<NodeMetaDTO> result = registryNodeDOList.stream().map(RegistryNodeDO::getMeta).map((x) -> JsonUtil.fromJson(x, NodeMetaDTO.class)).collect(Collectors.toList());
                         registryDO.setData(JsonUtil.toJson(result));
                     } else {
                         registryDO.setData(JsonUtil.toJson(Collections.emptyList()));
@@ -108,7 +108,7 @@ public class FrontManagerServiceImpl implements FrontManagerService {
             registryDO.setData(JsonUtil.toJson(Collections.emptyList()));
         }
 
-        final List<ServiceNodeMetaDTO> valueList = JsonUtil.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
+        final List<NodeMetaDTO> valueList = JsonUtil.parseList(registryDO.getData(), NodeMetaDTO.class);
 
         if (CollectionUtils.isEmpty(valueList)) {
             return new Response<>(Response.FAIL_CODE, "注册Value数据格式非法；限制为字符串数组JSON格式，如 [address,address2]");
@@ -125,7 +125,7 @@ public class FrontManagerServiceImpl implements FrontManagerService {
 
         final List<RegistryNodeDO> registryNodeList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
-            final ServiceNodeMetaDTO serviceMeta = valueList.get(i);
+            final NodeMetaDTO serviceMeta = valueList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setMeta(JsonUtil.toJson(serviceMeta));
             registryNode.setEnv(registryDO.getEnv());
@@ -166,7 +166,7 @@ public class FrontManagerServiceImpl implements FrontManagerService {
             registryDO.setData(JsonUtil.toJson(Collections.emptyList()));
         }
 
-         List<ServiceNodeMetaDTO> valueList = JsonUtil.parseList(registryDO.getData(), ServiceNodeMetaDTO.class);
+         List<NodeMetaDTO> valueList = JsonUtil.parseList(registryDO.getData(), NodeMetaDTO.class);
 
 
          if (valueList == null) {
@@ -182,7 +182,7 @@ public class FrontManagerServiceImpl implements FrontManagerService {
 
         final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(valueList.size());
         for (int i = 0, size = valueList.size(); i < size; i++) {
-            final ServiceNodeMetaDTO serviceMeta = valueList.get(i);
+            final NodeMetaDTO serviceMeta = valueList.get(i);
             final RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setEnv(registryDO.getEnv());

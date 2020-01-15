@@ -3,7 +3,7 @@ package com.ruijing.registry.api.dto;
 import java.io.Serializable;
 
 /**
- * ServiceNodeMetaDTO
+ * NodeMetaDTO
  * <p>
  * 注册中心元数据
  *
@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @version 1.0
  * @created 2018/12/03 12:32
  **/
-public class ServiceNodeMetaDTO implements Serializable {
+public class NodeMetaDTO implements Serializable {
 
     public static final long serialVersionUID = 42L;
 
@@ -63,7 +63,7 @@ public class ServiceNodeMetaDTO implements Serializable {
      */
     private double weight = 10d;
 
-    public ServiceNodeMetaDTO() {
+    public NodeMetaDTO() {
     }
 
     public int getStatus() {
@@ -140,7 +140,7 @@ public class ServiceNodeMetaDTO implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ServiceNodeMetaDTO{");
+        final StringBuilder sb = new StringBuilder("NodeMetaDTO{");
         sb.append("appkey='").append(appkey).append('\'');
         sb.append(", ip='").append(ip).append('\'');
         sb.append(", serviceName='").append(serviceName).append('\'');

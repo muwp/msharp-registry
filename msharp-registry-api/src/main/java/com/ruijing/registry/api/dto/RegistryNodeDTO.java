@@ -39,6 +39,11 @@ public class RegistryNodeDTO implements Serializable {
     private String version;
 
     /**
+     * 服务端ip
+     */
+    private String ip;
+
+    /**
      * 服务结点指标
      */
     private String metric;
@@ -102,6 +107,14 @@ public class RegistryNodeDTO implements Serializable {
 
     public void setMetric(String metric) {
         this.metric = metric;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     @Override

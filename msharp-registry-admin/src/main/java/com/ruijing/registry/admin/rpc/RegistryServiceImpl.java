@@ -6,10 +6,10 @@ import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
+import com.ruijing.registry.api.dto.NodeMetaDTO;
 import com.ruijing.registry.api.service.RegistryService;
 import com.ruijing.registry.api.dto.RegistryNodeDTO;
 import com.ruijing.registry.api.dto.RegistryNodeQueryDTO;
-import com.ruijing.registry.api.dto.ServiceNodeMetaDTO;
 import com.ruijing.registry.api.request.Request;
 import com.ruijing.registry.api.response.Response;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +43,7 @@ public class RegistryServiceImpl implements RegistryService {
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             RegistryNodeDTO node = registryNodeList.get(i);
-            ServiceNodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), ServiceNodeMetaDTO.class);
+            NodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), NodeMetaDTO.class);
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setServiceName(node.getServiceName());
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());

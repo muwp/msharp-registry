@@ -5,7 +5,7 @@ import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.constants.ResponseConst;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
-import com.ruijing.registry.api.dto.ServiceNodeMetaDTO;
+import com.ruijing.registry.api.dto.NodeMetaDTO;
 import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.util.JsonUtil;
 import com.ruijing.registry.admin.util.MetaUtil;
@@ -74,7 +74,7 @@ public class Api2Controller {
         final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDTO node = registryNodeList.get(i);
-            final ServiceNodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), ServiceNodeMetaDTO.class);
+            final NodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), NodeMetaDTO.class);
             meta.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setAppkey(node.getAppkey());
@@ -143,7 +143,7 @@ public class Api2Controller {
         List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             RegistryNodeDTO node = registryNodeList.get(i);
-            final ServiceNodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), ServiceNodeMetaDTO.class);
+            final NodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), NodeMetaDTO.class);
             RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setServiceName(node.getServiceName());
             registryNode.setAppkey(node.getAppkey());

@@ -11,7 +11,7 @@ import com.ruijing.registry.admin.data.model.ClientNodeDO;
 import com.ruijing.registry.admin.enums.RegistryStatusEnum;
 import com.ruijing.registry.admin.manager.DiscoveryManager;
 import com.ruijing.registry.admin.manager.RegistryManager;
-import com.ruijing.registry.api.dto.ServiceNodeMetaDTO;
+import com.ruijing.registry.api.dto.NodeMetaDTO;
 import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
@@ -133,7 +133,7 @@ public class RegistryManagerServiceImpl implements RegistryManagerService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
-            final ServiceNodeMetaDTO serviceMeta = JsonUtil.fromJson(nodeDO.getMeta(), ServiceNodeMetaDTO.class);
+            final NodeMetaDTO serviceMeta = JsonUtil.fromJson(nodeDO.getMeta(), NodeMetaDTO.class);
             if (StringUtils.isNotBlank(query.getTransportType()) && StringUtils.isNotBlank(serviceMeta.getTransportType()) && !query.getTransportType().equals(serviceMeta.getTransportType())) {
                 continue;
             }

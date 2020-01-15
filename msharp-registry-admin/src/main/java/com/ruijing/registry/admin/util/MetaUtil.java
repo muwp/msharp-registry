@@ -1,10 +1,10 @@
 package com.ruijing.registry.admin.util;
 
-import com.ruijing.registry.api.dto.ServiceNodeMetaDTO;
+import com.ruijing.registry.api.dto.NodeMetaDTO;
 
 public class MetaUtil {
 
-    public static String convert(ServiceNodeMetaDTO meta) {
+    public static String convert(NodeMetaDTO meta) {
         return new StringBuilder()
                 .append(meta.getIp())
                 .append(":")
