@@ -41,7 +41,7 @@ public class RegistryNodeHealthCheckManager implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.cleanExecutor.scheduleWithFixedDelay(this::scheduleHealthCheck, 30, 12, TimeUnit.SECONDS);
+        this.cleanExecutor.scheduleWithFixedDelay(this::scheduleHealthCheck, 30, 15, TimeUnit.SECONDS);
     }
 
     private void scheduleHealthCheck() {

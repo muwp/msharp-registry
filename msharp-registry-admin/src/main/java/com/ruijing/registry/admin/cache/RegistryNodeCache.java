@@ -51,7 +51,7 @@ public class RegistryNodeCache implements ICache<List<RegistryNodeDO>>, Initiali
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.nodeUpdateExecutor.scheduleWithFixedDelay(this::scheduleUpdateRegistryNode, 1, 4, TimeUnit.SECONDS);
+        this.nodeUpdateExecutor.scheduleWithFixedDelay(this::scheduleUpdateRegistryNode, 1, 5, TimeUnit.SECONDS);
     }
 
     @Override
