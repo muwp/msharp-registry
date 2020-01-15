@@ -28,7 +28,7 @@ public class NodeMetaDTO implements Serializable {
     /**
      * 端口
      */
-    private int port;
+    private Integer port;
 
     /**
      * 服务名称
@@ -56,7 +56,7 @@ public class NodeMetaDTO implements Serializable {
      * 1,正常有效状态
      * 2 被锁状
      */
-    private int status;
+    private Integer status;
 
     /**
      * 权重
@@ -71,11 +71,11 @@ public class NodeMetaDTO implements Serializable {
     public NodeMetaDTO() {
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -111,11 +111,11 @@ public class NodeMetaDTO implements Serializable {
         this.group = group;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 

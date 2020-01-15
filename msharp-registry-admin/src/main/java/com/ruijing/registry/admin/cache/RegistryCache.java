@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.cache;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.cat.message.Transaction;
@@ -29,16 +30,16 @@ import java.util.concurrent.TimeUnit;
  * @created 2019/07/23 17:03
  **/
 @Service
-public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
+public class RegistryCache implements ICache<RegistryDO>, InitializingBean {
 
     private static final int DEFAULT_BATCH_UPDATE_SIZE = 100;
 
     @Resource
     private RegistryMapper registryMapper;
 
-    private com.google.common.cache.Cache<Triple<String, String, String>, RegistryDO> registryCache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
+    private Cache<Triple<String, String, String>, RegistryDO> registryCache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
 
-    private com.google.common.cache.Cache<Long, RegistryDO> registryIdCache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
+    private Cache<Long, RegistryDO> registryIdCache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
 
     private volatile Set<Pair<Long, Triple<String, String, String>>> registryIdSet = new ConcurrentHashSet<>();
 
@@ -165,7 +166,7 @@ public class RegistryCache implements Cache<RegistryDO>, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 8, TimeUnit.SECONDS);
+        this.registryUpdateExecutor.scheduleWithFixedDelay(this::updateRegistry, 1, 10, TimeUnit.SECONDS);
         this.addShutDownHook();
     }
 

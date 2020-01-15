@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @created 2019/07/23 17:03
  **/
 @Service
-public class RegistryNodeCache implements Cache<List<RegistryNodeDO>>, InitializingBean {
+public class RegistryNodeCache implements ICache<List<RegistryNodeDO>>, InitializingBean {
 
     private static final int DEFAULT_BATCH_UPDATE_SIZE = 50;
 

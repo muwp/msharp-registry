@@ -1,6 +1,5 @@
 package com.ruijing.registry.admin.rpc;
 
-import com.ruijing.fundamental.remoting.msharp.annotation.MSharpService;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.service.RegistryManagerService;
@@ -14,12 +13,14 @@ import com.ruijing.registry.api.request.Request;
 import com.ruijing.registry.api.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@MSharpService(registry = "direct", port = 42000)
+//@MSharpService(registry = "direct", port = 42000)
+@Service
 public class RegistryServiceImpl implements RegistryService {
 
     @Autowired
