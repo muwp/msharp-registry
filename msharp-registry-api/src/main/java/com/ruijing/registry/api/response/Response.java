@@ -24,6 +24,7 @@ public class Response<T> implements Serializable {
     private T data;
 
     public Response() {
+
     }
 
     public Response(int code, String msg) {

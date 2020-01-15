@@ -26,6 +26,11 @@ public class NodeMetaDTO implements Serializable {
     private String ip;
 
     /**
+     * 端口
+     */
+    private int port;
+
+    /**
      * 服务名称
      */
     private String serviceName;
@@ -46,11 +51,6 @@ public class NodeMetaDTO implements Serializable {
     private String group;
 
     /**
-     * 端口
-     */
-    private int port;
-
-    /**
      * 状态值
      * 0,
      * 1,正常有效状态
@@ -62,6 +62,11 @@ public class NodeMetaDTO implements Serializable {
      * 权重
      */
     private double weight = 10d;
+
+    /**
+     * jar接口的的版本号
+     */
+    private String jarVersion;
 
     public NodeMetaDTO() {
     }
@@ -138,17 +143,27 @@ public class NodeMetaDTO implements Serializable {
         this.transportType = transportType;
     }
 
+    public String getJarVersion() {
+        return jarVersion;
+    }
+
+    public void setJarVersion(String jarVersion) {
+        this.jarVersion = jarVersion;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("NodeMetaDTO{");
         sb.append("appkey='").append(appkey).append('\'');
         sb.append(", ip='").append(ip).append('\'');
+        sb.append(", port=").append(port);
         sb.append(", serviceName='").append(serviceName).append('\'');
+        sb.append(", transportType='").append(transportType).append('\'');
         sb.append(", version='").append(version).append('\'');
         sb.append(", group='").append(group).append('\'');
-        sb.append(", port=").append(port);
         sb.append(", status=").append(status);
         sb.append(", weight=").append(weight);
+        sb.append(", jarVersion='").append(jarVersion).append('\'');
         sb.append('}');
         return sb.toString();
     }
