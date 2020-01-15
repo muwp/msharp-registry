@@ -5,6 +5,7 @@ import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.RegistryDO;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
+import com.ruijing.registry.admin.util.JsonUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -81,15 +82,17 @@ public class RegistryManager implements InitializingBean {
      */
     private void scheduledSaveOrUpdateRegistryNode() {
         while (true) {
+            RegistryNodeDO registryNode = null;
+            RegistryNodeDO node = null;
             try {
-                RegistryNodeDO registryNode = registryQueue.take();
+                registryNode = registryQueue.take();
                 if (null == registryNode) {
                     continue;
                 }
 
                 // refresh or add
                 final Pair<Long, Long> pairId = this.syncUpdateRegistryAndReturnNodeId(registryNode);
-                final RegistryNodeDO node = new RegistryNodeDO();
+                node = new RegistryNodeDO();
                 final Long nodeId = pairId.getKey();
                 final Long registryId = pairId.getRight();
                 if (null != nodeId) {
@@ -113,7 +116,7 @@ public class RegistryManager implements InitializingBean {
                     registryNodeCache.add(Arrays.asList(registryNode));
                 }
             } catch (Exception e) {
-                Cat.logError("RegistryManager", "scheduledSaveOrUpdateRegistryNode", StringUtils.EMPTY, e);
+                Cat.logError("RegistryManager", "scheduledSaveOrUpdateRegistryNode", (registryNode != null ? "registryNode:" + JsonUtil.toJson(registryNode) : "") + (null != node ? " | node:" + JsonUtil.toJson(node) : ""), e);
             }
         }
     }

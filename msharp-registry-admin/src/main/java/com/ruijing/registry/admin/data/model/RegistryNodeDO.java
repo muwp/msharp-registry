@@ -83,7 +83,6 @@ public class RegistryNodeDO {
         this.registryId = registryId;
     }
 
-
     public String getEnv() {
         return env;
     }

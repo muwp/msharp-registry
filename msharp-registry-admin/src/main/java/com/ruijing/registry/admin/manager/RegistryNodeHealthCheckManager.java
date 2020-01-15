@@ -31,8 +31,6 @@ public class RegistryNodeHealthCheckManager implements InitializingBean {
 
     private static final int YELLOW_TIME_OUT = 60 * 1000;
 
-    private static final int DELETED_TIME_OUT = 90 * 1000;
-
     @Resource
     private RegistryNodeMapper registryNodeMapper;
 
