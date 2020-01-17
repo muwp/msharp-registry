@@ -17,6 +17,8 @@ public interface ICache<R> {
 
     R get(final Triple<String, String, String> key);
 
+    R getIncludeExpireData(final Triple<String, String, String> key);
+
     void put(final Triple<String, String, String> key, R R);
 
     boolean remove(final Long id);

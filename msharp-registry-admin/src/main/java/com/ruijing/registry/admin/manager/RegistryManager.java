@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.manager;
 
 import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.common.threadpool.NamedThreadFactory;
 import com.ruijing.registry.admin.cache.RegistryCache;
 import com.ruijing.registry.admin.cache.RegistryNodeCache;
 import com.ruijing.registry.admin.data.model.RegistryDO;
@@ -37,7 +38,7 @@ public class RegistryManager implements InitializingBean {
 
     private volatile BlockingQueue<RegistryNodeDO> removeQueue = new LinkedBlockingQueue<RegistryNodeDO>();
 
-    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+    private ExecutorService executorService = new ThreadPoolExecutor(2, 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10), new NamedThreadFactory("scheduledUpdateNode", true));
 
     public RegistryManager() {
         this.addShutDownHook();
@@ -73,14 +74,14 @@ public class RegistryManager implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.executorService.execute(this::scheduledSaveOrUpdateRegistryNode);
-        this.executorService.execute(this::scheduledClearRegistryNode);
+        this.executorService.execute(this::scheduledUpdateNode);
+        this.executorService.execute(this::scheduledClearNode);
     }
 
     /**
      * registry registry data
      */
-    private void scheduledSaveOrUpdateRegistryNode() {
+    private void scheduledUpdateNode() {
         while (true) {
             RegistryNodeDO registryNode = null;
             RegistryNodeDO node = null;
@@ -124,7 +125,7 @@ public class RegistryManager implements InitializingBean {
     /**
      * remove registry data (client-num/start-interval s)
      */
-    private void scheduledClearRegistryNode() {
+    private void scheduledClearNode() {
         while (true) {
             try {
                 final RegistryNodeDO registryNode = this.removeQueue.take();
@@ -161,7 +162,7 @@ public class RegistryManager implements InitializingBean {
             registryDO = this.registryCache.get(triple);
         }
 
-        final List<RegistryNodeDO> registryNodeDOList = this.registryNodeCache.get(triple);
+        final List<RegistryNodeDO> registryNodeDOList = this.registryNodeCache.getIncludeExpireData(triple);
         if (CollectionUtils.isEmpty(registryNodeDOList)) {
             return Pair.of(null, registryDO.getId());
         }
@@ -180,24 +181,24 @@ public class RegistryManager implements InitializingBean {
     }
 
     public void addShutDownHook() {
-        _hook = new ShutDownHook(this);
-        Runtime.getRuntime().addShutdownHook(_hook);
+        hook = new ShutDownHook(this);
+        Runtime.getRuntime().addShutdownHook(hook);
     }
 
-    private volatile ShutDownHook _hook;
+    private volatile ShutDownHook hook;
 
     private class ShutDownHook extends Thread {
 
-        private RegistryManager _server;
+        private RegistryManager server;
 
         public ShutDownHook(RegistryManager server) {
-            this._server = server;
+            this.server = server;
         }
 
         @Override
         public void run() {
-            _hook = null;
-            _server.close();
+            hook = null;
+            server.close();
         }
     }
 }

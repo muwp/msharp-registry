@@ -74,7 +74,17 @@ public class RegistryNodeCache implements ICache<List<RegistryNodeDO>>, Initiali
         List<RegistryNodeDO> registryCache = registryNodeCache.get(key);
         if (CollectionUtils.isEmpty(registryCache)) {
             //如果miss hit则重新从db中获取一次，此事件发生的概率非常小
-            registryCache = syncGet(key);
+            registryCache = syncGet(key, false);
+        }
+        return registryCache;
+    }
+
+    @Override
+    public List<RegistryNodeDO> getIncludeExpireData(Triple<String, String, String> key) {
+        List<RegistryNodeDO> registryCache = registryNodeCache.get(key);
+        if (CollectionUtils.isEmpty(registryCache)) {
+            //如果miss hit则重新从db中获取一次，此事件发生的概率非常小
+            registryCache = syncGet(key, true);
         }
         return registryCache;
     }
@@ -261,10 +271,14 @@ public class RegistryNodeCache implements ICache<List<RegistryNodeDO>>, Initiali
         return registryNodeCache;
     }
 
-    private List<RegistryNodeDO> syncGet(final Triple<String, String, String> key) {
+    private List<RegistryNodeDO> syncGet(final Triple<String, String, String> key, boolean includeExpire) {
         final List<RegistryNodeDO> registryNodeList = registryNodeMapper.findData(key.getLeft(), key.getMiddle(), key.getRight());
         if (CollectionUtils.isEmpty(registryNodeList)) {
             return Collections.emptyList();
+        }
+
+        if (includeExpire) {
+            return registryNodeList;
         }
         return filter(registryNodeList);
     }

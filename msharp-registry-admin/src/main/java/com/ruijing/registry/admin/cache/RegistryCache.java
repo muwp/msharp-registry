@@ -57,6 +57,11 @@ public class RegistryCache implements ICache<RegistryDO>, InitializingBean {
     }
 
     @Override
+    public RegistryDO getIncludeExpireData(Triple<String, String, String> key) {
+        return get(key);
+    }
+
+    @Override
     public RegistryDO get(String appkey, String env, String serviceName) {
         return get(Triple.of(appkey, env, serviceName));
     }
