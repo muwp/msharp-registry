@@ -37,9 +37,9 @@ public class RegistryCache implements ICache<RegistryDO>, InitializingBean {
     @Resource
     private RegistryMapper registryMapper;
 
-    private Cache<Triple<String, String, String>, RegistryDO> registryCache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
+    private Cache<Triple<String, String, String>, RegistryDO> registryCache = CacheBuilder.newBuilder().maximumWeight(5000).expireAfterWrite(30, TimeUnit.SECONDS).build();
 
-    private Cache<Long, RegistryDO> registryIdCache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
+    private Cache<Long, RegistryDO> registryIdCache = CacheBuilder.newBuilder().maximumWeight(5000).expireAfterWrite(30, TimeUnit.SECONDS).build();
 
     private volatile Set<Pair<Long, Triple<String, String, String>>> registryIdSet = new ConcurrentHashSet<>();
 
@@ -167,7 +167,7 @@ public class RegistryCache implements ICache<RegistryDO>, InitializingBean {
     /**
      * 轮询服务
      */
-    private final ScheduledExecutorService registryUpdateExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("registry-sync-update-thread", true));
+    private final ScheduledExecutorService registryUpdateExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("registry-service[non node]-sync-update-thread", true));
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -228,24 +228,24 @@ public class RegistryCache implements ICache<RegistryDO>, InitializingBean {
     }
 
     public void addShutDownHook() {
-        _hook = new ShutDownHook(this);
-        Runtime.getRuntime().addShutdownHook(_hook);
+        hook = new ShutDownHook(this);
+        Runtime.getRuntime().addShutdownHook(hook);
     }
 
-    private volatile ShutDownHook _hook;
+    private volatile ShutDownHook hook;
 
     private class ShutDownHook extends Thread {
 
-        private RegistryCache _server;
+        private RegistryCache server;
 
         public ShutDownHook(RegistryCache server) {
-            this._server = server;
+            this.server = server;
         }
 
         @Override
         public void run() {
-            _hook = null;
-            _server.close();
+            hook = null;
+            server.close();
         }
     }
 }

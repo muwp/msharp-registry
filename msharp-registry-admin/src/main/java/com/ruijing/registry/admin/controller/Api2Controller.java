@@ -79,7 +79,7 @@ public class Api2Controller {
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setAppkey(node.getAppkey());
             registryNodeDO.setServiceName(node.getServiceName());
-            registryNodeDO.setValue(MetaUtil.convert(meta));
+            registryNodeDO.setValue(meta.toIpPortUnique());
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
             registryNodeDO.setEnv(node.getEnv());
             registryNodeDO.setMeta(Optional.ofNullable(node.getMeta()).orElse(StringUtils.EMPTY));
@@ -148,7 +148,7 @@ public class Api2Controller {
             registryNode.setServiceName(node.getServiceName());
             registryNode.setAppkey(node.getAppkey());
             registryNode.setEnv(node.getEnv());
-            registryNode.setValue(MetaUtil.convert(meta));
+            registryNode.setValue(meta.toIpPortUnique());
             registryNodeDOList.add(registryNode);
         }
         return registryService.remove(registryNodeDOList);

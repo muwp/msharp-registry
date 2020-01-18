@@ -12,7 +12,6 @@ import com.ruijing.registry.admin.manager.RegistryManager;
 import com.ruijing.registry.admin.service.FrontManagerService;
 import com.ruijing.registry.api.dto.NodeMetaDTO;
 import com.ruijing.registry.admin.util.JsonUtil;
-import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.api.response.Response;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -133,7 +132,7 @@ public class FrontManagerServiceImpl implements FrontManagerService {
             registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setVersion(StringUtils.EMPTY);
             registryNode.setMetric(StringUtils.EMPTY);
-            registryNode.setValue(MetaUtil.convert(serviceMeta));
+            registryNode.setValue(serviceMeta.toIpPortUnique());
             registryNodeList.add(registryNode);
         }
 
@@ -187,7 +186,7 @@ public class FrontManagerServiceImpl implements FrontManagerService {
             registryNode.setAppkey(registryDO.getAppkey());
             registryNode.setEnv(registryDO.getEnv());
             registryNode.setServiceName(registryDO.getServiceName());
-            registryNode.setValue(MetaUtil.convert(serviceMeta));
+            registryNode.setValue(serviceMeta.toIpPortUnique());
             registryNode.setVersion(StringUtils.EMPTY);
             registryNode.setMetric(StringUtils.EMPTY);
             registryNode.setMeta(JsonUtil.toJson(serviceMeta));

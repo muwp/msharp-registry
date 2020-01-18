@@ -132,6 +132,7 @@ public class RegistryManager implements InitializingBean {
                 if (null == registryNode) {
                     continue;
                 }
+
                 // delete
                 registryNodeCache.remove(Arrays.asList(registryNode));
             } catch (Exception e) {

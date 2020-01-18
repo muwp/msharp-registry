@@ -1,10 +1,14 @@
 package com.ruijing.registry.admin.rpc;
 
+import com.ruijing.fundamental.cat.Cat;
+import com.ruijing.fundamental.cat.message.Transaction;
+import com.ruijing.fundamental.common.collections.New;
+import com.ruijing.fundamental.remoting.msharp.annotation.MSharpService;
+import com.ruijing.fundamental.remoting.msharp.util.CatUtil;
 import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.service.RegistryManagerService;
 import com.ruijing.registry.admin.util.JsonUtil;
-import com.ruijing.registry.admin.util.MetaUtil;
 import com.ruijing.registry.api.dto.NodeMetaDTO;
 import com.ruijing.registry.api.service.RegistryService;
 import com.ruijing.registry.api.dto.RegistryNodeDTO;
@@ -15,40 +19,61 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-//@MSharpService(registry = "direct", port = 42000)
+@MSharpService(registry = "direct", port = 42000)
 @Service
 public class RegistryServiceImpl implements RegistryService {
+
+    private static final String CAT_TYPE = "RegistryService";
 
     @Autowired
     private RegistryManagerService registryService;
 
     @Override
     public Response<List<String>> discovery(RegistryNodeQueryDTO query) {
-        Response<List<String>> response = registryService.discovery(query);
+        Transaction transaction = Cat.newTransaction(CAT_TYPE, "discovery");
+        Response<List<String>> response = null;
+        try {
+            response = registryService.discovery(query);
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            transaction.setStatus(ex);
+            transaction.addData(CatUtil.buildStackInfo(JsonUtil.toJson(query), ex));
+        } finally {
+            transaction.complete();
+        }
         return response;
     }
 
     @Override
     public Response<Map<String, List<String>>> discovery(Request<RegistryNodeQueryDTO> request) {
-        Response<Map<String, List<String>>> result = registryService.discovery(request);
-        return result;
+        final Transaction transaction = Cat.newTransaction(CAT_TYPE, "discovery");
+        Response<Map<String, List<String>>> response = null;
+        try {
+            response = registryService.discovery(request);
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            transaction.addData(CatUtil.buildStackInfo(JsonUtil.toJson(request), ex));
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return response;
     }
 
     @Override
     public Response<Boolean> renew(Request<RegistryNodeDTO> request) {
         List<RegistryNodeDTO> registryNodeList = request.getList();
-        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
+        final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             RegistryNodeDTO node = registryNodeList.get(i);
             NodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), NodeMetaDTO.class);
             RegistryNodeDO registryNodeDO = new RegistryNodeDO();
             registryNodeDO.setServiceName(node.getServiceName());
             registryNodeDO.setStatus(RegistryNodeStatusEnum.NORMAL.getCode());
-            registryNodeDO.setValue(MetaUtil.convert(meta));
+            registryNodeDO.setValue(meta.toIpPortUnique());
             registryNodeDO.setAppkey(node.getAppkey());
             registryNodeDO.setEnv(node.getEnv());
             registryNodeDO.setMetric(null == node.getMetric() ? StringUtils.EMPTY : node.getMetric());

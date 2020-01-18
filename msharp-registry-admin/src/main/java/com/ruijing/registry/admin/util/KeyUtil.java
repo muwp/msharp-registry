@@ -5,7 +5,6 @@ import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.fundamental.common.env.Environment;
 import com.ruijing.fundamental.common.util.JsonUtils;
 import com.ruijing.fundamental.mhttp.common.HttpClientHelper;
-import com.ruijing.registry.common.http.Separator;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -21,10 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class KeyUtil {
 
     private static final Map<String, Boolean> VALID_KEY_MAP = new ConcurrentHashMap<>();
-
-    public static String getKey(String appkey, String env, String serviceName) {
-        return appkey + Separator.DOT + env + Separator.DOT + serviceName;
-    }
 
     public static boolean validAppkey(String appkey) {
         if (VALID_KEY_MAP.containsKey(appkey)) {

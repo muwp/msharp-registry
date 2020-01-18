@@ -151,6 +151,10 @@ public class NodeMetaDTO implements Serializable {
         this.jarVersion = jarVersion;
     }
 
+    public String toIpPortUnique() {
+        return ip + ":" + port;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("NodeMetaDTO{");
