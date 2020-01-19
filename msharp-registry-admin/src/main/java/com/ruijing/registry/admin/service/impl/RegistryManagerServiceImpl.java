@@ -97,10 +97,6 @@ public class RegistryManagerServiceImpl implements RegistryManagerService {
         final String appkey = query.getAppkey();
         final String env = query.getEnv();
         final String serviceName = query.getServiceName();
-        Response<String> response = valid(appkey, env, serviceName);
-        if (null != response) {
-            return EMPTY_RETURN_LIST;
-        }
 
         if (StringUtils.isNotBlank(clientAppkey)) {
             final ClientNodeDO clientNode = new ClientNodeDO();
@@ -133,28 +129,12 @@ public class RegistryManagerServiceImpl implements RegistryManagerService {
         final List<String> list = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO nodeDO = registryNodeList.get(i);
-            final NodeMetaDTO serviceMeta = JsonUtil.fromJson(nodeDO.getMeta(), NodeMetaDTO.class);
-            if (StringUtils.isNotBlank(query.getTransportType()) && StringUtils.isNotBlank(serviceMeta.getTransportType()) && !query.getTransportType().equals(serviceMeta.getTransportType())) {
+            final NodeMetaDTO metaDTO = JsonUtil.fromJson(nodeDO.getMeta(), NodeMetaDTO.class);
+            if (StringUtils.isNotBlank(query.getTransportType()) && StringUtils.isNotBlank(metaDTO.getTransportType()) && !query.getTransportType().equals(metaDTO.getTransportType())) {
                 continue;
             }
             list.add(nodeDO.getMeta());
         }
         return new Response<>(list);
-    }
-
-    private Response<String> valid(String appkey, String env, String serviceName) {
-        // valid
-        if (StringUtils.isBlank(appkey)) {
-            return new Response<>(Response.FAIL_CODE, "业务线格式非空");
-        }
-
-        if (StringUtils.isBlank(serviceName)) {
-            return new Response<>(Response.FAIL_CODE, "注册Key非空");
-        }
-
-        if (StringUtils.isBlank(env)) {
-            return new Response<>(Response.FAIL_CODE, "环境格式非空");
-        }
-        return null;
     }
 }

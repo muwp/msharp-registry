@@ -20,5 +20,4 @@ public class ResponseConst {
     public static final Response<String> FORBIDDEN = new Response<>(FORBIDDEN_CODE, null);
 
     public static final Response<Map<String, List<String>>> FAIL_ = new Response<>(FAIL_CODE, null);
-
 }

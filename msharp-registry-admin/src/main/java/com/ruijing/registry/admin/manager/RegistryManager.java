@@ -104,6 +104,7 @@ public class RegistryManager implements InitializingBean {
                     node.setServiceName(registryNode.getServiceName());
                     node.setValue(registryNode.getValue());
                 }
+
                 node.setRegistryId(registryId);
                 node.setMeta(registryNode.getMeta());
                 node.setVersion(registryNode.getVersion());
@@ -169,11 +170,12 @@ public class RegistryManager implements InitializingBean {
         }
 
         for (int i = 0, size = registryNodeDOList.size(); i < size; i++) {
-            final RegistryNodeDO tmp = registryNodeDOList.get(i);
-            if (Objects.equals(registryNode.getValue(), tmp.getValue())) {
-                return Pair.of(tmp.getId(), registryDO.getId());
+            final RegistryNodeDO nodeDO = registryNodeDOList.get(i);
+            if (Objects.equals(registryNode.getValue(), nodeDO.getValue())) {
+                return Pair.of(nodeDO.getId(), registryDO.getId());
             }
         }
+
         return Pair.of(null, registryDO.getId());
     }
 
