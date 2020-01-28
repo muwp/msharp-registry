@@ -37,9 +37,9 @@ public class RegistryCache implements ICache<RegistryDO>, InitializingBean {
     @Resource
     private RegistryMapper registryMapper;
 
-    private Cache<Triple<String, String, String>, RegistryDO> registryCache = CacheBuilder.newBuilder().maximumWeight(5000).expireAfterWrite(30, TimeUnit.SECONDS).build();
+    private Cache<Triple<String, String, String>, RegistryDO> registryCache = CacheBuilder.newBuilder().maximumSize(5000).expireAfterWrite(30, TimeUnit.SECONDS).build();
 
-    private Cache<Long, RegistryDO> registryIdCache = CacheBuilder.newBuilder().maximumWeight(5000).expireAfterWrite(30, TimeUnit.SECONDS).build();
+    private Cache<Long, RegistryDO> registryIdCache = CacheBuilder.newBuilder().maximumSize(5000).expireAfterWrite(30, TimeUnit.SECONDS).build();
 
     private volatile Set<Pair<Long, Triple<String, String, String>>> registryIdSet = new ConcurrentHashSet<>();
 

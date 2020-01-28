@@ -1,6 +1,7 @@
 package com.ruijing.registry.admin.cache;
 
 import cn.hutool.core.thread.NamedThreadFactory;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.data.mapper.ClientNodeMapper;
@@ -31,7 +32,7 @@ public class ClientNodeCache implements InitializingBean {
     @Resource
     private ClientNodeMapper clientNodeMapper;
 
-    private com.google.common.cache.Cache<Triple<String, String, String>, List<ClientNodeDO>> clientNodeCache = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build();
+    private Cache<Triple<String, String, String>, List<ClientNodeDO>> clientNodeCache = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build();
 
     /**
      * 轮询服务
