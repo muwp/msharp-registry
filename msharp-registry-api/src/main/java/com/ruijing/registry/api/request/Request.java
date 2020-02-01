@@ -15,7 +15,7 @@ public class Request<T> implements Serializable {
 
     public static final long serialVersionUID = 42L;
 
-    private List<T> list = new ArrayList<>();
+    private List<T> list = new ArrayList<>(10);
 
     /**
      * 返回数据的模式
@@ -32,8 +32,12 @@ public class Request<T> implements Serializable {
         this.list = list;
     }
 
-    public void addNode(T t) {
+    public void addRegistryNode(T t) {
         this.list.add(t);
+    }
+
+    public void removeRegistryNode(T t) {
+        this.list.remove(t);
     }
 
     public int getMode() {

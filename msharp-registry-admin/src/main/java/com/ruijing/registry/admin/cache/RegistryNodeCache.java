@@ -10,6 +10,7 @@ import com.ruijing.registry.admin.data.model.RegistryNodeDO;
 import com.ruijing.registry.admin.enums.RegistryNodeStatusEnum;
 import com.ruijing.registry.admin.util.JsonUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.InitializingBean;
@@ -110,7 +111,13 @@ public class RegistryNodeCache implements ICache<List<RegistryNodeDO>>, Initiali
         int del = 0;
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
             final RegistryNodeDO registryNode = registryNodeList.get(i);
-            del += registryNode.getId() == null ? deleteNode(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName(), registryNode.getValue()) : deleteNode(registryNode.getId());
+            if (registryNode.getId() != null) {
+                del += deleteNode(registryNode.getId());
+            } else if (StringUtils.isBlank(registryNode.getServiceName()) && StringUtils.isBlank(registryNode.getValue())) {
+                del += deleteNode(registryNode.getAppkey(), registryNode.getEnv());
+            } else {
+                del += deleteNode(registryNode.getAppkey(), registryNode.getEnv(), registryNode.getServiceName(), registryNode.getValue());
+            }
         }
         return del > 0;
     }
@@ -176,6 +183,22 @@ public class RegistryNodeCache implements ICache<List<RegistryNodeDO>>, Initiali
             transaction.setSuccessStatus();
         } catch (Exception ex) {
             Cat.logError("RegistryNodeCache", "registryNodeMapper.removeDataValue", JsonObjectBuilder.custom().put("biz", biz).put("env", env).put("key", key).put("value", value).build().toString(), ex);
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return deletedSize;
+    }
+
+    private int deleteNode(final String biz, final String env) {
+        // delete
+        int deletedSize = 0;
+        Transaction transaction = Cat.newTransaction("RegistryNodeCache", "registryNodeMapper.removeByAppkeyAndEnv");
+        try {
+            deletedSize = registryNodeMapper.removeByAppkeyAndEnv(biz, env);
+            transaction.setSuccessStatus();
+        } catch (Exception ex) {
+            Cat.logError("RegistryNodeCache", "registryNodeMapper.removeByAppkeyAndEnv", JsonObjectBuilder.custom().put("biz", biz).put("env", env).build().toString(), ex);
             transaction.setStatus(ex);
         } finally {
             transaction.complete();

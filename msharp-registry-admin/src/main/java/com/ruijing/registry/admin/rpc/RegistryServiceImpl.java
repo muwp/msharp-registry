@@ -18,13 +18,18 @@ import com.ruijing.registry.api.request.Request;
 import com.ruijing.registry.api.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * RegistryServiceImpl
+ *
+ * @author mwup
+ * @version 1.0
+ * @created 2020/01/23 17:03
+ **/
 @MSharpService(registry = "direct", port = ServiceConstants.SERVICE_PUBLISH_PORT)
-@Service
 public class RegistryServiceImpl implements RegistryService {
 
     private static final String CAT_TYPE = "RegistryService";
@@ -85,6 +90,29 @@ public class RegistryServiceImpl implements RegistryService {
                 registryNodeDOList.add(registryNodeDO);
             }
             return registryService.registry(registryNodeDOList);
+        } catch (Exception ex) {
+            transaction.addData(CatUtil.buildStackInfo(JsonUtil.toJson(request), ex));
+            transaction.setStatus(ex);
+        } finally {
+            transaction.complete();
+        }
+        return new Response<>(false);
+    }
+
+    @Override
+    public Response<Boolean> offline(Request<RegistryNodeDTO> request) {
+        final Transaction transaction = Cat.newTransaction(CAT_TYPE, "offline");
+        try {
+            final List<RegistryNodeDTO> registryNodeList = request.getList();
+            final List<RegistryNodeDO> registryNodeDOList = New.listWithCapacity(registryNodeList.size());
+            for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+                RegistryNodeDTO node = registryNodeList.get(i);
+                RegistryNodeDO registryNode = new RegistryNodeDO();
+                registryNode.setAppkey(node.getAppkey());
+                registryNode.setEnv(node.getEnv());
+                registryNodeDOList.add(registryNode);
+            }
+            return registryService.remove(registryNodeDOList);
         } catch (Exception ex) {
             transaction.addData(CatUtil.buildStackInfo(JsonUtil.toJson(request), ex));
             transaction.setStatus(ex);

@@ -53,7 +53,7 @@ public class ClusterCache implements InitializingBean {
         }
         this.syncDataPort = Environment.getInt("registry.node.sync.port", 42000);
         clusterNodeList = New.list(syncNodeList.split(","));
-        clusterExecutor.scheduleWithFixedDelay(this::scheduledUpdateCluster, 5, 60, TimeUnit.SECONDS);
+        clusterExecutor.scheduleWithFixedDelay(this::scheduledUpdateCluster, 10, 60, TimeUnit.SECONDS);
     }
 
     public void scheduledUpdateCluster() {

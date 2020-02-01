@@ -248,6 +248,13 @@
           and `value` = #{value}
     </delete>
 
+    <delete id="removeByAppkeyAndEnv" parameterType="java.util.HashMap">
+        update registry_node
+        set `status` = 0
+        WHERE `appkey` = #{appkey}
+          AND `env` = #{env}
+    </delete>
+
     <delete id="delete" parameterType="long">
         DELETE
         FROM registry_node

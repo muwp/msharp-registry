@@ -1,5 +1,6 @@
 package com.ruijing.registry.admin.controller;
 
+import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.constants.ResponseConst;
@@ -141,13 +142,34 @@ public class Api2Controller {
         List<RegistryNodeDTO> registryNodeList = request.getList();
         List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
         for (int i = 0, size = registryNodeList.size(); i < size; i++) {
-            RegistryNodeDTO node = registryNodeList.get(i);
-            final NodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), NodeMetaDTO.class);
+            final RegistryNodeDTO node = registryNodeList.get(i);
+            NodeMetaDTO meta = JsonUtil.fromJson(node.getMeta(), NodeMetaDTO.class);
             RegistryNodeDO registryNode = new RegistryNodeDO();
             registryNode.setServiceName(node.getServiceName());
             registryNode.setAppkey(node.getAppkey());
-            registryNode.setEnv(node.getEnv());
             registryNode.setValue(meta.toIpPortUnique());
+            registryNode.setEnv(node.getEnv());
+            registryNodeDOList.add(registryNode);
+        }
+        return registryService.remove(registryNodeDOList);
+    }
+
+    @RequestMapping("/all/offline")
+    @ResponseBody
+    @PermissionLimit(limit = false)
+    @RegistryClient
+    public Response<Boolean> offline(@RequestBody(required = false) String data) {
+        final Request<RegistryNodeDTO> request = Request2Util.getServerRequest(data);
+        if (null == request) {
+            return ResponseConst.REGISTRY_FAIL;
+        }
+        final List<RegistryNodeDTO> registryNodeList = request.getList();
+        final List<RegistryNodeDO> registryNodeDOList = new ArrayList<>(registryNodeList.size());
+        for (int i = 0, size = registryNodeList.size(); i < size; i++) {
+            final RegistryNodeDTO node = registryNodeList.get(i);
+            RegistryNodeDO registryNode = new RegistryNodeDO();
+            registryNode.setAppkey(node.getAppkey());
+            registryNode.setEnv(node.getEnv());
             registryNodeDOList.add(registryNode);
         }
         return registryService.remove(registryNodeDOList);

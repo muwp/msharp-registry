@@ -40,6 +40,8 @@ public interface RegistryNodeMapper {
 
     int removeDataValue(@Param("appkey") String appkey, @Param("env") String env, @Param("serviceName") String serviceName, @Param("value") String value);
 
+    int removeByAppkeyAndEnv(@Param("appkey") String appkey, @Param("env") String env);
+
     int delete(Long id);
 
     int remove(Long id);

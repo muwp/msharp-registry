@@ -17,9 +17,35 @@ import java.util.Map;
  **/
 public interface RegistryService {
 
+    /**
+     * 根据request查询线上结点
+     *
+     * @param query 待查询的结果查询条件
+     * @return 返回true如果续约成功，否则返回false
+     */
     Response<List<String>> discovery(RegistryNodeQueryDTO query);
 
+    /**
+     * 根据request查询线上结点
+     *
+     * @param request 待查询的结果查询条件
+     * @return 返回true如果续约成功，否则返回false
+     */
     Response<Map<String, List<String>>> discovery(Request<RegistryNodeQueryDTO> request);
 
+    /**
+     * 根据request续约指定结点
+     *
+     * @param request 待续约的结果查询条件
+     * @return 返回true如果续约成功，否则返回false
+     */
     Response<Boolean> renew(Request<RegistryNodeDTO> request);
+
+    /**
+     * 根据request下线指定结点
+     *
+     * @param request 待下线的结果查询条件
+     * @return 返回true如果下线成功，否则返回false
+     */
+    Response<Boolean> offline(Request<RegistryNodeDTO> request);
 }
