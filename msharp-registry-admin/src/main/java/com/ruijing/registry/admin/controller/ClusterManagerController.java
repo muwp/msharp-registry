@@ -1,6 +1,5 @@
 package com.ruijing.registry.admin.controller;
 
-import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.fundamental.remoting.msharp.util.NetUtil;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.cache.ClusterCache;
@@ -41,13 +40,11 @@ public class ClusterManagerController {
         if (StringUtils.isBlank(localIp)) {
             return new Response<>(nodeList);
         }
-        
+
         if (CollectionUtils.isEmpty(nodeList)) {
             return new Response<>(Collections.singletonList(localIp + Separator.COLON + clusterCache.getSyncDataPort()));
         } else {
-            List<String> clusterNodeList = New.list(nodeList);
-            clusterNodeList.add(NetUtil.localIpV4 + Separator.COLON + clusterCache.getSyncDataPort());
-            return new Response<>(clusterNodeList);
+            return new Response<>(nodeList);
         }
     }
 
