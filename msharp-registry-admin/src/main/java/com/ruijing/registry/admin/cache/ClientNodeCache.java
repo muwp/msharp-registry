@@ -27,12 +27,12 @@ import java.util.concurrent.*;
 @Service
 public class ClientNodeCache implements InitializingBean {
 
-    private static final int DEFAULT_BATCH_UPDATE_SIZE = 80;
+    private static final int DEFAULT_BATCH_UPDATE_SIZE = 100;
 
     @Resource
     private ClientNodeMapper clientNodeMapper;
 
-    private Cache<Triple<String, String, String>, List<ClientNodeDO>> clientNodeCache = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build();
+    private Cache<Triple<String, String, String>, List<ClientNodeDO>> clientNodeCache = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(10, TimeUnit.MINUTES).build();
 
     /**
      * 轮询服务
