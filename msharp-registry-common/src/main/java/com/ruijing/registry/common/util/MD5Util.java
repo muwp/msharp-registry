@@ -2,7 +2,7 @@ package com.ruijing.registry.common.util;
 
 import java.security.MessageDigest;
 
-public class MD5Utils {
+public class MD5Util {
 
     public static String md5(String s) {
         try {
@@ -26,7 +26,7 @@ public class MD5Utils {
 
     public static void main(String []args){
         String phone = "123456";
-        String str = MD5Utils.md5(phone);
+        String str = MD5Util.md5(phone);
         System.out.println(str);
     }
 }

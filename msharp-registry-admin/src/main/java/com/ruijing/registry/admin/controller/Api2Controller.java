@@ -1,6 +1,5 @@
 package com.ruijing.registry.admin.controller;
 
-import com.ruijing.fundamental.cat.Cat;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.annotation.RegistryClient;
 import com.ruijing.registry.admin.constants.ResponseConst;

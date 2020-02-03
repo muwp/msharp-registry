@@ -5,7 +5,7 @@ import com.ruijing.fundamental.common.env.Environment;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.util.CookieUtil;
 import com.ruijing.registry.common.http.HttpClientHelper;
-import com.ruijing.registry.common.util.MD5Utils;
+import com.ruijing.registry.common.util.MD5Util;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -71,7 +71,7 @@ public class AuthInterceptorAdapter extends HandlerInterceptorAdapter {
         //登录
         final String value;
         try {
-            value = HttpClientHelper.INSTANCE.get(configCenter + "/pearl/user/login?userName=" + username + "&password=" + MD5Utils.md5(password), 10000);
+            value = HttpClientHelper.INSTANCE.get(configCenter + "/pearl/user/login?userName=" + username + "&password=" + MD5Util.md5(password), 10000);
             if (StringUtils.isNotBlank(value)) {
                 RemoteResponse<String> response = gson.fromJson(value, RemoteResponse.class);
                 //加上编码防止前端获取cookie中特殊符号为空格
