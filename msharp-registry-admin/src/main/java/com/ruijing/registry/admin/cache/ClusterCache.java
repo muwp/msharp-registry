@@ -8,7 +8,7 @@ import com.ruijing.fundamental.common.collections.New;
 import com.ruijing.fundamental.common.env.Environment;
 import com.ruijing.fundamental.mhttp.common.HttpClientHelper;
 import com.ruijing.fundamental.mhttp.common.Separator;
-import com.ruijing.fundamental.remoting.msharp.util.NetUtil;
+import com.ruijing.fundamental.transport.util.NetUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class ClusterCache implements InitializingBean {
         this.serverPort = Environment.getInt("server.port", 8080);
         this.syncDataPort = Environment.getInt("registry.node.sync.port", 42000);
         clusterNodeList = New.list(syncNodeList.split(","));
-        clusterExecutor.scheduleWithFixedDelay(this::scheduledUpdateCluster, 20, 60, TimeUnit.SECONDS);
+        clusterExecutor.scheduleWithFixedDelay(this::scheduledUpdateCluster, 20, 180, TimeUnit.SECONDS);
         addShutDownHook();
     }
 

@@ -1,6 +1,6 @@
 package com.ruijing.registry.admin.controller;
 
-import com.ruijing.fundamental.remoting.msharp.util.NetUtil;
+import com.ruijing.fundamental.transport.util.NetUtil;
 import com.ruijing.registry.admin.annotation.PermissionLimit;
 import com.ruijing.registry.admin.cache.ClusterCache;
 import com.ruijing.registry.admin.constants.ResponseConst;
