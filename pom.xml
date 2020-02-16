@@ -67,13 +67,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>snapshots</id>
-					<name>nexus-snapshots</name>
-					<url>http://192.168.2.66:8086/nexus/content/repositories/snapshots/</url>
-				</snapshotRepository>
-			</distributionManagement>
 		</profile>
 	</profiles>
 
@@ -84,5 +77,31 @@
 			<url>http://192.168.2.66:8086/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>nexus-snapshot</id>
+			<name>Nexus Snapshot</name>
+			<url>http://192.168.2.66:8086/nexus/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>nexus</id>
+			<name>Nexus</name>
+			<url>http://192.168.2.66:8086/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>
