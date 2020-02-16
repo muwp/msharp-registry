@@ -36,13 +36,13 @@ public class ClusterCache implements InitializingBean {
     private static Cache<String, List<String>> clusterNodeListCache = CacheBuilder
             .newBuilder()
             .maximumSize(10)
-            .expireAfterWrite(180, TimeUnit.SECONDS)
+            .expireAfterWrite(360, TimeUnit.SECONDS)
             .build();
 
     /**
      * 轮询服务
      */
-    private final ScheduledExecutorService clusterExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("cluster-node-sync-update-thread", true));
+    //private final ScheduledExecutorService clusterExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("cluster-node-sync-update-thread", true));
 
     private List<String> clusterNodeList;
 
@@ -59,11 +59,11 @@ public class ClusterCache implements InitializingBean {
         this.serverPort = Environment.getInt("server.port", 8080);
         this.syncDataPort = Environment.getInt("registry.node.sync.port", 42000);
         clusterNodeList = New.list(syncNodeList.split(","));
-        clusterExecutor.scheduleWithFixedDelay(this::scheduledUpdateCluster, 20, 180, TimeUnit.SECONDS);
+        //clusterExecutor.scheduleWithFixedDelay(this::scheduledUpdateCluster, 20, 180, TimeUnit.SECONDS);
         addShutDownHook();
     }
 
-    public void scheduledUpdateCluster() {
+    private void scheduledUpdateCluster() {
         for (int i = 0, size = clusterNodeList.size(); i < size; i++) {
             final String ip = clusterNodeList.get(i);
             String url = Separator.HTTP__SCHEME + ip + Separator.COLON + serverPort + "/msharp-admin/cluster/broadcast?url=" + ip + Separator.COLON + syncDataPort;
@@ -105,7 +105,7 @@ public class ClusterCache implements InitializingBean {
     }
 
     public void close() {
-        clusterExecutor.shutdown();
+        //clusterExecutor.shutdown();
     }
 
     private volatile ShutDownHook hook;
