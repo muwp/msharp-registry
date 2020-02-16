@@ -29,7 +29,7 @@ import java.util.Map;
  * @version 1.0
  * @created 2020/01/23 17:03
  **/
-@MSharpService(registry = "direct", supportHeartbeat = "false", port = ServiceConstants.SERVICE_PUBLISH_PORT)
+//@MSharpService(registry = "direct", supportHeartbeat = "false", port = ServiceConstants.SERVICE_PUBLISH_PORT)
 public class RegistryServiceImpl implements RegistryService {
 
     private static final String CAT_TYPE = "RegistryService";
